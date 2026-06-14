@@ -1,9 +1,7 @@
-import { timeStamp } from 'console';
 import { createConnection } from './connection.js';
 import fs from "fs/promises";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { execFile } from 'child_process';
 
 const currFile = fileURLToPath(import.meta.url);
 const currPath = path.dirname(currFile);
@@ -15,13 +13,12 @@ async function getMigrationsFiles() {
     return files;
 }
 
-async function getBuiltMigrations(connection) {
+export async function getBuiltMigrations(connection) {
     const [rows] = await connection.query(`SELECT * FROM migrations`);
-    return rows.map(r => r.name) ?? [];
+    return rows.map(r => r) ?? [];
 }
 
 async function declareMigration(connection, name) {
-
     return await connection?.query(`Insert into migrations(name)values('${name}')`);
 }
 
@@ -40,7 +37,7 @@ async function executeMigration(connection, name) {
 
 async function run_migration() {
     const conn = await createConnection();
-
+    await conn.connect();
     await conn.query(`
     CREATE TABLE iF NOT EXISTS migrations(
         id int auto_increment primary key,
@@ -64,9 +61,11 @@ async function run_migration() {
         catch (e) {
             console.error(e);
         }
-
     }
+    await conn.end();
 }
 
-run_migration();
+run_migration(); // run migrations
+
+
 

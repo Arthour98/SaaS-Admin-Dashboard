@@ -8,11 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest",
-    "migrate": "node src/db/migrate.js"
+    "test": "jest --runInBand",
+    "migrate": "node src/db/migrate.js",
+    "rollback": "node src/db/rollback.js"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
+    "jose": "^6.2.3",
     "mysql2": "^3.22.5",
     "next": "16.2.7",
     "react": "19.2.4",
@@ -20,12 +22,17 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
+    "jest": "^30.4.2",
     "tailwindcss": "^4",
+    "ts-jest": "^29.4.11",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

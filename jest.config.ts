@@ -6,11 +6,21 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+  preset: "ts-jest/presets/default-esm",
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  transform: {
+    "^.+\\.[tj]sx?$": ["ts-jest", { useESM: true }],
+  },
+  globals: {
+    "ts-jest": {
+      useESM: true,
+    },
+  },
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -153,7 +163,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  
+
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

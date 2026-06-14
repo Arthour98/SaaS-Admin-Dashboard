@@ -8,7 +8,7 @@ const db_name = process.env.DB_NAME;
 const password = process.env.DB_PASSWORD;
 
 export async function createConnection() {
-  let conn = await mysql.createConnection({
+  let conn = await  mysql.createConnection({
     host: host,
     user: username,
     password: password,
