@@ -9,8 +9,8 @@ export interface User {
 
 export async function getUser(connection: any, id: number) {
     try {
-        const res = await connection.query(`SELECT from users where id = ${id}`)
-        return res;
+        const [rows] = await connection.query(`SELECT * from users where id = ?`, [id])
+        return rows;
     }
     catch (e) {
         console.error(e);
@@ -20,10 +20,10 @@ export async function getUser(connection: any, id: number) {
 
 async function getUserByName(connection: any, user_name: string) {
     try {
-        const query = `SELECT * from users where user_name=${user_name}`;
-        const res = await connection.query(query);
+        const query = `SELECT * from users where user_name = ?`;
+        const [rows] = await connection.query(query, [user_name]);
 
-        return res[0];
+        return rows[0];
     }
     catch (e) {
         console.error(e);
@@ -39,8 +39,8 @@ export async function createUser(connection: any, { user_name, password, email }
 
     if (!existing_user) {
         try {
-            const res = await connection.query(`INSERT into users(user_name,email,password)
-                values(${user_name}, ${email}, ${hashPassword(password)})`)
+            await connection.query(`INSERT into users(user_name,email,password)
+             values(?,?,?)`, [user_name, email, hashPassword(password)])
         }
         catch (e) {
             console.error(e);
