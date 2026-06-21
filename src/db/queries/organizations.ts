@@ -12,14 +12,28 @@ export interface OrganizationProps {
 
 export async function getOrganization(connection: any, user_id: number) {
     try {
-        const org = await connection.query(`SELECT * from users_organizations where user_id=?`, [user_id]);
-        return org;
+        const [rows] = await connection.query(`SELECT * from users_organizations where user_id=?`, [user_id]);
+        return rows;
     }
     catch (e) {
         console.error(e);
     }
 }
 
+export async function getOrganizationMembers(connection: any, organization_id: number) {
+    try {
+        const [rows] = await connection.query(`SELECT  users.name ,users_organizations.organization_id,organization_name 
+            FROM users 
+            RIGHT JOIN users_organizations
+            ON users.id = users_organization.user_id
+            WHERE users_organization.organization_id = ?`, [organization_id]);
+        return rows;
+    }
+    catch (e) {
+        console.error(e);
+    }
+
+}
 
 export async function createOrganization(connection: any, creds: OrganizationInitProps) {
     try {
@@ -73,3 +87,13 @@ export async function getOrgToken(connection: any, organization_id: number) {
     }
 
 }
+
+export async function refreshOrgToken(connection: any, token_id: number) {
+    try {
+        await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [createOrgToken(), token_id]);
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
