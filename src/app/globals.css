@@ -24,3 +24,253 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.generalBody {
+  background-color: aliceblue;
+  width: 100%;
+  height: 100%;
+  padding: 0 1rem 1rem 0;
+
+}
+
+/* Landing page CSS */
+.landingPageBody {
+  background-color: hsl(250deg 23.73% 9.74%);
+  width: 100%;
+  height: fit-content;
+  padding: 0 1rem 0 1rem;
+  display: block;
+}
+
+.landingPageBody>* {
+  margin-bottom: 2rem;
+}
+
+.landingPageBody>*:not(:last-child) {
+  margin-bottom: 0;
+}
+
+.landingHeader {
+  display: flex;
+  align-items: center;
+  width: 75%;
+  justify-self: center;
+  min-height: 10%;
+  max-height: 10%;
+  background-color: rgba(143, 243, 193, 0.3);
+  border-radius: 0 0 12px 12px;
+}
+
+.landingHeader p {
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.landingMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+
+}
+
+.businessCardWrapper {
+  z-index: 1;
+  background-color: rgba(143, 243, 193, 0.3);
+  border: 1px solid rgb(110, 243, 110);
+  box-shadow:
+    0 0 10px 2px rgb(73, 223, 73);
+
+  border-radius: 15px;
+  width: 40%;
+  min-height: 40%;
+  max-height: 60%;
+  padding: 1rem;
+}
+
+
+
+.businessCard {
+  background-color: transparent;
+  z-index: 2 !important;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+
+.businessInfo {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+
+}
+
+.businessDesc {
+  padding: 0 3rem;
+}
+
+.authCol {
+  display: flex;
+  justify-content: end;
+  padding: 0 1rem;
+  column-gap: 1rem;
+}
+
+#signup {
+  width: fit-content;
+  padding: 0 1rem;
+  border: 1px solid white;
+  background: linear-gradient(120deg, #af3b7f, #f175be);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, background 0.3s ease-in;
+  ;
+}
+
+#signin {
+  color: white;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+#signup:hover {
+  transform: scale(1.1);
+  background: linear-gradient(120deg, #f76bbc);
+  transition: transform 0.3s ease-in-out, background 0.3s ease-in;
+}
+
+#signin:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.businessCard p,
+.businessCard h1 {
+  color: white;
+}
+
+.businessCard p {
+  font-size: 14px;
+}
+
+
+/* Footer styles */
+.siteFooter {
+  background-color: rgba(143, 243, 193, 0.3);
+  color: var(--foreground);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px 12px 0 0;
+  padding: 2rem 1rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+}
+
+
+
+.footerWrapper {
+  display: flex;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footerSection {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.footerSection h3,
+.footerSection h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: cyan;
+}
+
+.footerSection p {
+  color: white;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.footerLinks a {
+  color: inherit;
+  text-decoration: none;
+  color: white;
+}
+
+.footerLinks a:hover {
+  text-decoration: underline;
+}
+
+.footerContact a {
+  color: inherit;
+  text-decoration: none;
+  color: white;
+}
+
+.socialLinks {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.6rem;
+  color: white;
+}
+
+.socialLinks a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 0.25rem 0.45rem;
+  border-radius: 6px;
+  transition: background .15s ease;
+}
+
+.socialLinks a:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.footerBottom {
+  max-width: 1100px;
+  margin: 1.2rem auto 0 auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  text-align: center;
+  color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  .siteFooter {
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.98), var(--background));
+    border-top-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .footerBottom {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+@media (max-width: 640px) {
+  .footerWrapper {
+    gap: 1rem;
+  }
+
+  .footerSection {
+    flex-basis: 100%;
+  }
+}
