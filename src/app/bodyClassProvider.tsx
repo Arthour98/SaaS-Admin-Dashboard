@@ -10,7 +10,7 @@ export default function BodyClassProvider({
 }) {
   const pathname = usePathname();
 
-  const isLanding = pathname === "/";
+  const isLanding = pathname === "/" || pathname === "/login" || pathname === "/register";
 
   return (
     <body className={isLanding ? "landingPageBody" : "generalBody"}>

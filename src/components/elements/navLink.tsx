@@ -1,4 +1,4 @@
-
+import Link from "next/link"
 export interface NavLinkProps 
 {
 src:string,
@@ -10,8 +10,8 @@ onClick?: (e:Event)=>void
 export const NavLink=({src,label,isActive,onClick}:NavLinkProps)=>
 {
  return(
-    <a href={src} color={isActive ? "cyan" : ""} onClick={()=>onClick}>
+    <Link href={src} color={isActive ? "cyan" : ""} onClick={()=>onClick} prefetch transitionTypes={["slide-in"]}>
         {label}
-    </a>
+    </Link>
  )
 }

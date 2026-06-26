@@ -1,23 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEventHandler } from "react";
 import  Main  from "./partials/main";
-import Footer from "./partials/footer";
-import Image from "next/image";
+import { useRouter} from "next/navigation";
+
+
 
 
 
 export default function LandingPageClient(){
 
-return(<>
-    <header className="landingHeader">
-        <div className="imageWrapper">
-            <Image src={'/images/dashboard_image.png'}
-             alt="A half of clock with a ascending graph representing a standart dashboard logo"
-             width={100} height={100} />
-        </div>
-        <p className="title">C-Board</p>
-    </header>
+    const router =  useRouter();
+    const handleOpenLogin = () =>
+    {
+        router.push('/login',{scroll:false});
+    }
+    const handleOpenRegister = ()=>
+    {
+        router.push('/register',{scroll:false});
+    }
+
+return(
     <Main className="landingMain">
         <div className="businessCardWrapper">
             <div className="businessCard">
@@ -44,13 +47,14 @@ return(<>
                     </p>
                 </div>
                 <div className="authCol">
-                    <button id="signup">Get Started</button>
-                    <button id="signin">Sign in</button>
+                    <button id="signup" 
+                     onClick={handleOpenRegister}>Get Started</button>
+                    <button id="signin"
+                    onClick={handleOpenLogin}>Sign in</button>
                 </div>
             </div>
         </div>
     </Main>
-    <Footer/>
-</>)
+)
 
 }
