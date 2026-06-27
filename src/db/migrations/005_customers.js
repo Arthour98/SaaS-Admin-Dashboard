@@ -6,7 +6,7 @@ export async function up(connection) {
       phone_number varchar(20),
       organization_id int,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      foreign key(organization_id) REFERENCES organization(id) ON DELETE CASCADE ON UPDATE CASCADE
+      foreign key(organization_id) REFERENCES organizations(id) ON DELETE CASCADE ON UPDATE CASCADE
     )
   `);
 }

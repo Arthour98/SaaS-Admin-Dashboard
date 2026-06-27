@@ -48,6 +48,7 @@ async function rollback_migrations() {
         }
         catch (e) {
             console.error(e);
+            await conn.query(`DROP TABLE migrations`);
         }
     }
     await deleteMigrations(conn, migrations_ids);

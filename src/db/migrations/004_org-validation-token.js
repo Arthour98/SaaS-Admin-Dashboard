@@ -9,3 +9,7 @@ export async function up(connection) {
         foreign key(organization_id) REFERENCES organizations(id) ON DELETE CASCADE ON UPDATE CASCADE
         )`)
 }
+
+export async function down(connection) {
+    await connection.query(`DROP TABLE org_validation_token`);
+}

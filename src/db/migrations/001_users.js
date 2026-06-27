@@ -5,7 +5,8 @@ export async function up(connection) {
       name varchar(60),
       email varchar(30),
       password varchar(20), 
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      verified_at TIMESTAMP DEFAULT NULL
     )
   `);
 }
