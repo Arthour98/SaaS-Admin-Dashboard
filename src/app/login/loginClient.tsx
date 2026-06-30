@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
+import SignIn from "@/components/elements/oauth-signin";
 
 export default function LoginClient({})
 {
@@ -36,6 +37,7 @@ export default function LoginClient({})
                     <input type="submit" value="Sign in" />
                 </div>
             </form>
+             <SignIn/>
         </div>
         </Main>
     )
