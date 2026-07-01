@@ -311,20 +311,22 @@ form#registerForm input[type="password"] {
   color: white;
 }
 
-form#registerForm input[type="submit"],
-form#loginForm input[type="submit"] {
+form#registerForm button[type="submit"],
+form#loginForm button[type="submit"] {
   background-color: var(--darkgreen);
   color: white;
   padding: 0.5rem 1rem;
-  width: fit-content;
-  height: fit-content;
+  max-width: fit-content;
+  max-height: fit-content;
+  min-width: 4rem;
+  min-height: 2rem;
   border-radius: 12px;
   align-self: end;
   transition: background-color 0.3s ease-in-out, transform 0.3s ease-out;
 }
 
-form#registerForm input[type="submit"]:hover,
-form#loginForm input[type="submit"]:hover {
+form#registerForm button[type="submit"]:hover,
+form#loginForm button[type="submit"]:hover {
   transform: scale(1.1);
   background-color: var(--lightgreen);
 

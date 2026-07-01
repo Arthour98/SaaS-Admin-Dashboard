@@ -5,6 +5,7 @@ export interface User {
     user_name: string,
     email: string,
     password: string,
+    source: string
 }
 
 export async function getUser(connection: any, id: number) {
@@ -43,7 +44,7 @@ async function getUserByEmail(connection: any, email: string) {
 
 
 
-export async function createUser(connection: any, { user_name, password, email }: User) {
+export async function createUser(connection: any, { user_name, password, email, source }: User) {
     const username = await getUserByName(connection, user_name);
     const useremail = await getUserByEmail(connection, email);
     const existing_name = username?.length > 0;
@@ -53,7 +54,7 @@ export async function createUser(connection: any, { user_name, password, email }
     if (!existing_name && !existing_email) {
         try {
             await connection.query(`INSERT into users(user_name,email,password)
-             values(?,?,?)`, [user_name, email, hashPassword(password)]);
+             values(?,?,?,?)`, [user_name, email, hashPassword(password), source]);
         }
         catch (e) {
             console.error(e);
@@ -65,7 +66,30 @@ export async function createUser(connection: any, { user_name, password, email }
     else if (existing_email) {
         return { error: "useremail" }
     }
+}
 
+export async function createUserByOauth(connection: any, { user_name, password, email, source }: User) {
+    const username = await getUserByName(connection, user_name);
+    const useremail = await getUserByEmail(connection, email);
+    const existing_name = username?.length > 0;
+    const existing_email = useremail?.length > 0;
+
+
+    if (!existing_name && !existing_email) {
+        try {
+            await connection.query(`INSERT into users(user_name,email,source)
+             values(?,?,?)`, [user_name, email, source]);
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
+    else if (existing_name) {
+        return { error: "username" }
+    }
+    else if (existing_email) {
+        return { error: "useremail" }
+    }
 }
 
 export async function validateUser(connection: any, user_id: number, token: string) {
