@@ -38,9 +38,12 @@ input[type="submit"] {
   background-color: aliceblue;
   width: 100%;
   height: 100%;
-  padding: 0 1rem 0 0;
-
+  padding: 0 1rem 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 
 /* Landing page CSS */
 .landingPageBody {
@@ -59,6 +62,30 @@ input[type="submit"] {
   margin-bottom: 0 !important;
 }
 
+/* Nav utilities */
+.navWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 20px;
+  min-height: fit-content;
+  max-height: fit-content;
+  flex: 0.6;
+
+}
+
+.pseudo40-col {
+  flex: 0.4;
+}
+
+.dashboard-nav {
+  background-color: rgb(245, 243, 250);
+  flex: 0.3;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .landingHeader {
   display: flex;
   align-items: center;
@@ -68,6 +95,14 @@ input[type="submit"] {
   max-height: 10%;
   background-color: rgba(143, 243, 193, 0.3);
   border-radius: 0 0 12px 12px;
+}
+
+/* NAV takes places only after auth and / routes */
+nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-self: center;
 }
 
 .landingHeader p {
@@ -339,4 +374,28 @@ form#loginForm button[type="submit"]:hover {
   color: white;
   padding: 0 0 1rem 0;
   text-decoration: underline;
+}
+
+/* DASHBOARD PAGE ( MAIN LAYOUT ) styles */
+main.dashboardMain {
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 5rem;
+  min-height: 70vh;
+
+}
+
+.dashboard-container {
+  flex: 0.8;
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dashboard-content {
+  flex: 0.7;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(252, 249, 249)
 }
