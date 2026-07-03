@@ -1,17 +1,18 @@
 "use client";
 import { NavLink } from "../elements/navLink";
 import { usePathname } from "next/navigation";
-
+import { MouseEvent } from "react";
 export default function NavBar({}){
 
     const path = usePathname();
     
 
-    const handleSettingClick = (e:Event)=>
+    const handleSettingClick = (e:MouseEvent)=>
     {
+        let dropdown = document?.querySelector('.dropdown-settings ');
         e.preventDefault();
-        let dropdown = document.querySelector('.dropdown-settings');
-        if(!dropdown?.classList.contains("visilble"))
+        
+        if(!dropdown?.classList.contains("visible"))
         {
             dropdown?.classList.add("visible")
         }
