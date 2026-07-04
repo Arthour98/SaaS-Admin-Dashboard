@@ -1,6 +1,7 @@
 import { hashPassword } from '@/lib/hash.js';
+import createOrgToken from "@/lib/org_token";
 
-export interface User {
+export interface UserProps {
     id: number,
     user_name: string,
     email: string,
@@ -8,7 +9,7 @@ export interface User {
     source: string
 }
 
-export async function getUser(connection: any, id: number) {
+export  async function getUser(connection: any, id: number) {
     try {
         const [rows] = await connection.query(`SELECT * from users where id = ?`, [id])
         return rows;
@@ -19,9 +20,9 @@ export async function getUser(connection: any, id: number) {
 
 }
 
-async function getUserByName(connection: any, user_name: string) {
+export async function getUserByName(connection: any, user_name: string) {
     try {
-        const query = `SELECT * from users where user_name = ?`;
+        const query = `SELECT * from users where name = ?`;
         const [rows] = await connection.query(query, [user_name]);
 
         return rows[0];
@@ -30,7 +31,7 @@ async function getUserByName(connection: any, user_name: string) {
         console.error(e);
     }
 }
-async function getUserByEmail(connection: any, email: string) {
+export  async function getUserByEmail(connection: any, email: string) {
     try {
         const query = `SELECT * from users where email = ?`;
         const [rows] = await connection.query(query, [email]);
@@ -44,7 +45,7 @@ async function getUserByEmail(connection: any, email: string) {
 
 
 
-export async function createUser(connection: any, { user_name, password, email, source }: User) {
+export async function createUser(connection: any, { user_name, password, email, source }: UserProps) {
     const username = await getUserByName(connection, user_name);
     const useremail = await getUserByEmail(connection, email);
     const existing_name = username?.length > 0;
@@ -53,8 +54,9 @@ export async function createUser(connection: any, { user_name, password, email, 
 
     if (!existing_name && !existing_email) {
         try {
-            await connection.query(`INSERT into users(user_name,email,password)
+            const [rows] = await connection.query(`INSERT into users(name,email,password)
              values(?,?,?,?)`, [user_name, email, hashPassword(password), source]);
+            return rows;
         }
         catch (e) {
             console.error(e);
@@ -68,7 +70,7 @@ export async function createUser(connection: any, { user_name, password, email, 
     }
 }
 
-export async function createUserByOauth(connection: any, { user_name, password, email, source }: User) {
+export async function createUserByOauth(connection: any, { user_name, password, email, source }: UserProps) {
     const username = await getUserByName(connection, user_name);
     const useremail = await getUserByEmail(connection, email);
     const existing_name = username?.length > 0;
@@ -77,7 +79,7 @@ export async function createUserByOauth(connection: any, { user_name, password, 
 
     if (!existing_name && !existing_email) {
         try {
-            await connection.query(`INSERT into users(user_name,email,source)
+            await connection.query(`INSERT into users(name,email,source)
              values(?,?,?)`, [user_name, email, source]);
         }
         catch (e) {
@@ -90,6 +92,15 @@ export async function createUserByOauth(connection: any, { user_name, password, 
     else if (existing_email) {
         return { error: "useremail" }
     }
+}
+
+export async function createValidationToken(connection: any, user_id: number) {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 1);
+    const [rows] = await connection.query('INSERT INTO verification_tokens(user_id,token,expires_at) VALUES(?,?)'
+        , [user_id, createOrgToken(), expiresAt] //we will use createOrgToken since its doing what we want there , no problem
+    );
+    return rows;
 }
 
 export async function validateUser(connection: any, user_id: number, token: string) {

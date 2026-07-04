@@ -15,11 +15,11 @@ export async function verifyJwtToken(token: string) {
     }
 
 }
-interface payload {
+export interface JwtPayload {
     user_id: number,
     user_name: string
 }
-export async function createJwtToken(payload: payload) {
+export async function createJwtToken(payload: JwtPayload) {
 
     const creds =
     {
@@ -32,4 +32,5 @@ export async function createJwtToken(payload: payload) {
         .setProtectedHeader({ alg: "HS256" })
         .setExpirationTime("1h")
         .sign(secret);
+    return token;
 }
