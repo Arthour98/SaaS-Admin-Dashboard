@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, MouseEventHandler } from "react";
-import  Main  from "./partials/main";
+import  Main  from "../components/partials/main";
 import { useRouter} from "next/navigation";
 
 

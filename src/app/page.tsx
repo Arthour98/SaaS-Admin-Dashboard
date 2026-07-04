@@ -1,4 +1,4 @@
-import LandingPageClient from "@/components/landingPageClient";
+import LandingPageClient from "@/app/landingPageClient";
 import Image from "next/image";
 import Footer from "@/components/partials/footer";
 

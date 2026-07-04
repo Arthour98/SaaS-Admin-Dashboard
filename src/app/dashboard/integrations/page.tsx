@@ -3,6 +3,7 @@ import Header from "@/components/partials/header";
 import Main from "@/components/partials/main";
 import NavBar from "@/components/partials/navbar";
 import "@/app/globals.css";
+import IntegrationsClient from "./integrationsClient";
 
 export default  function Page({})
 {
@@ -17,7 +18,7 @@ export default  function Page({})
                         <NavBar/>
                     </div>
                     <div className="dashboard-content-wrapper">
-                        
+                        <IntegrationsClient/>
                     </div>
                 </div>
             </Main>
