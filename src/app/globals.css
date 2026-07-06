@@ -150,12 +150,14 @@ nav {
 
 .landingMain,
 .registerMain,
-.loginMain {
+.loginMain,
+.verificationMain {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 65vh;
+  width: 100%;
 }
 
 .businessCardWrapper,

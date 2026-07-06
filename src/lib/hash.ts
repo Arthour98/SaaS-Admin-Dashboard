@@ -1,12 +1,25 @@
-import crypto from "crypto";
+import bcrypt from "bcrypt";
 
+const SALT_ROUNDS = 12;
 
-const hash = crypto.createHash("sha256");
-
-export const hashPassword = (password: string ) => {
-    if (typeof password == undefined || typeof password == null) {
-        return;
+/**
+ * Hash password for storing in DB
+ */
+export const hashPassword = async (password: string) => {
+    if (!password) {
+        throw new Error("Password is required");
     }
-    hash.update(password);
-    return hash.digest('hex');
-}
+
+    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    return hash;
+};
+
+
+export const matchPass = async (password: string, hashedPassword: string) => {
+    if (!password || !hashedPassword) {
+        return false;
+    }
+
+    const isMatch = await bcrypt.compare(password, hashedPassword);
+    return isMatch;
+};

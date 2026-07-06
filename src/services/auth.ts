@@ -13,6 +13,9 @@ import { UserProps } from "@/db/queries/users";
 import { JwtPayload } from "@/lib/jwt";
 import { validate_username, validate_email, validate_password } from "@/lib/validation";
 import sendVerificationEmail from "@/lib/send-verification-email";
+import { cookies } from "next/headers";
+import { hashPassword } from "@/lib/hash";
+import { matchPass } from "@/lib/hash";
 
 
 
@@ -29,33 +32,82 @@ export const signup = async (user: UserProps) => {
     try {
         const conn = await createConnection();
         const new_user = await createUser(conn, user);
-        let token = null;
-        let validation_token = null;
-        if (new_user) {
-            token = await createJwtToken({ user_id: new_user.id, user_name: new_user.username });
-            validation_token = await createValidationToken(conn, new_user.id)
-            await sendVerificationEmail(new_user.email, new_user.user_name, validation_token.token);
-            return { token, new_user };
+
+        if (!new_user || "error" in new_user) {
+            return new_user;
         }
+        console.log("DEBUG USER ID:", new_user.id);
+        console.log("DEBUG USER ID:", new_user.user_name);
+
+        let token = await createJwtToken({ user_id: new_user.id, user_name: new_user.user_name });
+        const cookie_store = await cookies();
+        cookie_store.set("jwt-session",
+            token,
+            {
+                httpOnly: true,
+                expires: 1,
+                maxAge: 64000,
+                path: "/",
+            }
+        );      // create the jwt token and set it to cookies so we can get the user later
+
+
+        console.log("jwt_token:", token)
+
+        let validation_token = await createValidationToken(conn, new_user.id)
+        console.log("validation_token:", validation_token.token)
+        if (validation_token?.token) {
+            await sendVerificationEmail(new_user.email, new_user.user_name, validation_token?.token);
+        }
+        return { token, new_user };
+
     }
     catch (e) {
         console.error(e);
+        return { error: "Signup failed" + e };
     }
 }
 
 
-const verifyRegistration = async (user_id: number, token: string) => {
+export const verifyRegistration = async (user_id: number, token: string) => {
     try {
         const conn = await createConnection();
         const verified = await validateUser(conn, user_id, token);
-        return { verified, login };
+
+        if (verified.token !== null) {
+            return { token: verified?.token, status: verified.status }
+        }
+        else {
+            return { token: verified?.token, status: verified.status, error: verified.error }
+        }
 
     }
     catch (e) {
         console.error(e);
+        return { error: "Something went wrong" }
     }
 }
 
-export default async function login() {
+export default async function login(email: string, password: string) { //wont add UserProps there because we need different inputs 
+    const conn = await createConnection();
+    const user = await getUserByEmail(conn, email);
+
+    const isMatchedPass = matchPass(password, user.password)
+    if (user.password !== hashPassword) {
+        throw new Error("Wrong password");
+    }
+    let token = await createJwtToken({ user_id: user.id, user_name: user.user_name });
+    const cookie_store = await cookies();
+    cookie_store.set("jwt-session",
+        token,
+        {
+            httpOnly: true,
+            expires: 1,
+            maxAge: 64000,
+            path: "/",
+        }
+    );
+
+    return {user}
 
 }

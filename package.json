@@ -17,6 +17,10 @@
     "@fortawesome/free-brands-svg-icons": "^7.3.0",
     "@fortawesome/free-solid-svg-icons": "^7.3.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.10",
+    "axios": "^1.18.1",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "jose": "^6.2.3",
     "mysql2": "^3.22.5",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",

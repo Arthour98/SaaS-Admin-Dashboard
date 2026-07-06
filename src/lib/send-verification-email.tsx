@@ -1,18 +1,26 @@
 import { Resend } from "resend";
-import { EmailTemplate } from "@/components/email-templates/verification_template";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+const resend = new Resend(process.env.RESEND_KEY);
 
 export default async function sendVerificationEmail(
     email: string,
     firstName: string,
     verificationToken: string
 ) {
+
+   
+  
     const { data, error } = await resend.emails.send({
-        from: "Acme <onboarding@resend.dev>",
+        from: "C-BOARD <onboarding@resend.dev>",
         to: [email],
         subject: "Verify your email",
-        react: EmailTemplate({ firstName, verificationToken }),
+        html:`
+        <h2>Hi ${firstName}</h2>
+        <p>Your verification code:</p>
+        <h1>${verificationToken}</h1>
+        <p>This code will expire soon.</p>
+        `
     });
 
     if (error) {

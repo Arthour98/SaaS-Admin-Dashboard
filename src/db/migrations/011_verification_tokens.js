@@ -6,7 +6,7 @@ export async function up(connection) {
         token varchar(32),
         user_id int,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        exprires_at DATETIME,
+        expires_at DATETIME,
         foreign key(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
         )`);
     }

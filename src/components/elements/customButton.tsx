@@ -1,5 +1,4 @@
-
-
+"use client"
 import { useState,useEffect } from "react";
 import styles from "@/components/main.module.css";
 
@@ -11,7 +10,7 @@ element: string,
 className? :string,
 isLoading : boolean
 content: string,
-onClick? : ()=> void
+onClick? : (e: React.MouseEvent<HTMLButtonElement>)=> void 
 }
 
 const Loader = ({})=>
@@ -45,7 +44,7 @@ export default function CustomButton(
     }
     else if(element == "input")
     {
-        return(<button type="submit">
+        return(<button className={className} type="submit">
             {
                 !isLoading ?
                 content :
