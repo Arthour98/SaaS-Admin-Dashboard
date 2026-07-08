@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import SignIn from "@/components/elements/oauth-signin";
 import { useState } from "react";
 import CustomButton from "@/components/elements/customButton";
+import { useQuery } from "@/lib/use-query";
 
 export default function LoginClient({})
 {
@@ -15,9 +16,43 @@ export default function LoginClient({})
     {
         router.push('/');
     }
-
     const [isLoading,setIsLoading] = useState(false);
 
+    const [email,setEmail]= useState("");
+    const [password,setPassword]= useState("");
+
+    const submitLogin = async(e:React.FormEvent<HTMLFormElement>)=>
+    {
+        e.preventDefault();
+        setIsLoading(true);
+        const payload = 
+        {
+            email:email,
+            password:password
+        }
+        try
+        {
+            const res = await useQuery("auth/login",{method:"post",body:payload});
+
+            if(res)
+            {
+                setIsLoading(false);
+            }
+            if(res.user.verified_at == null)
+            {
+                router.push('/auth-verification');
+            }
+            else
+            {
+                router.push('/dashboard');
+            }
+        }
+        catch(e)
+        {
+            console.error(e);
+            setIsLoading(false);
+        }
+    }
 
 
     return(
@@ -29,15 +64,15 @@ export default function LoginClient({})
             cursor="pointer"
             onClick={handleBack}/>
             <h3 className="formTitle">Signup</h3>
-            <form id="loginForm">
+            <form id="loginForm" onSubmit={(e)=>submitLogin(e)}>
                 <label>
                     Email:
                 </label>
-                <input type="text" placeholder="Email" />
+                <input value={email} onChange={(e)=>setEmail(e.target.value)} type="text" placeholder="Email" />
                 <label>
                     Password:
                 </label>
-                <input type="password" placeholder="********"/>
+                <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="********"/>
                 <div className="flex w-[100%] justify-end items-end gap-3">
                     <Link href={"/register"} className="text-white underline">Not registered yet?</Link>
                     <div className="flex w-[30%] justify-center items-center gap-3">

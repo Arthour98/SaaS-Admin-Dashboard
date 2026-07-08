@@ -93,7 +93,7 @@ export default async function login(email: string, password: string) { //wont ad
     const user = await getUserByEmail(conn, email);
 
     const isMatchedPass = matchPass(password, user.password)
-    if (user.password !== hashPassword) {
+    if (!isMatchedPass) {
         throw new Error("Wrong password");
     }
     let token = await createJwtToken({ user_id: user.id, user_name: user.user_name });
@@ -108,6 +108,6 @@ export default async function login(email: string, password: string) { //wont ad
         }
     );
 
-    return {user}
+    return { user }
 
 }
