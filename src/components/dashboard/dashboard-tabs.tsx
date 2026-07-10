@@ -17,7 +17,7 @@ export default function DashBoardTabs({tabs,tab,setTab}:DashBoardTabsProps)
                 tabs?.map(t=>
                 {
                     <div className={styles.tabCell}>
-                        <p>t.name</p>
+                        <p>t</p>
                     </div>
                 }
                 )

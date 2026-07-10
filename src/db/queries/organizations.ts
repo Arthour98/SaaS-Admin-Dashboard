@@ -12,8 +12,20 @@ export interface OrganizationProps {
 
 export async function getOrganization(connection: any, user_id: number) {
     try {
-        const [rows] = await connection.query(`SELECT * from users_organizations where user_id=?`, [user_id]);
-        return rows;
+        const [rows] = await connection.query(`SELECT 
+        organizations.*,
+        COUNT(users_organizations.user_id) AS count
+        FROM organizations
+        JOIN users_organizations
+        ON organizations.id = users_organizations.organization_id
+        WHERE organizations.id = ?
+        GROUP BY organizations.id;`, [user_id]);
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const org = rows[0];
+        return org;
     }
     catch (e) {
         console.error(e);
@@ -27,7 +39,12 @@ export async function getOrganizationMembers(connection: any, organization_id: n
             RIGHT JOIN users_organizations
             ON users.id = users_organization.user_id
             WHERE users_organization.organization_id = ?`, [organization_id]);
-        return rows;
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const org = rows[0];
+        return org;
     }
     catch (e) {
         console.error(e);
@@ -56,7 +73,7 @@ export async function createOrganization(connection: any, creds: OrganizationIni
 
 export async function getOrganizations(connection: any) {
     try {
-        const orgs = await connection.query(`SELECT * from organizations`);
+        const [orgs] = await connection.query(`SELECT * from organizations`);
         return orgs;
     }
     catch (e) {

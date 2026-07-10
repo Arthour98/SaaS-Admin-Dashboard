@@ -10,10 +10,10 @@ export type InfoLayoutProps =
 type InfoProps = 
 {
     username:string,
-    organization:string,
-    organization_members: number,
+    organization:string | null,
+    organization_members: number |null,
     position:string | null ,
-    joined : string,
+    joined : string | null,
 }
 
 export default function InfoLayout(
@@ -31,10 +31,10 @@ export default function InfoLayout(
     return(
     <div className={styles.infoLayout}>
         {
-            info_keys?.map(key =>
+            info_keys?.map((key,index) =>
             {
                 return(
-                <div className={styles.infoCell}>
+                <div key={index} className={styles.infoCell}>
                     <div className={"flex-1/2"}>
                         <p>{key}</p>
                     </div>

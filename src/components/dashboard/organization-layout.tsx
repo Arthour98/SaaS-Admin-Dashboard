@@ -11,10 +11,10 @@ type organizationProps =
 
 type OrgInfoProps = 
 {
-    org_name : string,
-    created_at : string,
-    current_token : string ,
-    organizations : organizationProps[]
+    org_name : string | null,
+    created_at : string | null,
+    current_token : string | null ,
+    organizations : organizationProps[] | null
 }
 
 
@@ -110,7 +110,7 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
                 <label>Select Organization</label>
                 <select onChange={(e)=>setOrganizationId(e.target.value)}>
                     {
-                        organizations.map(org=>(
+                        organizations?.map(org=>(
                             <option key={org.id} value={org?.id}>{org?.name}</option>
                         ))
                     }

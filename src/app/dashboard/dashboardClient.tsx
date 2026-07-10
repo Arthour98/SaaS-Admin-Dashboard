@@ -22,6 +22,28 @@ const changeTab = (tab:string) =>
     setCurrentTab(tab);
 }
 
+const info =
+{
+    username:user.name,
+    organization:org_data.name,
+    organization_members:org_data.count,
+    position:org_data.position ,
+    joined : user.created_at, 
+}
+
+const org_info = 
+{
+    org_name : org_data.name,
+    created_at : org_data.created_at,
+    current_token :org_data.org_token ,
+    organizations : org_data.organizations
+}
+
+const users : any = 
+{
+    users : org_data.members
+}
+
 return(
     <div className={styles["dashboard-content"]}>
         <div className={styles.filterRow}>

@@ -111,3 +111,30 @@ export default async function login(email: string, password: string) { //wont ad
     return { user }
 
 }
+
+export const User = async () => {
+    const cookie_store = await cookies();
+    const cookie_token = cookie_store.get("jwt-session")?.value;
+    if (!cookie_token) {
+        throw new Error("Unauthorized");
+    }
+    const token = await verifyJwtToken(cookie_token);
+
+    if (!token) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const conn = await createConnection();
+        const user_id = token?.payload.user_id as number;
+        const user = await getUser(conn, user_id);
+        if (user) {
+            delete user.password;
+            console.log(user);
+            return { user: user }
+        }
+    }
+    catch (e) {
+        console.error(e);
+    }
+}

@@ -3,15 +3,13 @@ import styles from "@/components/main.module.css";
 
 export type UsersLayoutProps =
 {
-    users: [],
+    users: any[] | null,
     current_layout:boolean
 }
 
 export default function UsersLayout({users,current_layout}:UsersLayoutProps)
 {
  
-
-
     return(
         <div className={styles.usersLayout}>
             {
