@@ -17,7 +17,7 @@ const [currTab,setCurrentTab] = useState("Info") // selected tab
 
 const [searchInput,setSearchInput]= useState("")
 
-const changeTab = (tab:string) =>
+const changeTab  = (tab:string) =>
 {
     setCurrentTab(tab);
 }
@@ -47,7 +47,7 @@ const users : any =
 return(
     <div className={styles["dashboard-content"]}>
         <div className={styles.filterRow}>
-            <div className="filterCol">
+            <div className={styles.filterCol}>
                 <DashBoardTabs tabs={dashBoardTabs} tab={currTab}  setTab={changeTab} />
             </div>
             <div className={styles.searchCol}>

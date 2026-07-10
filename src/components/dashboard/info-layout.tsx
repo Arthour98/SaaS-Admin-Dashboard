@@ -34,8 +34,8 @@ export default function InfoLayout(
             info_keys?.map((key,index) =>
             {
                 return(
-                <div key={index} className={styles.infoCell}>
-                    <div className={"flex-1/2"}>
+                <div key={index}  className={styles.infoCell}>
+                    <div className={"flex-1/2 font-semibold"}>
                         <p>{key}</p>
                     </div>
                     <div className={"flex-1/2"}>

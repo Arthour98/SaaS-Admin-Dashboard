@@ -1,3 +1,4 @@
+"use client";
 import {useState,useEffect} from "react"
 import styles from "@/components/main.module.css";
 
@@ -14,12 +15,12 @@ export default function DashBoardTabs({tabs,tab,setTab}:DashBoardTabsProps)
     return(
         <>
             {
-                tabs?.map(t=>
-                {
-                    <div className={styles.tabCell}>
-                        <p>t</p>
-                    </div>
-                }
+                tabs?.map((t,index)=> 
+                    (<div key={index} onClick={()=>setTab(t)}
+                     className={tab===t? styles.tabCell.concat(" bg-cyan-400!") : styles.tabCell}>
+                        <p>{t}</p>
+                    </div>)
+                
                 )
             }
         </>

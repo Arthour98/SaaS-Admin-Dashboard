@@ -13,6 +13,7 @@ export default function SearchBar({value,setValue,className}:SearchProps)
     return(
         <input type="search"
          value={value}
+         placeholder="Search"
          onChange={(e)=>setValue(e.target.value)}
          className={className}/>
     )
