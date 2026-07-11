@@ -34,8 +34,7 @@ async function deleteMigrations(connection, ids) {
 
 async function rollback_migrations() {
     const conn = await createConnection();
-    await conn.connect();
-
+    await conn.getConnection();
     let migrations = await getBuiltMigrations(conn);
     migrations.reverse(); //reverse the migrations so they will executed without problems due to foreign key in parent 
     console.log(migrations);

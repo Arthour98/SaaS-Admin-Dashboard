@@ -37,7 +37,7 @@ async function executeMigration(connection, name) {
 
 async function run_migration() {
     const conn = await createConnection();
-    await conn.connect();
+    await conn.getConnection();
     await conn.query(`
     CREATE TABLE iF NOT EXISTS migrations(
         id int auto_increment primary key,

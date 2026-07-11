@@ -4,7 +4,7 @@ export async function up(connection) {
       id int auto_increment primary key,
       name varchar(60),
       email varchar(30),
-      password varchar(40),
+      password varchar(60),
       source enum('app','google'),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       verified_at TIMESTAMP DEFAULT NULL

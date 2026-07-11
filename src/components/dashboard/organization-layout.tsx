@@ -90,33 +90,42 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
     //case the user doesnt have organization
     
     <div className={styles.organizationLayout}>
-        !{org_info.org_name ?
+        {!org_info.org_name ?
         (<>
-        <h3>Create your Organization</h3>
-        <form onSubmit={(e)=>handleCreateOrg(e)}>
-            <div className="flex">
-                <label>Name:</label>
-                <input type="text" value={orgName}
-                 onChange={(e)=>setOrgName(e.target.value)}
-                 className="w-[50%]"/>
-                <CustomButton element="input" content="Create" isLoading={isLoading}/>
-            </div>
-        </form>
-        <h3>
-            Join organization
-        </h3>
-        <form onSubmit={(e)=>handleJoinOrg(e)}>
-            <div className="flex">
-                <label>Select Organization</label>
-                <select onChange={(e)=>setOrganizationId(e.target.value)}>
-                    {
-                        organizations?.map(org=>(
-                            <option key={org.id} value={org?.id}>{org?.name}</option>
-                        ))
-                    }
-                </select>
-            </div>
-        </form>
+        <div className={styles.orgCreation}>
+            <h3>Create your Organization</h3>
+            <form className={styles.formOrgCreation} onSubmit={(e)=>handleCreateOrg(e)}>
+                <div className="flex items-center w-[100%] gap-5">
+                    <label className="font-semibold">Name:</label>
+                    <input type="text" value={orgName}
+                    onChange={(e)=>setOrgName(e.target.value)}
+                    className={styles.createOrgInput}/>
+                </div>
+                <CustomButton
+                element="input"
+                content="Create"
+                isLoading={isLoading}
+                className={styles.createOrgButton}
+                />
+            </form>
+        </div>
+        <div className={styles.orgJoin}>
+            <h3>
+                Join organization
+            </h3>
+            <form onSubmit={(e)=>handleJoinOrg(e)}>
+                <div className="flex">
+                    <label className="font-semibold">Select Organization</label>
+                    <select onChange={(e)=>setOrganizationId(e.target.value)}>
+                        {
+                        Array.isArray(organizations) && organizations?.map(org=>(
+                                <option key={org.id} value={org?.id}>{org?.name}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
         </>)
         :
         (

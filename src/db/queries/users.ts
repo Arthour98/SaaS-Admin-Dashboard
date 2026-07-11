@@ -55,7 +55,7 @@ export async function createUser(
     const existing_name = username !== null;
     const existing_email = useremail !== null;
 
-    const hashedPassword = hashPassword(password)
+    const hashedPassword = await hashPassword(password)
 
     if (existing_name) {
         return { error: "username" };

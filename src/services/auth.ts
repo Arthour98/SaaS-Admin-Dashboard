@@ -92,7 +92,12 @@ export default async function login(email: string, password: string) { //wont ad
     const conn = await createConnection();
     const user = await getUserByEmail(conn, email);
 
-    const isMatchedPass = matchPass(password, user.password)
+    console.log("users Password:", user.password);
+    console.log("input Password:", password);
+
+
+    const isMatchedPass = await matchPass(password, user.password)
+    console.log("is Matched:", isMatchedPass)
     if (!isMatchedPass) {
         throw new Error("Wrong password");
     }
