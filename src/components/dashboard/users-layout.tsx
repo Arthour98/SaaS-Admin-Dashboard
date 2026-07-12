@@ -9,7 +9,11 @@ export type UsersLayoutProps =
 
 export default function UsersLayout({users,current_layout}:UsersLayoutProps)
 {
- 
+     if(!current_layout)
+    {
+        return null;
+    }
+    
     return(
         <div className={styles.usersLayout}>
             {

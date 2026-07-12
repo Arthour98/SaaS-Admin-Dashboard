@@ -17,7 +17,7 @@ const [currTab,setCurrentTab] = useState("Info") // selected tab
 
 const [searchInput,setSearchInput]= useState("")
 
-const changeTab  = (tab:string) =>
+const changeTab =(tab:string) =>
 {
     setCurrentTab(tab);
 }

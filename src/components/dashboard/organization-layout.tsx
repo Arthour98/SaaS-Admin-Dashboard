@@ -22,20 +22,18 @@ export type OrgLayoutProps =
 {
     current_layout : boolean ,
     org_info : OrgInfoProps,
-    user: object
+    user: any
 }
 
 export default function OrganizationLayout({current_layout,org_info,user}:OrgLayoutProps)
 {
-    if(!current_layout)
-    {
-        return null;
-    }
 
     const [isLoading,setIsLoading] = useState(false);
     const [orgName,setOrgName] = useState(""); // for creating organization
     const [organizationId,setOrganizationId] = useState<string | null >(null) //for joining organization
-    const organizations = org_info.organizations ;
+    const organizations = org_info.organizations ; // all organizations
+    const [showTokenInput,setShowTokenInput] = useState(false);  // UI input state
+    const [orgToken,setOrgToken]= useState("") //org token input value
 
     const handleCreateOrg= async(e:React.FormEvent)=>
     {
@@ -43,7 +41,8 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
         setIsLoading(true);
         const data = 
         {
-            organization_name:orgName
+            name:orgName,
+            user_id:user?.id
         }
         try
         {
@@ -69,7 +68,8 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
         setIsLoading(true);
         const data =
         {
-        id:Number(organizationId)
+        id:Number(organizationId),
+        token:orgToken
         }
         try
         {
@@ -84,6 +84,24 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
             console.error(e);
             setIsLoading(false);
         }
+    }
+
+    useEffect(()=>
+    {
+        if(organizationId!==null)
+        {
+            setShowTokenInput(true)
+        }
+        else
+        {
+            setShowTokenInput(false);
+        }
+    },[organizationId]) //trigger input visuality by selecting a organization
+
+
+    if(!current_layout)
+    {
+        return null;
     }
 
     return(
@@ -124,6 +142,15 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
                         }
                     </select>
                 </div>
+                {
+                    showTokenInput ?(
+                        <div className={styles.orgTokenSection}>
+                        <label>Token</label>
+                        <CustomButton element="input" isLoading={isLoading} content="Submit"/>
+                        </div>
+                    )
+                    :null
+                }
             </form>
         </div>
         </>)
