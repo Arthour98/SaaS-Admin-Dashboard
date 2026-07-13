@@ -11,6 +11,7 @@ className? :string,
 isLoading : boolean
 content: string,
 onClick? : (e: React.MouseEvent<HTMLButtonElement>)=> void 
+name?:string
 }
 
 const Loader = ({})=>
@@ -27,7 +28,8 @@ export default function CustomButton(
     className,
     isLoading,
     content,
-    onClick
+    onClick,
+    name
     }:ButtonProps)
 {
     if(element === "button")

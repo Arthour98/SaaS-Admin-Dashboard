@@ -2,6 +2,8 @@ import {useState,useEffect} from "react"
 import styles from "@/components/main.module.css";
 import CustomButton from "../elements/customButton";
 import { useQuery } from "@/lib/use-query";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRotateRight, faCopy } from "@fortawesome/free-solid-svg-icons";
 
 type organizationProps =
 {
@@ -11,10 +13,13 @@ type organizationProps =
 
 type OrgInfoProps = 
 {
+    organization_id:number | null,
     org_name : string | null,
     created_at : string | null,
     current_token : string | null ,
+    token_id : number,
     organizations : organizationProps[] | null
+    position: string | null
 }
 
 
@@ -34,6 +39,10 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
     const organizations = org_info.organizations ; // all organizations
     const [showTokenInput,setShowTokenInput] = useState(false);  // UI input state
     const [orgToken,setOrgToken]= useState("") //org token input value
+    const [currentToken,setCurrentToken]= useState("");
+
+    const isOwner = org_info?.position ==="owner";
+
 
     const handleCreateOrg= async(e:React.FormEvent)=>
     {
@@ -98,6 +107,61 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
         }
     },[organizationId]) //trigger input visuality by selecting a organization
 
+    useEffect(()=>
+    {
+        setCurrentToken(org_info.current_token as string)
+    },[org_info])
+
+    const handleCopy = (token:string)=>
+    {
+        navigator.clipboard.writeText(token)
+    }
+
+    const requestNewToken = async()=>
+    {
+        const data = 
+        {
+           token_id : org_info.token_id ,
+           user_id : user.id
+        }
+        try
+        {
+            const res = await useQuery("organizations/refresh-token",{method:"post",body:data});
+            const new_token = res.data.token;
+            setCurrentToken(new_token);
+        }
+        catch(e)
+        {
+            console.error(e);
+        }
+    }
+
+    const handleAction = async (e:React.FormEvent<HTMLFormElement>)=>
+    {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const action = formData.get("action");
+
+        const data =
+        {
+            organization_id:org_info?.organization_id,
+            user_id : user.user_id
+        }
+        switch (action) {
+    case "rename":
+        const renamed = await useQuery("organizations/edit",{method:"post",body:data})
+      break;
+
+    case "delete":
+      const deleted = await useQuery("organizations/delete",{method:"post",body:data});
+      break;
+
+    case "leave":
+      const left = await useQuery("organizations/leave",{method:"post",body:data});
+      break;
+  }
+    }
+
 
     if(!current_layout)
     {
@@ -156,9 +220,71 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
         </>)
         :
         (
-        <>
-        
-        </>
+            <div className={styles.orgHandler}>
+                <div className={styles.orgInfoCol}>
+                    <div className="flex gap-2">
+                        <p className="font-semibold">Organization:</p>
+                        <p>{org_info.org_name}</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <p className="font-semibold">Position : </p>
+                        <p>{org_info.position}</p>
+                    </div>
+                </div>
+                <div className={styles.orgValidationTokenCol}>
+                    <form id={styles.org_validation_token}>
+                        <label className="font-semibold">Validation token: </label>
+                        <input type="text"
+                         value={currentToken}
+                         readOnly={true}
+                         className={styles.inputToken}
+                         />
+                        <FontAwesomeIcon
+                        icon={faCopy}
+                        width={12}
+                        cursor="pointer"
+                        onClick={()=>handleCopy(currentToken)}
+                        />
+                        <FontAwesomeIcon
+                        icon={faArrowRotateRight}
+                        width={12}
+                        cursor="pointer"
+                        onClick={requestNewToken}
+                        />
+                    </form>
+                </div>
+                <form className={styles.orgActionsCol} onSubmit={handleAction}>
+                    {
+                        isOwner ? 
+                        (
+                        <div className={styles.ownerActionsCol}>
+                            <CustomButton element="input"
+                            className={styles.editButton}
+                            content="Rename"
+                            isLoading={isLoading}
+                            name="edit"/>
+                            <CustomButton
+                            element="input"
+                            className={styles.deleteButton}
+                            content="Delete"
+                            isLoading={isLoading}
+                            name="delete"
+                            />
+                        </div>
+                        ) 
+                        :
+                        (
+                            <CustomButton
+                            element="input"
+                            className={styles.deleteButton}
+                            content="Leave"
+                            isLoading={isLoading}
+                            name="leave"
+                            />
+                        )
+                    }
+                </form>
+            </div>
         )
         }
     </div>

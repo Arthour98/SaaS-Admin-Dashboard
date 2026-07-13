@@ -7,7 +7,10 @@ import {
     joinOrganization,
     refreshOrgToken,
     OrganizationInitProps,
-    OrganizationProps
+    OrganizationProps,
+    leaveOrg,
+    deleteOrg,
+    editOrg,
 } from "@/db/queries/organizations"
 
 
@@ -36,10 +39,11 @@ export const getUserOrganization = async () => {
         const user_id = user?.user.id as number;
 
         const organization = await getOrganization(conn, user_id);
+        const org_token = await getOrgToken(conn, organization.id)
         if (organization) {
             const members = await getOrganizationMembers(conn, organization.id);
             if (organization) {
-                return {organization:organization, members:members?.members }
+                return { organization: organization, members: members?.members, token: org_token }
             }
             else {
                 return null;
@@ -91,7 +95,7 @@ export const joinOrg = async (id: number, user_id: number, token: string) => {
         const conn = await createConnection();
         const org = await getOrgToken(conn, id);
 
-        const org_token = org.token;
+        const org_token = org?.token;
 
         if (token = org_token) {
             const creds: OrganizationProps =
@@ -114,3 +118,80 @@ export const joinOrg = async (id: number, user_id: number, token: string) => {
         return null;
     }
 }
+
+export const refreshOrganizationToken = async (token_id: number, user_id: number) => {
+    try {
+        const conn = await createConnection();
+        const organization = await getOrganization(conn, user_id);
+
+        const isOwner = organization.owner_id === user_id;
+
+        if (isOwner) {
+            const org_token = await refreshOrgToken(conn, token_id);
+            return { status: "success", token: org_token?.token, token_id: org_token?.token_id }
+        }
+        else {
+            return { status: "failed", error: "You dont have the rights to refresh the token" }
+        }
+
+    }
+    catch (e) {
+        console.error(e)
+        return null;
+    }
+}
+
+export const editOrganization = async (org_id: number, user_id: number, name: string) => {
+    try {
+        const conn = await createConnection();
+        const organization = await getOrganization(conn, user_id);
+
+        const isOwner = organization.owner_id === user_id;
+
+        if (isOwner) {
+            const edit = await editOrg(conn, org_id, name);
+            return { status: "success", data: edit }
+        }
+        else {
+            return { status: "failed", error: "You are not authorized to edit the organization" }
+        }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export const deleteOrganization = async (org_id: number, user_id: number) => {
+    try {
+        const conn = await createConnection();
+        const organization = await getOrganization(conn, user_id);
+
+        const isOwner = organization.owner_id === user_id;
+
+        if (isOwner) {
+            const deletedOrg = await deleteOrg(conn, org_id);
+            return { status: "success" }
+        }
+        else {
+            return { status: "failed", error: "You are not authorized to delete the organization" }
+        }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export const leaveOrganization = async (org_id: number, user_id: number) => {
+    try {
+        const conn = await createConnection();
+        const leftOrg = await leaveOrg(conn, org_id, user_id);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+

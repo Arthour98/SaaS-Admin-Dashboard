@@ -9,6 +9,10 @@ body {
 :root {
     --medium-gray: rgb(184, 184, 190);
     --light-gray: rgb(224, 224, 233);
+    --darkOrange: rgb(185, 144, 7);
+    --lightOrange: rgb(243, 188, 8);
+    --darkRed: rgb(146, 11, 11);
+    --lightRed: rgb(240, 131, 131);
 }
 
 .loader {
@@ -223,4 +227,84 @@ body {
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
+}
+
+
+
+/* 2nd layout in organizations dashboard */
+.orgHandler {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.orgInfoCol {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.orgValidationTokenCol {
+    display: flex;
+    height: fit-content;
+    padding: 2rem 1rem;
+}
+
+.orgActionsCol {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    min-height: 50%;
+    max-height: 55%;
+    padding: 1rem;
+}
+
+#org_validation_token {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    column-gap: 1rem;
+}
+
+.inputToken {
+    width: 40%;
+    padding: 0.3rem 0.2rem;
+    border-radius: 10px;
+    background-color: var(--light-gray);
+}
+
+.editButton {
+    background-color: var(--darkOrange);
+    color: white;
+    padding: 0.5rem 1rem;
+    max-width: fit-content;
+    max-height: fit-content;
+    min-width: 4rem;
+    min-height: 2rem;
+    border-radius: 12px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-out;
+}
+
+.editButton:hover {
+    transform: scale(1.1);
+    background-color: var(--lightOrange);
+}
+
+.deleteButton {
+    background-color: var(--darkRed);
+    color: white;
+    padding: 0.5rem 1rem;
+    max-width: fit-content;
+    max-height: fit-content;
+    min-width: 4rem;
+    min-height: 2rem;
+    border-radius: 12px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-out;
+}
+
+.deleteButton:hover {
+    transform: scale(1.1);
+    background-color: var(--lightRed);
 }

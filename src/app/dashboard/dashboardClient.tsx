@@ -11,7 +11,7 @@ import { OrgProps } from "./page";
 export default function DashBoardClient({user,org_data}:{user:UserProps,org_data:OrgProps})
 {
 
-const dashBoardTabs = ["Info","Organizations","Users"]  // tabs array
+const dashBoardTabs = ["Info","Organization","Users"]  // tabs array
 const [currTab,setCurrentTab] = useState("Info") // selected tab
 
 
@@ -33,10 +33,13 @@ const info =
 
 const org_info = 
 {
+    organization_id : org_data.organization_id,
     org_name : org_data.name,
     created_at : org_data.created_at,
     current_token :org_data.org_token ,
-    organizations : org_data.organizations
+    token_id : org_data.token_id,
+    organizations : org_data.organizations,
+    position : org_data.position
 }
 
 const users : any = 
@@ -56,7 +59,7 @@ return(
         </div>
         <div className={styles["content-main"]}>
             <InfoLayout current_layout={currTab === "Info"} info={info} />
-            <OrganizationLayout current_layout={currTab ==="Organizations"} user={user} org_info={org_info}/>
+            <OrganizationLayout current_layout={currTab ==="Organization"} user={user} org_info={org_info}/>
             <UsersLayout current_layout={currTab === "Users"} users={users} />
         </div>
     </div>

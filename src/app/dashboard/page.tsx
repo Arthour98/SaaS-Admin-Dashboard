@@ -17,12 +17,13 @@ export type UserProps =
 
 export type OrgProps =
 {
-    id:number | null,
+    organization_id:number | null,
     name:string | null,
     members: any[] | null,
     count : number | null,
-    created_at : string | null,
-    org_token : string | null,
+    created_at : string ,
+    org_token : string  | any,
+    token_id:number | any,
     organizations: any[] | null
     position:string | null
 }
@@ -44,7 +45,7 @@ export const getOrgData = async()=>
 {
     const organization = await getUserOrganization();
     console.log("MY ORGGG:",organization)
-    return{organization}
+    return{data:organization}
 }
 
 export const getOrgs = async()=>
@@ -72,18 +73,18 @@ export default  async function Page()
         created_at: new Date(user_res.user.created_at).toISOString()
     }
 
-const org = org_data_res.organization;
-
+const org = org_data_res.data;
 
 const org_data: OrgProps | any  =
     org
         ? {
-              id: org.organization.id,
+              organization_id: org.organization.id,
               name: org.organization.name,
               members: org.organization.members,
               count: org.organization.count,
               created_at: new Date(org.organization.created_at).toISOString(),
-              org_token: org.organization.org_token,
+              org_token: org?.token?.token,
+              token_id : org?.token?.token_id,
               organizations: orgs.organizations,
               position:org.organization.position
           }

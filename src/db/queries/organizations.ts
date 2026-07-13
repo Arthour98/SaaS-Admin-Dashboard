@@ -79,6 +79,42 @@ export async function createOrganization(conn: any, creds: OrganizationInitProps
     }
 }
 
+export async function editOrg(connection: any, org_id: number, name: string) {
+    try {
+        const [rows] = await connection.query(`UPDATE organizations 
+        SET name = ? WHERE id = ?  `, [name, org_id]);
+        return { organization: rows[0] }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export async function deleteOrg(connection: any, org_id: number) {
+    try {
+        const [rows] = await connection.query(`DELETE from organizations WHERE id = ?  `, [org_id]);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export async function leaveOrg(connection: any, org_id: number, user_id: number) {
+    try {
+        const [rows] = await connection.query(`DELETE from users_organizations WHERE user_id = ? AND
+        organization_id = ?`, [user_id, org_id]);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+
 export async function getOrganizations(connection: any) {
     try {
         const [orgs] = await connection.query(`SELECT * from organizations`);
@@ -108,7 +144,7 @@ export async function getOrgToken(connection: any, organization_id: number) {
         const [rows] = await connection.query(`SELECT * from org_validation_token WHERE organization_id = ?`,
             [organization_id]
         );
-        return rows[0];
+        return { token: rows[0].token, token_id: rows[0].id }
     }
     catch (e) {
         console.error(e);
@@ -118,10 +154,13 @@ export async function getOrgToken(connection: any, organization_id: number) {
 
 export async function refreshOrgToken(connection: any, token_id: number) {
     try {
-        await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [createOrgToken(), token_id]);
+        const new_token = createOrgToken()
+        await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [new_token, token_id]);
+        return { token: new_token, token_id: token_id }
     }
     catch (e) {
         console.error(e);
+        return null;
     }
 }
 
