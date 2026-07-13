@@ -26,8 +26,6 @@ import { cookies } from "next/headers";
     throw new Error("Unauthorized");
     }
     const user_id = user.payload.user_id;
-
-    console.log("userIDDDDDDDDDD:",user_id)
     const result = await verifyRegistration(Number(user_id), token);
 
 if (result.status === "success") {

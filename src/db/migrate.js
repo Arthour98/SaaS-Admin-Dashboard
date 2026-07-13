@@ -7,7 +7,6 @@ const currFile = fileURLToPath(import.meta.url);
 const currPath = path.dirname(currFile);
 
 async function getMigrationsFiles() {
-    console.log(currPath);
     let files = await fs.readdir(currPath + '/migrations');
     files.sort();
     return files;
@@ -24,7 +23,6 @@ async function declareMigration(connection, name) {
 
 async function executeMigration(connection, name) {
     const migration_path = path.resolve(currPath, 'migrations', name);
-    console.log(migration_path);
 
     const migration = await import(`file://${migration_path}`);
 

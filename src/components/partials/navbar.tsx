@@ -43,7 +43,7 @@ export default function NavBar({}){
             <div className="dropdown-settings">
                 <NavLink src="/dashboard/settings/account" label="Account" isActive={path === "/dashboard/settings/account"}/>
                 <NavLink src="/dashboard/settings/billing" label="Billing" isActive={path === "/dashboard/settings/billing"}/>
-                <NavLink src="/dashboard/settings/sign-out" label="Sign Out"/>
+                <NavLink src="/api/auth/logout" label="Sign Out"/>
             </div>
         </div>
     </div>

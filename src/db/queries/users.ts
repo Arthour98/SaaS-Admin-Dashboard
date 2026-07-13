@@ -140,7 +140,6 @@ export async function validateUser(connection: any, user_id: number, token: stri
             SET verified_at = CURRENT_TIMESTAMP
             WHERE id = ? AND verified_at IS NULL`,
                 [user_id]);
-            console.log(token_verification);
             return { token: token, status: "success" };
         }
         else {

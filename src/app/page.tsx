@@ -1,8 +1,21 @@
 import LandingPageClient from "@/app/landingPageClient";
 import Image from "next/image";
 import Footer from "@/components/partials/footer";
+import { User } from "@/services/auth";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+
+
+export default async function Page() {
+  const auth = await User();
+  
+
+  if(auth?.user)
+  {
+    redirect('/dashboard',"replace");
+  }
+
+
   return (<>
   <header className="landingHeader">
     <div className="imageWrapper">
