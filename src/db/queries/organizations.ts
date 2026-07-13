@@ -16,10 +16,13 @@ export async function getOrganization(connection: any, user_id: number) {
     try {
         const [rows] = await connection.query(`SELECT 
         organizations.*,
-        COUNT(users_organizations.user_id) AS count
+        COUNT(users_organizations.user_id) AS count,
+        roles.position,roles.permissions
         FROM organizations
         JOIN users_organizations
         ON organizations.id = users_organizations.organization_id
+        JOIN roles
+        ON users_organizations.user_id = roles.user_id
         WHERE users_organizations.user_id = ?
         GROUP BY organizations.id;`, [user_id, user_id]);
         if (!rows || rows.length === 0) {
@@ -65,6 +68,8 @@ export async function createOrganization(conn: any, creds: OrganizationInitProps
             values(?,?)`, [orgId, creds.user_id]);
         await connection.query(`INSERT INTO org_validation_token(organization_id,token)
             values(?,?)`, [orgId, createOrgToken()]);
+        await connection.query(`INSERT INTO roles(user_id,organization_id,position)
+            VALUES(?,?,?)`, [creds.user_id, orgId, "admin"]);
         await connection.commit();
 
         return { success: true };
@@ -144,7 +149,7 @@ export async function getOrgToken(connection: any, organization_id: number) {
         const [rows] = await connection.query(`SELECT * from org_validation_token WHERE organization_id = ?`,
             [organization_id]
         );
-        return { token: rows[0].token, token_id: rows[0].id }
+        return { token: rows[0]?.token, token_id: rows[0]?.id }
     }
     catch (e) {
         console.error(e);

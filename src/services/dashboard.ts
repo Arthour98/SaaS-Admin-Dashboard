@@ -39,7 +39,7 @@ export const getUserOrganization = async () => {
         const user_id = user?.user.id as number;
 
         const organization = await getOrganization(conn, user_id);
-        const org_token = await getOrgToken(conn, organization.id)
+        const org_token = await getOrgToken(conn, organization?.id)
         if (organization) {
             const members = await getOrganizationMembers(conn, organization.id);
             if (organization) {

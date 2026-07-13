@@ -34,14 +34,15 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
 {
 
     const [isLoading,setIsLoading] = useState(false);
-    const [orgName,setOrgName] = useState(""); // for creating organization
-    const [organizationId,setOrganizationId] = useState<string | null >(null) //for joining organization
+    const [orgName,setOrgName] = useState(""); // input for creating organization
+    const [organizationId,setOrganizationId] = useState<string | null >(null) // input for joining organization
     const organizations = org_info.organizations ; // all organizations
     const [showTokenInput,setShowTokenInput] = useState(false);  // UI input state
     const [orgToken,setOrgToken]= useState("") //org token input value
-    const [currentToken,setCurrentToken]= useState("");
+    const [currentToken,setCurrentToken]= useState(""); // existing token for sending to others
+    const [hasOrganization,setHasOrganization]= useState(false);
 
-    const isOwner = org_info?.position ==="owner";
+    const isOwner = org_info?.position ==="admin";
 
 
     const handleCreateOrg= async(e:React.FormEvent)=>
@@ -59,6 +60,7 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
             if(res.organization.success)
             {
                 setIsLoading(false)
+                setHasOrganization(true);
             }
             else
             {
@@ -86,6 +88,7 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
             if(res.data.success)
             {
                 setIsLoading(false)
+                setHasOrganization(true);
             }
         }
         catch(e)
@@ -109,7 +112,11 @@ export default function OrganizationLayout({current_layout,org_info,user}:OrgLay
 
     useEffect(()=>
     {
-        setCurrentToken(org_info.current_token as string)
+        if(org_info?.org_name)
+        {
+            setHasOrganization(true);
+            setCurrentToken(org_info.current_token as string)
+        }
     },[org_info])
 
     const handleCopy = (token:string)=>

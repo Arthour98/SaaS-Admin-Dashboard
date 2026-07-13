@@ -25,16 +25,16 @@ async function executeRollBack(connection, name) {
 
 async function deleteMigrations(connection, ids) {
     try {
-        connection.query(`DELETE from migrations where id in(${ids.join(',')})`)
+        await connection.query(`DELETE from migrations where id in(${ids.join(',')})`)
     }
     catch (e) {
         console.error(e);
     }
+
 }
 
 async function rollback_migrations() {
     const conn = await createConnection();
-    await conn.getConnection();
     let migrations = await getBuiltMigrations(conn);
     migrations.reverse(); //reverse the migrations so they will executed without problems due to foreign key in parent 
     console.log(migrations);

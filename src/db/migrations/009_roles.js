@@ -3,10 +3,9 @@
 export async function up(connection) {
     try {
         await connection.query(`CREATE table roles(
-        id int primary key not null auto_increment,
-        user_id int,
+        user_id int primary key ,
         organization_id int , 
-        role enum('admin','team_leader','team_member'),
+        position enum('admin','team_leader','team_member'),
         permissions JSON,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
