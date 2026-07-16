@@ -9,19 +9,19 @@ export interface OrganizationInitProps {
 export interface OrganizationProps {
     id: number,
     user_id: number,
-    token: string
+    token: string,
+    token_id?: number
 } //interface for already existing organizations
 
 export async function getOrganization(connection: any, user_id: number) {
     try {
         const [rows] = await connection.query(`SELECT 
         organizations.*,
-        COUNT(users_organizations.user_id) AS count,
         roles.position,roles.permissions
         FROM organizations
         JOIN users_organizations
         ON organizations.id = users_organizations.organization_id
-        JOIN roles
+        LEFT JOIN roles
         ON users_organizations.user_id = roles.user_id
         WHERE users_organizations.user_id = ?
         GROUP BY organizations.id;`, [user_id, user_id]);
@@ -96,33 +96,52 @@ export async function editOrg(connection: any, org_id: number, name: string) {
     }
 }
 
-export async function deleteOrg(connection: any, org_id: number) {
+export async function deleteOrg(conn: any, org_id: number) {
+    const connection = await conn.getConnection();
     try {
-        const [rows] = await connection.query(`DELETE from organizations WHERE id = ?  `, [org_id]);
+        await connection.beginTransaction();
+        await connection.query(`DELETE from organizations WHERE id = ?  `, [org_id]);
+        await connection.query('DELETE from roles WHERE organization_id = ?', [org_id]);
+        await connection.commit();
         return { status: "success" }
     }
     catch (e) {
         console.error(e);
+        await connection.rollback();
         return null;
+    }
+    finally {
+        await connection.release();
     }
 }
 
-export async function leaveOrg(connection: any, org_id: number, user_id: number) {
+export async function leaveOrg(conn: any, org_id: number, user_id: number) {
+    const connection = await conn.getConnection();
     try {
-        const [rows] = await connection.query(`DELETE from users_organizations WHERE user_id = ? AND
+        await connection.beginTransaction();
+        await connection.query(`DELETE from users_organizations WHERE user_id = ? AND
         organization_id = ?`, [user_id, org_id]);
+        await connection.query(`DELETE from roles where user_id = ?`, [user_id]);
+        await connection.commit();
         return { status: "success" }
     }
     catch (e) {
         console.error(e);
+        await connection.rollback();
         return null;
+    }
+    finally {
+        await connection.release();
     }
 }
 
 
 export async function getOrganizations(connection: any) {
     try {
-        const [orgs] = await connection.query(`SELECT * from organizations`);
+        const [orgs] = await connection.query(`SELECT organizations.*,org_validation_token.id as token_id
+            FROM organizations
+            LEFT JOIN org_validation_token
+            on organizations.id = org_validation_token.organization_id`);
         return { organizations: orgs };
     }
     catch (e) {
@@ -131,16 +150,26 @@ export async function getOrganizations(connection: any) {
 }
 
 
-export async function joinOrganization(connection: any, creds: OrganizationProps) {
+export async function joinOrganization(conn: any, creds: OrganizationProps) {
+    const connection = await conn.getConnection();
     try {
+        const new_token = createOrgToken();
+        await connection.beginTransaction();
         await connection.query(`INSERT into users_organizations(organization_id,user_id)
-            values(?,?)`, [creds.id, creds.user_id])
-
+            values(?,?)`, [creds.id, creds.user_id]);
+        await connection.query(`INSERT into roles(user_id,organization_id,position)
+            values(?,?,?)`, [creds.user_id, creds.id, "team_member"]);
+        await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [new_token, creds?.token_id]);
+        await connection.commit();
         return { success: true }
     }
     catch (e) {
         console.error(e);
+        await connection.rollback();
         return { success: false }
+    }
+    finally {
+        await connection.release();
     }
 }
 

@@ -226,7 +226,9 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     row-gap: 1rem;
+    padding: 1rem 0;
 }
 
 
@@ -247,17 +249,28 @@ body {
 
 .orgValidationTokenCol {
     display: flex;
-    height: fit-content;
+    align-items: center;
+    min-height: 50%;
+    max-height: 55%;
     padding: 2rem 1rem;
+
 }
 
 .orgActionsCol {
     display: flex;
     justify-content: end;
     align-items: end;
-    min-height: 50%;
-    max-height: 55%;
+    min-height: 30%;
+    max-height: 33%;
     padding: 1rem;
+}
+
+.ownerActionsCol {
+    display: flex;
+    justify-content: end;
+    width: 30%;
+    height: fit-content;
+    gap: 1rem;
 }
 
 #org_validation_token {

@@ -90,27 +90,32 @@ export const createOrg = async (name: string, user_id: number) => {
     }
 }
 
-export const joinOrg = async (id: number, user_id: number, token: string) => {
+export const joinOrg = async (id: number, user_id: number, token_id: number, token: string) => {
     try {
         const conn = await createConnection();
         const org = await getOrgToken(conn, id);
 
         const org_token = org?.token;
 
-        if (token = org_token) {
+        if (token === org_token) {
             const creds: OrganizationProps =
             {
                 id: id,
                 user_id: user_id,
-                token: token
+                token: token,
+                token_id: token_id
             }
             const join = await joinOrganization(conn, creds);
             if (join.success) {
+                // await refreshOrgToken(conn, token_id);
                 return { status: "success" }
             }
             else {
                 return { status: "failed" }
             }
+        }
+        else {
+            console.log("IDIII NAXYH")
         }
     }
     catch (e) {
@@ -119,14 +124,14 @@ export const joinOrg = async (id: number, user_id: number, token: string) => {
     }
 }
 
-export const refreshOrganizationToken = async (token_id: number, user_id: number) => {
+export const refreshOrganizationToken = async (token_id: number, user_id: number, skipPermission: boolean) => {
     try {
         const conn = await createConnection();
         const organization = await getOrganization(conn, user_id);
 
         const isOwner = organization.owner_id === user_id;
 
-        if (isOwner) {
+        if (isOwner || skipPermission) {
             const org_token = await refreshOrgToken(conn, token_id);
             return { status: "success", token: org_token?.token, token_id: org_token?.token_id }
         }
@@ -186,7 +191,7 @@ export const deleteOrganization = async (org_id: number, user_id: number) => {
 export const leaveOrganization = async (org_id: number, user_id: number) => {
     try {
         const conn = await createConnection();
-        const leftOrg = await leaveOrg(conn, org_id, user_id);
+        await leaveOrg(conn, org_id, user_id);
         return { status: "success" }
     }
     catch (e) {

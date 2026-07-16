@@ -14,6 +14,6 @@ export async function PUT(request: Request) {
     }
     catch (e) {
         console.error(e);
-        return Response.json({ status: "error", error: e });
+        return Response.json({ data: { status: "error", error: e } });
     }
 }

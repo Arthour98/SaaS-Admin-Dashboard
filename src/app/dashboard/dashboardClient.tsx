@@ -1,5 +1,5 @@
 'use client'
-import {useEffect,useState} from "react";
+import {useCallback, useEffect,useState} from "react";
 import styles from "@/components/main.module.css";
 import InfoLayout from "@/components/dashboard/info-layout";
 import OrganizationLayout from "@/components/dashboard/organization-layout";
@@ -8,9 +8,10 @@ import DashBoardTabs from "@/components/dashboard/dashboard-tabs";
 import SearchBar from "@/components/elements/search-bar";
 import { UserProps } from "./page";
 import { OrgProps } from "./page";
+import { useRouter } from "next/navigation";
 export default function DashBoardClient({user,org_data}:{user:UserProps,org_data:OrgProps})
 {
-
+const router = useRouter();
 const dashBoardTabs = ["Info","Organization","Users"]  // tabs array
 const [currTab,setCurrentTab] = useState("Info") // selected tab
 
@@ -42,10 +43,23 @@ const org_info =
     position : org_data.position
 }
 
+useEffect(()=>
+{
+    console.log("ORG_INFOO:",org_info)
+},[])
+
 const users : any = 
 {
     users : org_data.members
 }
+
+const triggerRefresh = useCallback((data:string)=>
+{
+    if(data="success")
+    {
+        router.refresh();
+    }
+},[])
 
 return(
     <div className={styles["dashboard-content"]}>
@@ -59,7 +73,7 @@ return(
         </div>
         <div className={styles["content-main"]}>
             <InfoLayout current_layout={currTab === "Info"} info={info} />
-            <OrganizationLayout current_layout={currTab ==="Organization"} user={user} org_info={org_info}/>
+            <OrganizationLayout current_layout={currTab ==="Organization"} triggerRefresh={triggerRefresh} user={user} org_info={org_info}/>
             <UsersLayout current_layout={currTab === "Users"} users={users} />
         </div>
     </div>

@@ -52,7 +52,7 @@ export const getOrgs = async()=>
 {
     const organizations = await getAllOrganizations();
     console.log("ORGSSS:",organizations)
-    return {organizations}
+    return {data:organizations}
 }
 
 export default  async function Page()
@@ -80,16 +80,16 @@ const org_data: OrgProps | any  =
         ? {
               organization_id: org.organization.id,
               name: org.organization.name,
-              members: org.organization.members,
-              count: org.organization.count,
+              members: org.members,
+              count: org.members?.length,
               created_at: new Date(org.organization.created_at).toISOString(),
               org_token: org?.token?.token,
               token_id : org?.token?.token_id,
-              organizations: orgs.organizations,
+              organizations: orgs.data.organizations,
               position:org.organization.position
           }
         : {
-            organizations:orgs.organizations,
+            organizations:orgs.data.organizations,
         };
 
 

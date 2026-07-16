@@ -20,8 +20,8 @@ import { redirect } from "next/navigation";
 
 
 export const signup = async (user: UserProps) => {
-    if (!validate_username(user.user_name, 10)) {
-        return { error: "Username must be 10 or more characters" }
+    if (!validate_username(user.user_name, 6)) {
+        return { error: "Username must be 6 or more characters" }
     }
     if (!validate_password(user.password, 12)) {
         return { error: "Password must be 12 or more characters" }

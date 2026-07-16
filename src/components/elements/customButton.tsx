@@ -35,7 +35,7 @@ export default function CustomButton(
     if(element === "button")
     {
         return(
-            <button className={className}>
+            <button className={className} name={name}>
                 {
                 !isLoading ?
                 content :
@@ -46,7 +46,7 @@ export default function CustomButton(
     }
     else if(element == "input")
     {
-        return(<button className={className} type="submit">
+        return(<button className={className} type="submit" name={name}>
             {
                 !isLoading ?
                 content :
