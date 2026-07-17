@@ -8,7 +8,7 @@ export interface ButtonProps
 {
 element: string,
 className? :string,
-isLoading : boolean
+isLoading? : boolean
 content: string,
 onClick? : (e: React.MouseEvent<HTMLButtonElement>)=> void 
 name?:string
@@ -35,7 +35,11 @@ export default function CustomButton(
     if(element === "button")
     {
         return(
-            <button className={className} name={name}>
+            <button 
+            className={className}
+            name={name}
+            onClick={onClick}
+            >
                 {
                 !isLoading ?
                 content :
@@ -46,7 +50,11 @@ export default function CustomButton(
     }
     else if(element == "input")
     {
-        return(<button className={className} type="submit" name={name}>
+        return(<button 
+        className={className} 
+        type="submit"
+        name={name}
+        onClick={onClick}>
             {
                 !isLoading ?
                 content :

@@ -7,9 +7,9 @@ export async function PUT(request: Request) {
         const user_id = payload.user_id;
         const name = payload.name;
 
-        const deleted = await editOrganization(org_id, user_id, name);
-        if (deleted?.status == "success") {
-            return Response.json({ data: deleted.data, status: deleted?.status })
+        const edit= await editOrganization(org_id, user_id, name);
+        if (edit?.status == "success") {
+            return Response.json({ data: edit.data, status: edit?.status })
         }
     }
     catch (e) {

@@ -53,6 +53,8 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
     const [currentToken,setCurrentToken]= useState(""); // existing token for sending to others
     const [hasOrganization,setHasOrganization]= useState(false);
 
+    const [openEdit,setOpenEdit] = useState(false);
+
     const isOwner = org_info?.position ==="admin";
 
 
@@ -175,29 +177,14 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
         }
         switch (action) {
     case "edit":
-        try
-        {
-            setIsLoadingEdit(true);
-            const renamed = await useQuery("organizations/edit",{method:"put",body:data})
-            if(renamed.data.status="success")
-            {
-                triggerRefresh(renamed.data.status);
-                setHasOrganization(false);
-                setIsLoadingEdit(false);
-            }
-        }
-        catch(e)
-        {
-            console.error("[ERROR]->",e);
-            setIsLoadingEdit(false);
-        }
+            setOpenEdit(true);
         break;
     case "delete":
         try
         {
             setIsLoadingDelete(true);
             const deleted = await useQuery("organizations/delete",{method:"delete",body:data});
-            if(deleted.data.status="success")
+            if(deleted.data.status==="success")
             {
                 triggerRefresh(deleted.data.status);
                 setHasOrganization(false);
@@ -238,6 +225,41 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
         setOrganizations(orgs);
     }
 }, [org_info]);
+
+    const editOrg = async(e:React.FormEvent<HTMLFormElement>)=>
+    {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get("editOrg");
+        const data = 
+        {
+           organization_id : org_info.organization_id ,
+           user_id : user.id,
+           name :   name
+        }
+        try
+        {
+            setIsLoadingEdit(true);
+            const renamed = await useQuery("organizations/edit",{method:"put",body:data})
+            if(renamed.data.status="success")
+            {
+                triggerRefresh(renamed.data.status);
+                setOpenEdit(false);
+                setIsLoadingEdit(false);
+            }
+        }
+        catch(e)
+        {
+            console.error("[ERROR]->",e);
+            setIsLoadingEdit(false);
+        }
+    }
+
+    const cancelEdit = (e:React.MouseEvent)=>
+    {
+        e.preventDefault();
+        setOpenEdit(false);
+    }
 
 const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
 {
@@ -328,10 +350,32 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
         (
             <div className={styles.orgHandler}>
                 <div className={styles.orgInfoCol}>
-                    <div className="flex gap-2">
-                        <p className="font-semibold">Organization:</p>
-                        <p>{org_info.org_name}</p>
-                    </div>
+                        {
+                            openEdit ?
+                            (
+                                <form onSubmit={editOrg} className={styles.editOrgForm} >
+                                    <label>Organization:</label>
+                                    <input type="text" name="editOrg" className={styles.generalInput} />
+                                    <CustomButton element="input"
+                                    className={styles.submitButton}
+                                    content="Save"
+                                    isLoading={isLoadingEdit}
+                                    name="edit"/>
+                                    <CustomButton element="button"
+                                    className={styles.deleteButton}
+                                    content="Cancel"
+                                    onClick={(e)=>cancelEdit(e)}
+                                    />
+                                </form>
+                            )
+                            :
+                            (
+                            <div className="flex gap-2">
+                                <p className="font-semibold">Organization:</p>
+                                <p>{org_info.org_name}</p>
+                            </div>
+                            )
+                        }
                     <div className="flex gap-2">
                         <p className="font-semibold">Position : </p>
                         <p>{org_info.position}</p>
@@ -367,7 +411,6 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                             <CustomButton element="input"
                             className={styles.editButton}
                             content="Rename"
-                            isLoading={isLoadingEdit}
                             name="edit"/>
                             <CustomButton
                             element="input"

@@ -241,10 +241,17 @@ body {
     flex-direction: column;
 }
 
+.editOrgForm {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+}
+
 .orgInfoCol {
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
+    padding-top: 0.2rem;
 }
 
 .orgValidationTokenCol {
@@ -281,11 +288,38 @@ body {
     column-gap: 1rem;
 }
 
+/* utilities */
+
 .inputToken {
     width: 40%;
     padding: 0.3rem 0.2rem;
     border-radius: 10px;
     background-color: var(--light-gray);
+}
+
+
+.generalInput {
+    width: 50%;
+    padding: 0.3rem 0.2rem;
+    border-radius: 7px;
+    background-color: var(--light-gray);
+}
+
+.submitButton {
+    background-color: var(--darkgreen);
+    color: white;
+    padding: 0.5rem 1rem;
+    max-width: fit-content;
+    max-height: fit-content;
+    min-width: 4rem;
+    min-height: 2rem;
+    border-radius: 12px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-out;
+}
+
+.submitButton:hover {
+    transform: scale(1.1);
+    background-color: var(--lightOrange);
 }
 
 .editButton {
@@ -315,9 +349,12 @@ body {
     min-height: 2rem;
     border-radius: 12px;
     transition: background-color 0.3s ease-in-out, transform 0.3s ease-out;
+    z-index: 500;
 }
 
 .deleteButton:hover {
     transform: scale(1.1);
     background-color: var(--lightRed);
 }
+
+/*  */
