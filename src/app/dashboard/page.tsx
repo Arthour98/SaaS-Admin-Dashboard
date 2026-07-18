@@ -17,6 +17,7 @@ export type UserProps =
 
 export type OrgProps =
 {
+    owner_id : number,
     organization_id:number | null,
     name:string | null,
     members: any[] | null,
@@ -24,8 +25,8 @@ export type OrgProps =
     created_at : string ,
     org_token : string  | any,
     token_id:number | any,
-    organizations: any[] | null
-    position:string | null
+    organizations: any[] | null,
+    position:string | null,
 }
 
 export const getUser = async()=>
@@ -86,7 +87,8 @@ const org_data: OrgProps | any  =
               org_token: org?.token?.token,
               token_id : org?.token?.token_id,
               organizations: orgs.data.organizations,
-              position:org.organization.position
+              position:org.organization.position,
+              owner_id : org.organization.owner_id
           }
         : {
             organizations:orgs.data.organizations,

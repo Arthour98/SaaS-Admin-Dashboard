@@ -40,7 +40,8 @@ const org_info =
     current_token :org_data.org_token ,
     token_id : org_data.token_id,
     organizations : org_data.organizations,
-    position : org_data.position
+    position : org_data.position,
+    owner_id:org_data.owner_id
 }
 
 useEffect(()=>
@@ -52,6 +53,11 @@ const users : any =
 {
     users : org_data.members
 }
+
+useEffect(()=>
+{
+    console.log("users->",users)
+},[users]);
 
 const triggerRefresh = useCallback((data:string)=>
 {
@@ -74,7 +80,7 @@ return(
         <div className={styles["content-main"]}>
             <InfoLayout current_layout={currTab === "Info"} info={info} />
             <OrganizationLayout current_layout={currTab ==="Organization"} triggerRefresh={triggerRefresh} user={user} org_info={org_info}/>
-            <UsersLayout current_layout={currTab === "Users"} users={users} />
+            <UsersLayout current_layout={currTab === "Users"} users={users} isOwner={org_info.owner_id ===user.id} currUser={user} />
         </div>
     </div>
 )

@@ -39,10 +39,14 @@ export async function getOrganization(connection: any, user_id: number) {
 
 export async function getOrganizationMembers(connection: any, organization_id: number) {
     try {
-        const [rows] = await connection.query(`SELECT users.id, users.name ,users_organizations.organization_id
+        const [rows] = await connection.query(`SELECT users.id, users.name ,users_organizations.organization_id,
+            users_organizations.created_at as joined_at,
+            roles.position
             FROM users 
             RIGHT JOIN users_organizations
             ON users.id = users_organizations.user_id
+            LEFT JOIN roles 
+            ON roles.user_id = users.id
             WHERE users_organizations.organization_id = ?`, [organization_id]);
         if (!rows || rows.length === 0) {
             return null;

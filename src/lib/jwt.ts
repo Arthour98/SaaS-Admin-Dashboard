@@ -35,7 +35,3 @@ export async function createJwtToken(payload: JwtPayload) {
     return token;
 }
 
-export async function destroyJwtToken()
-{
-
-}

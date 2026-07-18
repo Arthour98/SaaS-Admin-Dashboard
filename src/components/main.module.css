@@ -86,7 +86,7 @@ body {
 .tabCell {
     width: fit-content;
     height: fit-content;
-    padding: 0.2rem;
+    padding: 0.2rem 0.5rem;
     background-color: var(--light-gray);
     color: white;
     border-radius: 7px;
@@ -358,3 +358,77 @@ body {
 }
 
 /*  */
+
+/* users layout styles */
+
+.userRow {
+    display: flex;
+}
+
+.tableHeader {
+    display: flex;
+    border: 1px solid black;
+    border-radius: 7px;
+}
+
+.tableHeader h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.Tname {
+    flex: 0.2;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.Tpos {
+    flex: 0.2;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+
+}
+
+.Tdate {
+    flex: 0.3;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.Tactions {
+    flex: 0.3;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.userNameCol {
+    flex: 0.2;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.userPositionCol {
+    flex: 0.2;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.userJoinDateCol {
+    flex: 0.3;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.userActionCol {
+    flex: 0.3;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
