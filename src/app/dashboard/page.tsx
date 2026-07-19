@@ -12,7 +12,8 @@ export type UserProps =
 {
     id:number,
     name:string,
-    created_at:string
+    created_at:string,
+    permissions: string[]
 }
 
 export type OrgProps =
@@ -67,14 +68,16 @@ export default  async function Page()
         redirect("/");
     }
 
-    const user:UserProps =
+
+const org = org_data_res.data;
+
+const user:UserProps =
     {
         id:user_res.user.id,
         name:user_res.user.name,
-        created_at: new Date(user_res.user.created_at).toISOString()
+        created_at: new Date(user_res.user.created_at).toISOString(),
+        permissions:org?.organization.permissions
     }
-
-const org = org_data_res.data;
 
 const org_data: OrgProps | any  =
     org
@@ -93,8 +96,6 @@ const org_data: OrgProps | any  =
         : {
             organizations:orgs.data.organizations,
         };
-
-
 
     return(<>
         <Header/>

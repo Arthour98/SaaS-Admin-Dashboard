@@ -265,7 +265,6 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
 {
     if(Number(e.target.value)>0)
     {
-    
     const orgId = Number(e.target.value);
     const org = organizations.find((o: any) => o.id === orgId);
     setOrganizationId(orgId);

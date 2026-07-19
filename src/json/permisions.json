@@ -1,0 +1,34 @@
+{
+    "permissions": [
+        "delete_users",
+        "delete_organization",
+        "assign_permissions",
+        "assign_role",
+        "edit_organization",
+        "edit_role",
+        "refresh_org_token",
+        "run_integration",
+        "create_ticket",
+        "view_logs"
+    ],
+    "admin_permissions": [
+        "delete_users",
+        "delete_organization",
+        "assign_permissions",
+        "assign_role",
+        "edit_organization",
+        "edit_role",
+        "refresh_org_token",
+        "run_integration",
+        "create_ticket",
+        "view_logs"
+    ],
+    "team_leader": [
+        "delete_users",
+        "run_integration",
+        "assign_permissions",
+        "view_logs",
+        "create_ticket"
+    ],
+    "team_member": []
+}

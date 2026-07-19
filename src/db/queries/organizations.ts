@@ -1,6 +1,7 @@
 import createOrgToken from "@/lib/org_token";
 import { createConnection } from "../connection";
 
+
 export interface OrganizationInitProps {
     name: string,
     user_id: number
@@ -41,7 +42,7 @@ export async function getOrganizationMembers(connection: any, organization_id: n
     try {
         const [rows] = await connection.query(`SELECT users.id, users.name ,users_organizations.organization_id,
             users_organizations.created_at as joined_at,
-            roles.position
+            roles.position,roles.permissions
             FROM users 
             RIGHT JOIN users_organizations
             ON users.id = users_organizations.user_id
@@ -63,6 +64,7 @@ export async function getOrganizationMembers(connection: any, organization_id: n
 
 export async function createOrganization(conn: any, creds: OrganizationInitProps) {
     const connection = await conn.getConnection();
+    const admin_permissions = (await import("@/json/permisions.json")).admin_permissions;
     try {
         await connection.beginTransaction();
         const [org] = await connection.query(`INSERT into organizations(name,owner_id)
@@ -72,8 +74,8 @@ export async function createOrganization(conn: any, creds: OrganizationInitProps
             values(?,?)`, [orgId, creds.user_id]);
         await connection.query(`INSERT INTO org_validation_token(organization_id,token)
             values(?,?)`, [orgId, createOrgToken()]);
-        await connection.query(`INSERT INTO roles(user_id,organization_id,position)
-            VALUES(?,?,?)`, [creds.user_id, orgId, "admin"]);
+        await connection.query(`INSERT INTO roles(user_id,organization_id,position,permissions)
+            VALUES(?,?,?,?)`, [creds.user_id, orgId, "admin", JSON.stringify(admin_permissions)]);
         await connection.commit();
 
         return { success: true };
@@ -156,13 +158,14 @@ export async function getOrganizations(connection: any) {
 
 export async function joinOrganization(conn: any, creds: OrganizationProps) {
     const connection = await conn.getConnection();
+    const member_permissions = (await import("@/json/permisions.json")).team_member
     try {
         const new_token = createOrgToken();
         await connection.beginTransaction();
         await connection.query(`INSERT into users_organizations(organization_id,user_id)
             values(?,?)`, [creds.id, creds.user_id]);
-        await connection.query(`INSERT into roles(user_id,organization_id,position)
-            values(?,?,?)`, [creds.user_id, creds.id, "team_member"]);
+        await connection.query(`INSERT into roles(user_id,organization_id,position,permissions)
+            values(?,?,?,?)`, [creds.user_id, creds.id, "team_member", JSON.stringify(member_permissions)]);
         await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [new_token, creds?.token_id]);
         await connection.commit();
         return { success: true }

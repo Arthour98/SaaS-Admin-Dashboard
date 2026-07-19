@@ -4,10 +4,16 @@ import { UserCellProps } from "./users-layout";
 import styles from "@/components/main.module.css";
 import { UserProps } from "@/app/dashboard/page";
 
-export default function  UserCell({user,isOwner,currUser}:{user:UserCellProps,isOwner:boolean,currUser:UserProps})
+export default function  UserCell({user,isOwner,currUser,openPermiModal}:
+    {user:UserCellProps,isOwner:boolean,currUser:UserProps,openPermiModal:(user_id:number)=>void})
 {
     const [isLoadingDelete,setIsLoadingDelete] = useState(false);
     
+    const openPermissionModal = (user_id:number)=>
+    {
+        openPermiModal(user_id);
+    }
+
     return (
         <div className={styles.userRow}>
             <div className={styles.userNameCol}>
@@ -21,8 +27,9 @@ export default function  UserCell({user,isOwner,currUser}:{user:UserCellProps,is
             </div>
             <div className={styles.userActionCol}>
                 { isOwner && currUser.id !== user.id ?
-                <div className="flex">
-                    <CustomButton element="button" content="delete" className={styles.deleteButton} isLoading={isLoadingDelete}/>
+                <div className="flex gap-2">
+                    <CustomButton element="button" content="Delete" className={styles.deleteButton} isLoading={isLoadingDelete}/>
+                    <CustomButton element="button" content="Permissions" className={styles.editButton} onClick={()=>openPermissionModal(user.id)} />
                 </div>
                 :
                 null

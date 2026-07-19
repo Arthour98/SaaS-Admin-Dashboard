@@ -1,7 +1,8 @@
-import {useState,useEffect} from "react"
+import {useState,useEffect,useCallback} from "react"
 import styles from "@/components/main.module.css";
 import UserCell from "./user-cell";
 import { UserProps } from "@/app/dashboard/page";
+import PermModal from "../modals/permission-modal";
 
 export type UserCellProps=
 {
@@ -9,6 +10,7 @@ export type UserCellProps=
     name:string,
     position:string,
     joined_at:string,
+    permissions: string[]
 }
 export type UsersLayoutProps =
 {
@@ -25,7 +27,30 @@ export default function UsersLayout({users,current_layout,isOwner,currUser}:User
         return null;
     }
     
-    const userArr = users?.users.map((u:object)=>u);
+    const userArr = users?.users.map((u:object)=>u); //Org users mapping
+
+    const [openPermissionModal,setOpenPermissionModal] = useState(false);
+    const [userPerms,setUserPerms] = useState(null);
+
+    const handleOpenPermiModal = useCallback((user_id:number)=>
+    {
+        if(user_id)
+        {
+            const selected_user = userArr?.find((u:UserCellProps) => u?.id ===user_id)
+            if(selected_user)
+            {
+                setUserPerms(selected_user);
+                setOpenPermissionModal(true);
+            }
+            
+        }
+    },[userPerms,openPermissionModal]);
+
+
+    const handleClosePermModal = useCallback(()=>
+    {
+        setOpenPermissionModal(false);
+    },[openPermissionModal])
     
     return(
         <div className={styles.usersLayout}>
@@ -55,12 +80,19 @@ export default function UsersLayout({users,current_layout,isOwner,currUser}:User
                         </div>
                        {userArr?.map((user:UserCellProps)=>
                        (
-                        <UserCell key={user.id} user={user} isOwner={isOwner} currUser={currUser}/>
+                        <UserCell 
+                        key={user.id}
+                        user={user}
+                        isOwner={isOwner}
+                        currUser={currUser}
+                        openPermiModal={handleOpenPermiModal}
+                        />
                        )) 
                     }
                     </div>
                 )
             }
+        <PermModal user={userPerms} open={openPermissionModal} closeModal={handleClosePermModal}/>
         </div>
     )
 }
