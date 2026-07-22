@@ -295,7 +295,7 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
         <div className={styles.orgCreation}>
             <h3>Create your Organization</h3>
             <form className={styles.formOrgCreation} onSubmit={(e)=>handleCreateOrg(e)}>
-                <div className="flex items-center w-[100%] gap-5">
+                <div className="flex flex-col lg:flex-row items-center w-[100%] gap-5">
                     <label className="font-semibold">Name:</label>
                     <input type="text" value={orgName}
                     onChange={(e)=>setOrgName(e.target.value)}
@@ -314,7 +314,7 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                 Join organization
             </h3>
             <form onSubmit={(e)=>handleJoinOrg(e)}>
-                <div className="flex gap-2">
+                <div className="flex flex-col lg:flex-row gap-2">
                     <label className="font-semibold">Select Organization</label>
                     <select onChange={(e)=>handleChangeOrg(e)}>
                         {
@@ -355,16 +355,18 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                                 <form onSubmit={editOrg} className={styles.editOrgForm} >
                                     <label>Organization:</label>
                                     <input type="text" name="editOrg" className={styles.generalInput} />
-                                    <CustomButton element="input"
-                                    className={styles.submitButton}
-                                    content="Save"
-                                    isLoading={isLoadingEdit}
-                                    name="edit"/>
-                                    <CustomButton element="button"
-                                    className={styles.deleteButton}
-                                    content="Cancel"
-                                    onClick={(e)=>cancelEdit(e)}
-                                    />
+                                    <div className="flex gap-2">
+                                        <CustomButton element="input"
+                                        className={styles.submitButton}
+                                        content="Save"
+                                        isLoading={isLoadingEdit}
+                                        name="edit"/>
+                                        <CustomButton element="button"
+                                        className={styles.deleteButton}
+                                        content="Cancel"
+                                        onClick={(e)=>cancelEdit(e)}
+                                        />
+                                    </div>
                                 </form>
                             )
                             :

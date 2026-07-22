@@ -23,7 +23,7 @@ export default function  UserCell({user,isOwner,currUser,openPermiModal}:
                 <p>{user.position}</p>
             </div>
             <div className={styles.userJoinDateCol}>
-                <p>{new Date(user.joined_at).toISOString()}</p>
+                <p>{new Date(user.joined_at).toLocaleDateString()}</p>
             </div>
             <div className={styles.userActionCol}>
                 { isOwner && currUser.id !== user.id ?

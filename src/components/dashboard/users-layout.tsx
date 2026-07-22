@@ -27,7 +27,7 @@ export default function UsersLayout({users,current_layout,isOwner,currUser}:User
         return null;
     }
     
-    const userArr = users?.users.map((u:object)=>u); //Org users mapping
+    const userArr = users?.users?.map((u:object)=>u); //Org users mapping
 
     const [openPermissionModal,setOpenPermissionModal] = useState(false);
     const [userPerms,setUserPerms] = useState(null);

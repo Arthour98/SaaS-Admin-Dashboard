@@ -62,9 +62,9 @@ export default function RegisterClient({})
                     Password:
                 </label>
                 <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="********"/>
-                <div className="flex w-[100%] justify-center items-end gap-3">
+                <div className="flex flex-col w-[100%] justify-center items-center lg:flex-row gap-3">
                     <Link className="underline text-white" href="/login">Already registered?</Link>
-                    <div className="flex w-[30%] justify-center items-center gap-3">
+                    <div className="flex w-[100%] justify-center lg:w-[30%] items-center gap-3">
                         <SignIn/>
                         <p className="text-white mx-1">OR</p>
                         <CustomButton  isLoading={isLoading} element="input" content="Sign up" />

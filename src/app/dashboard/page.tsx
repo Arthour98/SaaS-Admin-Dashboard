@@ -75,7 +75,7 @@ const user:UserProps =
     {
         id:user_res.user.id,
         name:user_res.user.name,
-        created_at: new Date(user_res.user.created_at).toISOString(),
+        created_at: new Date(user_res.user.created_at).toLocaleDateString(),
         permissions:org?.organization.permissions
     }
 
@@ -86,7 +86,7 @@ const org_data: OrgProps | any  =
               name: org.organization.name,
               members: org.members,
               count: org.members?.length,
-              created_at: new Date(org.organization.created_at).toISOString(),
+              created_at: new Date(org.organization.created_at).toLocaleDateString(),
               org_token: org?.token?.token,
               token_id : org?.token?.token_id,
               organizations: orgs.data.organizations,

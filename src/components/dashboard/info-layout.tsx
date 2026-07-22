@@ -38,7 +38,7 @@ export default function InfoLayout(
                     <div className={"flex-1/2 font-semibold"}>
                         <p>{key}</p>
                     </div>
-                    <div className={"flex-1/2"}>
+                    <div className={"ml-2 flex-1/2"}>
                         <p>{info[key]}</p>
                     </div>
                 </div>
