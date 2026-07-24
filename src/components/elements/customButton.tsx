@@ -11,7 +11,8 @@ className? :string,
 isLoading? : boolean
 content: string,
 onClick? : (e: React.MouseEvent<HTMLButtonElement>)=> void 
-name?:string
+name?:string,
+disabled?:boolean
 }
 
 const Loader = ({})=>
@@ -29,7 +30,8 @@ export default function CustomButton(
     isLoading,
     content,
     onClick,
-    name
+    name,
+    disabled
     }:ButtonProps)
 {
     if(element === "button")
@@ -39,6 +41,7 @@ export default function CustomButton(
             className={className}
             name={name}
             onClick={onClick}
+            disabled={disabled?true:false}
             >
                 {
                 !isLoading ?
@@ -54,7 +57,9 @@ export default function CustomButton(
         className={className} 
         type="submit"
         name={name}
-        onClick={onClick}>
+        onClick={onClick}
+        disabled={disabled?true:false}
+        >
             {
                 !isLoading ?
                 content :

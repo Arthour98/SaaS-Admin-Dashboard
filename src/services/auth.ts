@@ -10,12 +10,10 @@ import {
 } from "@/db/queries/users";
 import { createConnection } from '@/db/connection';
 import { UserProps } from "@/db/queries/users";
-import { JwtPayload } from "@/lib/jwt";
 import { validate_username, validate_email, validate_password } from "@/lib/validation";
 import sendVerificationEmail from "@/lib/send-verification-email";
 import { cookies } from "next/headers";
 import { matchPass } from "@/lib/hash";
-import { redirect } from "next/navigation";
 
 
 

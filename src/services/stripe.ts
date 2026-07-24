@@ -59,8 +59,8 @@ const getSubscriptions = async () => {
 const createStripeOrganization = async (stripe_account_id: string, org_id: number) => {
     try {
         const conn = await createConnection()
-        const create = createStripeOrg(conn, org_id, stripe_account_id);
-        return { data: { status: "success", stripe_account_id: stripe_account_id, org_id: org_id } }
+        const create = await createStripeOrg(conn, org_id, stripe_account_id);
+        return { data: { status: "success", stripe_account_id: create?.data.stripe_account_id, org_id: create?.data.organization_id } }
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e)

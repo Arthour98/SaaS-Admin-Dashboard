@@ -1,5 +1,4 @@
 "use client";
-import {useState,useEffect} from "react"
 import styles from "@/components/main.module.css";
 
 export type DashBoardTabsProps=

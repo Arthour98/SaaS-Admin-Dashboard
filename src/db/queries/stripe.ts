@@ -1,17 +1,4 @@
 
-export const registerStripeAccount = async (conn: any, org_id: number, stripe_account_id: string) => {
-    try {
-        const [rows] = await conn.query(`INSERT INTO stripe(organization_id,stripe_account_id)
-        VALUES(?,?)`, [org_id, stripe_account_id]);
-        return { status: "success" }
-    }
-    catch (e) {
-        console.error(e);
-        return null;
-    }
-
-}
-
 export const createStripeOrg = async (conn: any, org_id: number, stripe_account_id: string) => {
     try {
         const [rows] = await conn.query(`INSERT INTO stripe(organization_id,stripe_account_id)

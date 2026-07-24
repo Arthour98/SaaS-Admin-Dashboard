@@ -12,6 +12,16 @@ import {
     deleteOrg,
     editOrg,
 } from "@/db/queries/organizations"
+import {
+    addCustomer,
+    getCustomers
+} from "@/db/queries/customers";
+
+import {
+    getOrders,
+    getCustomersOrders
+} from "@/db/queries/orders";
+
 
 
 import { createConnection } from "@/db/connection"
@@ -199,4 +209,53 @@ export const leaveOrganization = async (org_id: number, user_id: number) => {
         return null;
     }
 }
+
+export const fetchCustomers = async () => {
+    try {
+        const conn = await createConnection();
+        const user = await User();
+        const user_id = user?.user.id as number;
+        const organization = await getOrganization(conn, user_id);
+        const org_id = organization.id
+        const customers = await getCustomers(conn, org_id);
+
+        return { customers: customers }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
+export const addNewCustomer = async (org_id: number, name: string, phone_number?: string) => {
+    try {
+        const conn = await createConnection();
+        const newCustomer = phone_number ?
+            await addCustomer(conn, org_id, name, phone_number)
+            :
+            await addCustomer(conn, org_id, name)
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error('[SERVICE_ERROR', e)
+        return null;
+    }
+}
+
+export const fetchOrders = async () => {
+    try {
+        const conn = await createConnection();
+        const user = await User();
+        const user_id = user?.user.id as number;
+        const organization = await getOrganization(conn, user_id);
+        const org_id = organization.id
+        const orders = await getOrders(conn, org_id);
+        return { orders: orders }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e)
+    }
+}
+
+
 

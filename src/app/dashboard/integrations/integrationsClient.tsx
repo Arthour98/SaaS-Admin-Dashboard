@@ -31,18 +31,26 @@ const syncWithService = async (
         );
     }
 }
+    const selectService = ()=>
+    {
+        setSelectedService("stripe")
+    }
 
     return(
         <div className={styles["dashboard-content"]}>
             <div className={styles.integrationsContainer}>
                 <div className={styles.servicesCol}>
-                    <div className={styles.stripeIconWrapper}>
+                    <div  
+                        style={{
+                        borderColor:selectedService ?"#22d3ee" : undefined
+                        }}
+                        className={styles.stripeIconWrapper}>
                         <FontAwesomeIcon
                         icon={faStripe}
                         color="cyan"
-                        width={10}
+                        className={styles.stripeIcon}
                         cursor="pointer"
-                        onClick={()=>setSelectedService("stripe")}
+                        onClick={selectService}
                         />
                     </div>
                 </div>
