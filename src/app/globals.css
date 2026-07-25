@@ -69,16 +69,16 @@ input[type="submit"] {
 .navWrapper {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   row-gap: 20px;
-  min-height: fit-content;
-  max-height: fit-content;
-  flex: 0.6;
-
+  height: 40vh;
+  min-height: 40vh;
+  max-height: 100% !important;
+  flex: 0 0 60%;
 }
 
 .pseudo40-col {
-  flex: 0.4;
+  flex: 0 0 40%;
 }
 
 .dashboard-nav {
@@ -87,7 +87,8 @@ input[type="submit"] {
   height: 100%;
   display: flex;
   align-items: start;
-  padding: 5rem 0;
+  overflow: hidden;
+  padding: 4rem 0 0 0;
 }
 
 .dropdown-settings {
@@ -427,14 +428,13 @@ main.dashboardMain {
   justify-content: center;
   padding: 5rem;
   min-height: 70vh;
-
 }
 
 .dashboard-container {
-  flex: 0.8;
+  flex: 0 0 80%;
   display: flex;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 .dashboard-content-wrapper {
@@ -462,7 +462,7 @@ main.dashboardMain {
   }
 
   .pseudo40-col {
-    flex: 0.2;
+    flex: 0 0 40%;
   }
 
   .dashboard-nav {

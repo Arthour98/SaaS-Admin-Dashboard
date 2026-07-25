@@ -4,7 +4,7 @@ import { CustomersLayoutProps } from "./customers-layout";
 
 
 export default function InfoLayout(
-    {current_layout,info}:CustomersLayoutProps)
+    {current_layout}:CustomersLayoutProps)
 {
     if(!current_layout)
     {
@@ -17,7 +17,7 @@ export default function InfoLayout(
 
     return(
     <div className={styles.createCustomersLayout}>
-
+  
     </div>
     )
 }

@@ -7,7 +7,8 @@ export async function verifyJwtToken(token: string) {
         return false;
     }
     try {
-        return await jwtVerify(token, secret);
+        const verified = await jwtVerify(token, secret);
+        return verified;
     }
     catch (e) {
         console.error(e);

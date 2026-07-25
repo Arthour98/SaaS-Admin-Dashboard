@@ -118,13 +118,12 @@ export const User = async () => {
     if (!cookie_token) {
         return null
     }
-    const token = await verifyJwtToken(cookie_token);
-
-    if (!token) {
-        return null
-    }
 
     try {
+        const token = await verifyJwtToken(cookie_token);
+        if (!token) {
+            return null
+        }
         const conn = await createConnection();
         const user_id = token?.payload.user_id as number;
         const user = await getUser(conn, user_id);

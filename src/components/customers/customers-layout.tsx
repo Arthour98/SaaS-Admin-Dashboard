@@ -1,38 +1,51 @@
 import {useState,useEffect} from "react"
 import styles from "@/components/main.module.css";
-
+import CustomerCol from "./customer-col";
+import { CustomerProps } from "@/app/dashboard/customers/customersClient";
 export interface CustomersLayoutProps 
 {
     current_layout: boolean;
-    info : CustomersProps
+    customers : CustomerProps[]
 }
 
- type CustomersProps = 
-{
-    id :number
-    name:string | null,
-    customer_stripe_id? :string |null,
-    organization:string | null,
-    created_at : string | null,
-    phone_number?:string
-}
 
-export default function InfoLayout(
-    {current_layout,info}:CustomersLayoutProps)
-{
-    if(!current_layout)
-    {
-        return null;
-    }
 
-   
+export default function CustomerLayout(
+    {current_layout,customers}:CustomersLayoutProps)
+{
+
+
     
+if(!current_layout)
+{
+    return null;
+}
 
-
-    return(
-    <div className={styles.customersLayout}>
-
+return(
+<div className={styles.customersLayout}>
+    <div className={styles.customersHeader}>
+        <div className={styles.col2}>
+            <p>Name</p>
+        </div>
+        <div className={styles.col2}>
+            <p>Number</p>
+        </div>
+        <div className={styles.col2}>
+            <p>Created at</p>
+        </div>
+        <div className={styles.col4}>
+            <p>Origin</p>
+        </div>
     </div>
-    )
+    <div className={styles.customersContent}>
+        {
+        customers?.map((cus:CustomerProps)=>
+        {
+            return(<CustomerCol key={cus.id} customer={cus}/>)
+        })
+        }
+    </div>
+</div>
+)
 }
 
