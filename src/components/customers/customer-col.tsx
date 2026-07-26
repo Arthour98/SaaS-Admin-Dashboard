@@ -8,10 +8,22 @@ export default function CustomerCol(
     return(
     <div className={styles.customerCol}>
      <div className={styles.nameCus}>
-        <p>{customer.name}</p>
+      <p>
+         {
+         customer.name ?
+         customer.name:
+         "Unknown"
+         }
+      </p>
      </div>
      <div className={styles.phoneCus}>
-        <p>{customer.phone_number}</p>
+      <p>
+         {
+         customer.phone_number ?
+         customer.phone_number :
+         "-"
+         }
+      </p>
      </div>
      <div className={styles.createdCus}>
         <p>{new Date(customer.created_at).toLocaleDateString()}</p>

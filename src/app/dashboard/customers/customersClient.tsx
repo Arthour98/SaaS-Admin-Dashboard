@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DashBoardTabs from "@/components/dashboard/dashboard-tabs";
 import SearchBar from "@/components/elements/search-bar";
 import CustomerLayout from "@/components/customers/customers-layout";
+import AddCustomerLayout from "@/components/customers/create-customer-layout";
 
 export interface CustomerProps
 {
@@ -52,6 +53,10 @@ export default function CustomersClient(
                 < CustomerLayout
                  customers={customers}
                  current_layout={currTab==="Customers"}
+                 />
+                 <AddCustomerLayout
+                 customers={customers}
+                 current_layout={currTab ==="Add customer"}
                  />
             </div>
         </div>
