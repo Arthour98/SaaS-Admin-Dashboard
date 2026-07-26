@@ -6,7 +6,8 @@ import DashBoardTabs from "@/components/dashboard/dashboard-tabs";
 import SearchBar from "@/components/elements/search-bar";
 import CustomerLayout from "@/components/customers/customers-layout";
 import AddCustomerLayout from "@/components/customers/create-customer-layout";
-
+import { UserProps } from "../page";
+import { OrgProps } from "../page";
 export interface CustomerProps
 {
 id:number,
@@ -19,11 +20,12 @@ origin:string
 }
 
 export default function CustomersClient(
-    {customers}:
-    {customers:CustomerProps[]}
+{customers,user,organization}:  
+{customers:CustomerProps[],
+user:UserProps,
+organization:OrgProps}
 )
 {
-
     const router = useRouter();
     const dashBoardTabs = ["Customers","Add customer"]  // tabs array
     const [currTab,setCurrentTab] = useState("Customers") // selected tab
@@ -52,10 +54,14 @@ export default function CustomersClient(
             <div className={styles["content-main"]}>
                 < CustomerLayout
                  customers={customers}
+                 organization={organization}
+                 user={user}
                  current_layout={currTab==="Customers"}
                  />
                  <AddCustomerLayout
                  customers={customers}
+                 organization={organization}
+                 user={user}
                  current_layout={currTab ==="Add customer"}
                  />
             </div>

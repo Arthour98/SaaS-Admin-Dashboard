@@ -1,26 +1,38 @@
 import {useState,useRef,useEffect, useMemo, useCallback} from "react"
 import styles from "@/components/main.module.css";
-import { CustomersLayoutProps } from "./customers-layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faClose, faFileCsv } from "@fortawesome/free-solid-svg-icons";
+import {  faClose, faFileCsv } from "@fortawesome/free-solid-svg-icons";
 import InfoItem from "../elements/info-item";
 import CustomButton from "../elements/customButton";
+import { useQuery } from "@/lib/use-query";
+import { useRouter } from "next/navigation";
+import { OrgProps, UserProps } from "@/app/dashboard/page";
+import { CustomerProps } from "@/app/dashboard/customers/customersClient";
 
 
 export default function AddCustomerLayout(
-    {current_layout}:CustomersLayoutProps)
+{current_layout,customers,user,organization}:
+{
+  current_layout:boolean,
+  customers :CustomerProps[],
+  user:UserProps,
+  organization:OrgProps
+})
 {
 const rowRef = useRef<HTMLButtonElement | null>(null);
+const fileInputRef = useRef<HTMLInputElement | null>(null);
+const [loadingSubmit,setLoadingSubmit] = useState(false);
+const router = useRouter();
 
 type Customer = {
-customerName: string;
-customerNumber: string;
+customer_name: string;
+phone_number: string;
 };
-
- const [customers, setCustomers] = useState<Customer[]>([
+ // Renaming customers to _customers so it wont conflict with the passing prop
+ const [_customers, setCustomers] = useState<Customer[]>([
   {
-    customerName: "",
-    customerNumber: "",
+    customer_name: "",
+    phone_number: "",
   },
     ]);
 
@@ -28,15 +40,15 @@ const addCustomer = () => {
   setCustomers((prev) => [
     ...prev,
     {
-      customerName: "",
-      customerNumber: "",
+      customer_name: "",
+      phone_number: "",
     },
   ]);
 };
 
 let deleteCustomer = useCallback((index:number) => {
-    const new_customers = customers.filter((cus:Customer)=>
-    customers.indexOf(cus) !== index)
+    const new_customers = _customers.filter((cus:Customer)=>
+    _customers.indexOf(cus) !== index)
     setCustomers(new_customers);
 },[customers]);
 
@@ -45,7 +57,7 @@ useEffect(() => {
     behavior: "smooth",
     block: "end",
   });
-}, [customers.length]);
+}, [_customers.length]);
 
 const handleCustomerChange = (index:number, field:keyof Customer,value:string) => {
   setCustomers((prev) => {
@@ -55,11 +67,87 @@ const handleCustomerChange = (index:number, field:keyof Customer,value:string) =
   });
 };
 
+const triggerFileInput = ()=>
+{
+  const fileInput = fileInputRef.current;
+  if(fileInput)
+  {
+    fileInput.click();
+  }
+}
+
+
+const handleChange = async (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = event.target.files?.[0];
+  console.log(file);
+
+  if (!file) return;
+
+  const text = await file.text();
+  const array_csv = text.split(/,|\n/);
+  const properties = array_csv.splice(0,2); 
+  
+  const mappedObj: any[] =[];
+  let external_counter = 0;
+  for(let i=0 ; i<Math.floor(array_csv.length/2);i++)
+  {
+  const obj : any = {}
+  let counter = 0;
+
+   for(let key of properties)
+   {
+    obj[`${key}`] = array_csv[i+counter+external_counter];
+    if(counter==0)
+    {
+      counter+=1
+    }
+    else if(counter>=1)
+    {
+      counter=0; //reset to 0 if we reach 1 cause we have 2 properties only
+    }
+   }
+   external_counter+=1;
+   mappedObj.push(obj);
+  }
+  if(mappedObj)
+  {
+    setCustomers(mappedObj)
+  }
+};
 
 
 const submitCustomers = async()=>
 {
-
+  setLoadingSubmit(true);
+  const data = 
+  {
+    customers:_customers,
+    organization_id:organization.organization_id
+  }
+  try
+  {
+    let res;
+    if(_customers.length===1)
+    {
+    res = await useQuery("customers/create",{method:"post",body:data})
+    }
+    else
+    {
+      res= await useQuery("customers/bulk-create",{method:"post",body:data})
+    }
+    if(res.data=="success")
+    {
+      setLoadingSubmit(false);
+      router.refresh();
+    }
+  }
+  catch(e)
+  {
+    console.error("[ClIENT_ERROR]",e)
+    setLoadingSubmit(false)
+  }
 }
     
 
@@ -73,11 +161,17 @@ return(
         <InfoItem content="You can import your customers by csv file"/>
         <FontAwesomeIcon 
         className={styles.csvIcon}
-        icon={faFileCsv} />
-        <input type="file" className={styles.fileInput}/>
+        icon={faFileCsv}
+        onClick={triggerFileInput} />
+        <input 
+        ref={fileInputRef}
+        type="file"
+        className={styles.fileInput}
+        onChange={(e)=>handleChange(e)}
+        />
     </div>
     <div className={styles.addCustomerCol}>
-        {customers.map((customer, index) =>{console.log(index, customers.length - 1);
+        {_customers.map((customer, index) =>{
         return (
             
             <div key={index} className={styles.customerRow}>
@@ -88,9 +182,9 @@ return(
                     className={styles.customerInput}
                     type="text"
                     placeholder="Customer Name"
-                    value={customer.customerName}
+                    value={customer.customer_name}
                     onChange={(e) =>
-                    handleCustomerChange(index, "customerName", e.target.value)
+                    handleCustomerChange(index, "customer_name", e.target.value)
                     }
                 />
                 </div>
@@ -101,9 +195,9 @@ return(
                     className={styles.customerInput}
                     type="text"
                     placeholder="Customer Number"
-                    value={customer.customerNumber}
+                    value={customer.phone_number}
                     onChange={(e) =>
-                    handleCustomerChange(index, "customerNumber", e.target.value)
+                    handleCustomerChange(index, "phone_number", e.target.value)
                     }
                 />
                 </div>

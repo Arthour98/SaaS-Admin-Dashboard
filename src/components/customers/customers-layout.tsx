@@ -2,20 +2,18 @@ import {useState,useEffect} from "react"
 import styles from "@/components/main.module.css";
 import CustomerCol from "./customer-col";
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
-export interface CustomersLayoutProps 
-{
-    current_layout: boolean;
-    customers : CustomerProps[]
-}
-
+import { OrgProps, UserProps } from "@/app/dashboard/page";
 
 
 export default function CustomerLayout(
-    {current_layout,customers}:CustomersLayoutProps)
+{current_layout,customers,user,organization}:
 {
-
-
-    
+current_layout:boolean,
+customers:CustomerProps[],
+user:UserProps,
+organization:OrgProps})
+{
+  
 if(!current_layout)
 {
     return null;

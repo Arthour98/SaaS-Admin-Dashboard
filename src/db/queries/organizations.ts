@@ -16,7 +16,7 @@ export interface OrganizationProps {
 
 export async function getOrganization(connection: any, user_id: number) {
     try {
-        const [rows] = await connection.query(`SELECT 
+        const [rows] = await connection?.query(`SELECT 
         organizations.*,
         roles.position,roles.permissions
         FROM organizations

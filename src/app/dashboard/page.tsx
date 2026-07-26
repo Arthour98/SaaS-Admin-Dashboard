@@ -13,7 +13,7 @@ export type UserProps =
     id:number,
     name:string,
     created_at:string,
-    permissions: string[]
+    permissions?: string[]
 }
 
 export type OrgProps =

@@ -14,7 +14,8 @@ import {
 } from "@/db/queries/organizations"
 import {
     addCustomer,
-    getCustomers
+    getCustomers,
+    addCustomers
 } from "@/db/queries/customers";
 
 import {
@@ -234,6 +235,17 @@ export const addNewCustomer = async (org_id: number, name: string, phone_number?
             await addCustomer(conn, org_id, name, phone_number)
             :
             await addCustomer(conn, org_id, name)
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error('[SERVICE_ERROR', e)
+        return null;
+    }
+}
+export const addNewCustomers = async (org_id: number, customers: any[]) => {
+    try {
+        const conn = await createConnection();
+        const newCustomer = await addCustomers(conn, org_id, customers)
         return { status: "success" }
     }
     catch (e) {

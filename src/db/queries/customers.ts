@@ -28,4 +28,25 @@ export const addCustomer = async (connection: any, organization_id: number, name
     }
 }
 
+export const addCustomers = async (connection: any, organization_id: number, customers: any[]) => {
+    try {
+        const customersArr = customers.map(cus =>
+            [
+                "manual",
+                cus.customer_name,
+                cus.phone_number,
+                organization_id
+            ]
+        );
+        const [rows] = await connection.query(`INSERT INTO customers(origin,name,phone_number,organization_id)
+            VALUES?`, [customersArr]);
+        return { status: "success" }
+    }
+
+    catch (e) {
+        console.error("[ERROR_DB]", e);
+        return null;
+    }
+}
+
 
