@@ -20,3 +20,37 @@ export async function getCustomersOrders(connection: any, organization_id: numbe
     }
 }
 
+export const addOrder = async (connection: any, organization_id: number, order: any) => {
+    try {
+        const [rows] = await connection.query(`
+            INSERT INTO orders(name, price, status, origin, type, organization_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [order.name, order.price, order.status || "pending", order.origin || "manual", order.type || "product", organization_id]);
+        return { status: "success" };
+    } catch (e) {
+        console.error("[ERROR_DB]", e);
+        return null;
+    }
+};
+
+export const addOrders = async (connection: any, organization_id: number, orders: any[]) => {
+    try {
+        const ordersArr = orders.map((order) => [
+            order.name,
+            order.price,
+            order.status || "pending",
+            order.origin || "manual",
+            order.type || "product",
+            organization_id,
+        ]);
+        await connection.query(`
+            INSERT INTO orders(name, price, status, origin, type, organization_id)
+            VALUES ?
+        `, [ordersArr]);
+        return { status: "success" };
+    } catch (e) {
+        console.error("[ERROR_DB]", e);
+        return null;
+    }
+};
+

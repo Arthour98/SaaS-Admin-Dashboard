@@ -4,6 +4,7 @@ import CustomButton from "../elements/customButton";
 import { useQuery } from "@/lib/use-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRotateRight, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { useToast } from "@/hooks/use-toast";
 
 type organizationProps =
 {
@@ -76,10 +77,18 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 setHasOrganization(true);
                 triggerRefresh(res.data.status);
                 setOrgName("");
+                useToast({
+                type:"success",
+                message:"Organization created successfully"
+            })
             }
             else
             {
                 setIsLoadingCreate(false);
+                useToast({
+                type:"error",
+                message:"Error creating organization"
+            })
             }
         }
         catch(e)
@@ -109,12 +118,20 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 setHasOrganization(true);
                 triggerRefresh(res.data.status);
                 setOrgToken("");
+                useToast({
+                type:"success",
+                message:"Successfully joined organization"
+            })
             }
         }
         catch(e)
         {
             console.error(e);
             setIsLoadingJoin(false);
+                useToast({
+                type:"error",
+                message:"Error joining organization"
+            })
         }
     }
 
@@ -142,6 +159,7 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
     const handleCopy = (token:string)=>
     {
         navigator.clipboard.writeText(token)
+        useToast({type:"info",message:"Token copied"})
     }
 
     const requestNewToken = async()=>
@@ -156,10 +174,12 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
             const res = await useQuery("organizations/refresh-token",{method:"post",body:data});
             const new_token = res.data.token;
             setCurrentToken(new_token);
+            useToast({type:"info",message:"Token refreshed"})
         }
         catch(e)
         {
             console.error(e);
+            useToast({type:"error",message:"Error refreshing token"})
         }
     }
 
@@ -189,12 +209,14 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 triggerRefresh(deleted.data.status);
                 setHasOrganization(false);
                 setIsLoadingDelete(false);
+                useToast({type:"success",message:"Successfully deleted organization"})
             }
         }
         catch(e)
         {
             console.error("[ERROR]->",e);
             setIsLoadingDelete(true)
+            useToast({type:"error",message:"Error deleting organization"})
         }
         break;
     case "leave":
@@ -207,12 +229,14 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 triggerRefresh(left.data.status);
                 setHasOrganization(false);
                 setIsLoadingDelete(false);
+                useToast({type:"success",message:"Successfully left organization"})
             }
         }
         catch(e)
         {
             setIsLoadingDelete(false);
             console.error("[ERROR]->",e);
+            useToast({type:"error",message:"Error leaving organization"})
         }
         break;
   }
@@ -246,12 +270,14 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 triggerRefresh(renamed.data.status);
                 setOpenEdit(false);
                 setIsLoadingEdit(false);
+                useToast({type:"success",message:"Succesfully renamed organization"})
             }
         }
         catch(e)
         {
             console.error("[ERROR]->",e);
             setIsLoadingEdit(false);
+            useToast({type:"error",message:"Error renaming organization"})
         }
     }
 

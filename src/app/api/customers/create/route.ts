@@ -1,6 +1,6 @@
 import { addNewCustomer } from "@/services/dashboard";
 
-export  async function POST(req: Request) {
+export async function POST(req: Request) {
 
     const payload = await req?.json();
     try {
@@ -15,7 +15,7 @@ export  async function POST(req: Request) {
                 return Response.json({ data: { status: new_cus.status } })
             }
             else {
-                return Response.json({ data: { status: "failed" } })
+                return Response.json({ data: { status: "failed", message: new_cus?.message } })
             }
         }
     }

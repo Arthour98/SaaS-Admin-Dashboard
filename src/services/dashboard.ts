@@ -20,7 +20,9 @@ import {
 
 import {
     getOrders,
-    getCustomersOrders
+    getCustomersOrders,
+    addOrder,
+    addOrders
 } from "@/db/queries/orders";
 
 
@@ -229,6 +231,9 @@ export const fetchCustomers = async () => {
 }
 
 export const addNewCustomer = async (org_id: number, name: string, phone_number?: string) => {
+    if (!name) {
+        return { status: "failed", message: "Name is required" }
+    }
     try {
         const conn = await createConnection();
         const newCustomer = phone_number ?
@@ -243,9 +248,13 @@ export const addNewCustomer = async (org_id: number, name: string, phone_number?
     }
 }
 export const addNewCustomers = async (org_id: number, customers: any[]) => {
+    const filteredCustomers = customers.filter(cus =>
+        cus.customer_name !== ""
+
+    )
     try {
         const conn = await createConnection();
-        const newCustomer = await addCustomers(conn, org_id, customers)
+        const newCustomer = await addCustomers(conn, org_id, filteredCustomers)
         return { status: "success" }
     }
     catch (e) {
@@ -269,5 +278,21 @@ export const fetchOrders = async () => {
     }
 }
 
+export const addNewOrder = async (org_id: number, orders: any[]) => {
+
+    try {
+        const conn = await createConnection();
+        const customers = (await getCustomers(conn, org_id));
+
+        const filteredOrders = orders.filter((order) =>
+            order.name !== "" && customers.find((cus: any) => cus.id == order.customer_id));
+
+        const created = await addOrders(conn, org_id, filteredOrders);
+        return { status: created?.status ?? "success" };
+    } catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+};
 
 

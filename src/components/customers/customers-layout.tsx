@@ -20,6 +20,13 @@ if(!current_layout)
 }
 
 return(
+        
+customers.length==0 ?
+(
+    <p>There are no customers listed!</p>
+)
+:
+(
 <div className={styles.customersLayout}>
     <div className={styles.customersHeader}>
         <div className={styles.col2}>
@@ -44,6 +51,7 @@ return(
         }
     </div>
 </div>
+)
 )
 }
 

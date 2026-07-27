@@ -4,25 +4,47 @@ import Main from "@/components/partials/main";
 import NavBar from "@/components/partials/navbar";
 import "@/app/globals.css";
 import OrdersClient from "./ordersClient";
+import { fetchOrders, fetchCustomers } from "@/services/dashboard";
+import { getOrganization } from "@/db/queries/organizations";
+import { User } from "@/services/auth";
+import { createConnection } from "@/db/connection";
+import { UserProps } from "../page";
 
-export default  function Page({})
-{
+const getOrgAndUser = async () => {
+  const conn = await createConnection();
+  const _user = await User();
+  const user_id = _user?.user.id;
+  const org = await getOrganization(conn, user_id);
+  const user: UserProps = {
+    id: _user?.user.id,
+    name: _user?.user.name,
+    created_at: _user?.user.created_at,
+  };
+  org.organization_id = org.id;
+  return { user, organization: org };
+};
 
-    return(<>
-        <Header/>
-            <Main className="dashboardMain">
-                <div className="dashboard-container">
-                    <div className="dashboard-nav">
-                        <div className="pseudo40-col">
-                        </div>
-                        <NavBar/>
-                    </div>
-                    <div className="dashboard-content-wrapper">
-                        <OrdersClient/>
-                    </div>
-                </div>
-            </Main>
-        <Footer/>
-        </>
-    )
+export default async function Page() {
+  const { user, organization } = await getOrgAndUser();
+  const [ordersResponse, customersResponse] = await Promise.all([fetchOrders(), fetchCustomers()]);
+  const orders = ordersResponse?.orders ?? [];
+  const customers = customersResponse?.customers ?? [];
+
+  return (
+    <>
+      <Header />
+      <Main className="dashboardMain">
+        <div className="dashboard-container">
+          <div className="dashboard-nav">
+            <div className="pseudo40-col"></div>
+            <NavBar />
+          </div>
+          <div className="dashboard-content-wrapper">
+            <OrdersClient orders={orders} customers={customers} user={user} organization={organization} />
+          </div>
+        </div>
+      </Main>
+      <Footer />
+    </>
+  );
 }

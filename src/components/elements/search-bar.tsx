@@ -5,10 +5,22 @@ type SearchProps =
 {
     value:string,
     setValue:(value:string)=>void,
+    currentTab:string,
     className?: string
 }
-export default function SearchBar({value,setValue,className}:SearchProps)
+export default function SearchBar({value,setValue,className,currentTab}:SearchProps)
 {
+    const acceptTabs=
+    [
+        "Users",
+        "Orders",
+        "Customers"
+    ];
+
+    if(!acceptTabs.some((t:string)=>t===currentTab))
+    {
+        return null;
+    }
 
     return(
         <input type="search"

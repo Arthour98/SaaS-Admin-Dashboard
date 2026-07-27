@@ -74,7 +74,11 @@ return(
                 <DashBoardTabs tabs={dashBoardTabs} tab={currTab}  setTab={changeTab} />
             </div>
             <div className={styles.searchCol}>
-                <SearchBar className={styles.searchBar} value={searchInput} setValue={setSearchInput} />
+                <SearchBar
+                currentTab={currTab}
+                className={styles.searchBar}
+                value={searchInput}
+                setValue={setSearchInput} />
             </div>
         </div>
         <div className={styles["content-main"]}>

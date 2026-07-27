@@ -31,7 +31,7 @@ export const syncData = async (connection: any, customers: any[], invoices: any[
     const invoices_payload = invoices.map((invoice) =>
         [
             invoice.description,
-            invoice.object === "subscription" ? invoice?.plan.amount : invoice.amount,
+            invoice.object === "subscription" ? invoice?.plan.amount / 100 : invoice.amount / 100,
             invoice.customer,
             invoice.object === "subscription" ? "subscription" : "product",
             invoice.invoice === null ? "pending" : "succeded",
@@ -42,7 +42,7 @@ export const syncData = async (connection: any, customers: any[], invoices: any[
     const subscriptions_payload = subscriptions.map((sub) =>
         [
             sub.description,
-            sub.object === "subscription" ? sub?.plan.amount : sub.amount,
+            sub.object === "subscription" ? sub?.plan.amount / 100 : sub.amount / 100,
             sub.customer,
             sub.object === "subscription" ? "subscription" : "product",
             sub.invoice === null ? "pending" : "succeded",

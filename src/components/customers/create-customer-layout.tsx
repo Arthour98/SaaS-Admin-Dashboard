@@ -8,7 +8,7 @@ import { useQuery } from "@/lib/use-query";
 import { useRouter } from "next/navigation";
 import { OrgProps, UserProps } from "@/app/dashboard/page";
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
-
+import { useToast } from "@/hooks/use-toast";
 
 export default function AddCustomerLayout(
 {current_layout,customers,user,organization}:
@@ -35,6 +35,19 @@ phone_number: string;
     phone_number: "",
   },
     ]);
+
+useEffect(()=>
+{
+  if(!current_layout)
+  {
+    setCustomers([
+  {
+    customer_name: "",
+    phone_number: "",
+  },
+    ])
+  }
+},[current_layout])
 
 const addCustomer = () => {
   setCustomers((prev) => [
@@ -93,8 +106,8 @@ const handleChange = async (
   let external_counter = 0;
   for(let i=0 ; i<Math.floor(array_csv.length/2);i++)
   {
-  const obj : any = {}
-  let counter = 0;
+    const obj : any = {}
+    let counter = 0;
 
    for(let key of properties)
    {
@@ -108,8 +121,8 @@ const handleChange = async (
       counter=0; //reset to 0 if we reach 1 cause we have 2 properties only
     }
    }
-   external_counter+=1;
-   mappedObj.push(obj);
+    external_counter+=1;
+    mappedObj.push(obj);
   }
   if(mappedObj)
   {
@@ -118,8 +131,9 @@ const handleChange = async (
 };
 
 
-const submitCustomers = async()=>
+const submitCustomers = async(e:React.MouseEvent)=>
 {
+  e.preventDefault();
   setLoadingSubmit(true);
   const data = 
   {
@@ -137,10 +151,24 @@ const submitCustomers = async()=>
     {
       res= await useQuery("customers/bulk-create",{method:"post",body:data})
     }
-    if(res.data=="success")
+    if(res.data.status=="success")
     {
       setLoadingSubmit(false);
       router.refresh();
+      setCustomers([
+      {
+        customer_name: "",
+        phone_number: "",
+      },
+        ])
+      useToast({
+        type:"success",
+        message:"Customer created succesfully"
+      })
+    }
+    else if(res.data.status="failed")
+    {
+      setLoadingSubmit(false);
     }
   }
   catch(e)
@@ -158,7 +186,7 @@ if(!current_layout)
 return(
 <div className={styles.createCustomersLayout}>
     <div className={styles.csvCol}>
-        <InfoItem content="You can import your customers by csv file"/>
+        <InfoItem content="Import CSV with headers: customer_name, phone_number"/>
         <FontAwesomeIcon 
         className={styles.csvIcon}
         icon={faFileCsv}
@@ -220,9 +248,10 @@ return(
     <div className={styles.submitCustomerCol}>
         <CustomButton
         content="Submit"
-        element="input"
+        element="button"
+        isLoading={loadingSubmit}
         className={styles.submitButton}
-        onClick={()=>submitCustomers()}
+        onClick={(e)=>submitCustomers(e)}
         />
     </div>
     </div>

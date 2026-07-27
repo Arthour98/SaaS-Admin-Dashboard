@@ -45,6 +45,7 @@ organization:OrgProps}
                 </div>
                 <div className={styles.searchCol}>
                     <SearchBar
+                    currentTab={currTab}
                     value={searchInput}
                     setValue={setSearchInput}
                     className={styles.searchBar}

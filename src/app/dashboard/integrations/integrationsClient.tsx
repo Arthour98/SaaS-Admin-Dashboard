@@ -5,6 +5,7 @@ import CustomButton from "@/components/elements/customButton";
 import { useQuery } from "@/lib/use-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStripe } from "@fortawesome/free-brands-svg-icons";
+import InfoItem from "@/components/elements/info-item";
 
 
 export default function IntegrationsClient({org}:{org:any})
@@ -61,6 +62,9 @@ const syncWithService = async (
                     element="button"
                     onClick={(e)=>syncWithService(e,selectedService as string)}
                      />
+                     <InfoItem content={`By clicking the icon of service
+                      and pressing sync you will migrate your services data to
+                      application`}/>
                 </div>
             </div>
         </div>
