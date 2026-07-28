@@ -1,17 +1,44 @@
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
 import styles from "@/components/main.module.css";
-
+import { useToast } from "@/hooks/use-toast";
+import { string_shortener } from "@/lib/string-shortener";
+import { useQuery } from "@/lib/use-query";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 export default function CustomerCol(
 {customer}:
 {customer:CustomerProps})
 {
+   const router = useRouter();
+   const deleteCustomer = async(id:number)=>
+   {
+      const data = 
+      {
+         customer_id:id
+      }
+      try
+      {
+         const res = await useQuery("customers/delete",{method:"delete",body:data})
+         if(res.data.status="success")
+         {
+            router.refresh();
+            useToast({type:'success',message:"Successfully deleted customer"})
+         }
+      }
+      catch(e)
+      {
+         console.error(e);
+         useToast({type:'error',message:"Error deleting customer"})
+      }
+   }
     return(
     <div className={styles.customerCol}>
      <div className={styles.nameCus}>
       <p>
          {
          customer.name ?
-         customer.name:
+         string_shortener(customer.name):
          "Unknown"
          }
       </p>
@@ -34,6 +61,13 @@ export default function CustomerCol(
                 customer.origin
             }
         </p>
+     </div>
+     <div className={styles.deleteCol}>
+      <FontAwesomeIcon
+      icon={faCircleXmark}
+      className={styles.deleteIcon}
+      onClick={()=>deleteCustomer(customer.id)}
+      />
      </div>
     </div>
     )

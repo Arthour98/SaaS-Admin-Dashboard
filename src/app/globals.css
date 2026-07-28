@@ -351,15 +351,6 @@ nav {
   }
 }
 
-@media (max-width: 640px) {
-  .footerWrapper {
-    gap: 1rem;
-  }
-
-  .footerSection {
-    flex-basis: 100%;
-  }
-}
 
 /* Login and Register pages styles */
 
@@ -451,7 +442,15 @@ main.dashboardMain {
   }
 
   .dashboard-container {
-    flex: 1;
+    flex: 0.9;
+  }
+
+  main.dashboardMain {
+    min-width: 100 !important;
+    width: 100% !important;
+    min-height: 70vh;
+    padding: 1rem 0;
+
   }
 
   .generalBody {
@@ -533,9 +532,31 @@ main.dashboardMain {
   .dashboard-container {
     flex: 1;
   }
+
+  .dashboard-nav {
+    display: none
+  }
+
+  .dashboard-nav {
+    display: none
+  }
+
+  .dashboard-content-wrapper {
+    flex: 1;
+    display: flex;
+  }
 }
 
 @media screen and (max-width:600px) {
+
+  .footerWrapper {
+    gap: 1rem;
+  }
+
+  .footerSection {
+    flex-basis: 100%;
+  }
+
   .generalBody {
     padding: 0;
     width: 100% !important;

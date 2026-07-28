@@ -32,7 +32,10 @@ organization:OrgProps}
     
     
     const [searchInput,setSearchInput]= useState("")
-    
+    const filteredCustomers = customers.filter((cus) => {
+    const searchValue = searchInput.toLowerCase();
+    return [cus.name, cus.phone_number, cus.origin].some((value) => value?.toLowerCase().includes(searchValue));
+  });
     const changeTab =(tab:string) =>
     {
         setCurrentTab(tab);
@@ -54,7 +57,7 @@ organization:OrgProps}
             </div>
             <div className={styles["content-main"]}>
                 < CustomerLayout
-                 customers={customers}
+                 customers={filteredCustomers}
                  organization={organization}
                  user={user}
                  current_layout={currTab==="Customers"}

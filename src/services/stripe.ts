@@ -2,7 +2,7 @@
 import Stripe from 'stripe';
 export const runtime = "nodejs";
 import { createConnection } from '@/db/connection';
-import { createStripeOrg, syncData } from '@/db/queries/stripe';
+import { createStripeOrg, getStripe, syncData } from '@/db/queries/stripe';
 
 const SECRET_KEY = process.env.STRIPE_DEV_SECRET_KEY
 
@@ -90,9 +90,29 @@ const SyncronizeData = async (org_id: number) => {
 
 }
 
+const getStripeService = async (org_id: number) => {
+    try {
+        const conn = await createConnection();
+        const stripe = await getStripe(conn, org_id);
+        return { stripe: stripe?.stripe, status: stripe?.status }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return { error: e }
+    }
+}
 
 
 
 
 
-export { stripeClient, getCustomers, getInvoices, getSubscriptions, SyncronizeData, createStripeOrganization }
+
+export {
+    stripeClient,
+    getCustomers,
+    getInvoices,
+    getSubscriptions,
+    SyncronizeData,
+    createStripeOrganization,
+    getStripeService
+}

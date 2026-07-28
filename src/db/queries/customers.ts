@@ -49,4 +49,15 @@ export const addCustomers = async (connection: any, organization_id: number, cus
     }
 }
 
+export const deleteCustomer = async (connection: any, customer_id: number) => {
+    try {
+        await connection.query('DELETE FROM customers WHERE id=?', [customer_id]);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error("[ERROR_DB]", e);
+        return null;
+    }
+}
+
 

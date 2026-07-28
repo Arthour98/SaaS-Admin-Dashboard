@@ -32,6 +32,14 @@ body {
     justify-self: center;
 }
 
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+
+
 @keyframes loader {
     0% {
         transform: rotate(60deg);
@@ -911,7 +919,7 @@ body {
 }
 
 .orderCol2 {
-    flex: 0 0 20%;
+    flex: 0 0 18%;
 }
 
 .ordersContent {
@@ -941,7 +949,28 @@ body {
 .orderStatusCol,
 .orderOriginCol,
 .orderTypeCol {
-    flex: 0 0 20%;
+    flex: 0 0 18%;
+    text-wrap: nowrap;
+}
+
+.deleteCol {
+    flex: 0 0 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteIcon {
+    color: var(--darkRed);
+    cursor: pointer;
+    transition: color transform 0.3s ease-in-out;
+    font-size: 17px;
+}
+
+.deleteIcon:hover {
+    color: var(--lightRed);
+    transform: scale(1.1);
+    transition: color transform 0.3s ease-in-out;
 }
 
 /* Responsive media queries */
@@ -1111,7 +1140,7 @@ body {
     }
 
     .col2 {
-        flex: 0 0 25%;
+        flex: 0 0 22%;
     }
 
     .col4 {
@@ -1138,19 +1167,19 @@ body {
     }
 
     .nameCus {
-        flex: 0 0 25%;
+        flex: 0 0 22%;
     }
 
     .phoneCus {
-        flex: 0 0 25%;
+        flex: 0 0 23%;
     }
 
     .createdCus {
-        flex: 0 0 25%;
+        flex: 0 0 22%;
     }
 
     .originCus {
-        flex: 0 0 25%;
+        flex: 0 0 22%;
     }
 }
 
@@ -1308,7 +1337,9 @@ body {
     }
 
     .customersContent {
-        height: 100%;
+        min-height: 32rem;
+        height: 32rem;
+        max-height: 32rem;
     }
 
     .customerCol {
@@ -1335,12 +1366,28 @@ body {
     .originCus {
         flex: 1
     }
+
+    .deleteCol {
+        flex: 0 0 10%;
+        display: flex;
+        width: 100%;
+        justify-content: end;
+        align-items: center;
+    }
+
+    .orderNameCol,
+    .orderPriceCol,
+    .orderStatusCol,
+    .orderOriginCol,
+    .orderTypeCol {
+        flex: 0 0 18%;
+    }
 }
 
 @media screen and (max-width:600px) {
     .filterRow {
         flex-direction: column;
-        height: 15%;
+        height: 19%;
     }
 
     .filterCol {
@@ -1514,6 +1561,10 @@ body {
     .orderOriginCol,
     .orderTypeCol {
         flex: 1;
+    }
+
+    .ordersHeader {
+        display: none;
     }
 
 }

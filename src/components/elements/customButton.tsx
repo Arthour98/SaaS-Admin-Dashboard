@@ -61,9 +61,9 @@ export default function CustomButton(
         disabled={disabled?true:false}
         >
             {
-                !isLoading ?
-                content :
-                <Loader/>
+            !isLoading ?
+            content :
+            <Loader/>
             }
         </button>)
     }

@@ -8,23 +8,23 @@ import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import InfoItem from "@/components/elements/info-item";
 
 
-export default function IntegrationsClient({org}:{org:any})
+export default function IntegrationsClient({org,stripe}:
+{
+org:any,
+stripe:any
+})
 {
 
 const [selectedService,setSelectedService] = useState<null | string>(null)
+const [hasIntegratedStripe,setHasIntegratedStripe]=useState(false);
 const org_id = org?.organization.organization.id;
-useEffect(()=>
-{
-    console.log("org_id:",org_id)
-},[org_id])
 
 const syncWithService = async (
   e: React.MouseEvent,
   selService: string
 ) => {
-    if (!selService) return;
-
- if (selService === "stripe") {
+if (!selService) return;
+if (selService === "stripe") {
         window.open(
             `/api/integrations/connect-stripe?org=${org_id}`,
             "stripeOAuth",
@@ -32,34 +32,48 @@ const syncWithService = async (
         );
     }
 }
-    const selectService = ()=>
-    {
-        setSelectedService("stripe")
-    }
+const selectService = ()=>
+{
+    setSelectedService("stripe")
+}
+
+useEffect(()=>
+{
+ if(org_id === stripe.organization_id)
+ {
+    setHasIntegratedStripe(true);
+ }
+},[]);
 
     return(
         <div className={styles["dashboard-content"]}>
             <div className={styles.integrationsContainer}>
                 <div className={styles.servicesCol}>
-                    <div  
-                        style={{
-                        borderColor:selectedService ?"#22d3ee" : undefined
-                        }}
-                        className={styles.stripeIconWrapper}>
-                        <FontAwesomeIcon
-                        icon={faStripe}
-                        color="cyan"
-                        className={styles.stripeIcon}
-                        cursor="pointer"
-                        onClick={selectService}
-                        />
+                    <div className="flex flex-col gap-2">
+                        <div
+                            style={{
+                            borderColor:selectedService ?"#22d3ee" : undefined,
+                            backgroundColor:hasIntegratedStripe ?"var(--lightgreen)" : undefined
+                            }}
+                            className={styles.stripeIconWrapper}>
+                            <FontAwesomeIcon
+                            icon={faStripe}
+                            color={hasIntegratedStripe ? "white" : "cyan"}
+                            className={styles.stripeIcon}
+                            cursor="pointer"
+                            onClick={selectService}
+                            />
+                        </div>
+                        {hasIntegratedStripe &&<p className="text-sm">Integrated</p>}
                     </div>
+                        
                 </div>
                 <div className={styles.submitCol}>
                     <CustomButton
                     content="Sync"
                     className={styles.submitButton}
                     element="button"
+                    disabled={hasIntegratedStripe}
                     onClick={(e)=>syncWithService(e,selectedService as string)}
                      />
                      <InfoItem content={`By clicking the icon of service

@@ -36,6 +36,7 @@ export const addOrder = async (connection: any, organization_id: number, order: 
 export const addOrders = async (connection: any, organization_id: number, orders: any[]) => {
     try {
         const ordersArr = orders.map((order) => [
+            order.customer_id,
             order.name,
             order.price,
             order.status || "pending",
@@ -44,7 +45,7 @@ export const addOrders = async (connection: any, organization_id: number, orders
             organization_id,
         ]);
         await connection.query(`
-            INSERT INTO orders(name, price, status, origin, type, organization_id)
+            INSERT INTO orders(customer_id,name, price, status, origin, type, organization_id)
             VALUES ?
         `, [ordersArr]);
         return { status: "success" };
@@ -53,4 +54,15 @@ export const addOrders = async (connection: any, organization_id: number, orders
         return null;
     }
 };
+
+export const deleteOrder = async (connection: any, order_id: number) => {
+    try {
+        await connection.query(`DELETE FROM orders where id=?`, [order_id]);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error("[ERROR_DB]", e);
+        return null;
+    }
+}
 

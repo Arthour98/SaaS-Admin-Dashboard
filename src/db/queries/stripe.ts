@@ -72,6 +72,14 @@ export const syncData = async (connection: any, customers: any[], invoices: any[
 
 }
 
-export const updateSingleCustomer = async (conn: any, customer: any) => {
-
+export const getStripe = async (connection: any, org_id: number) => {
+    try {
+        const [rows] = await connection.query(`SELECT * FROM stripe
+            WHERE organization_id = ?`, [org_id]);
+        return { stripe: rows, status: "success" }
+    }
+    catch (e) {
+        console.error("[ERROR_DB]", e);
+        return null;
+    }
 }

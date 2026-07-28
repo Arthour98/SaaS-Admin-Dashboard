@@ -63,7 +63,7 @@ let deleteCustomer = useCallback((index:number) => {
     const new_customers = _customers.filter((cus:Customer)=>
     _customers.indexOf(cus) !== index)
     setCustomers(new_customers);
-},[customers]);
+},[_customers]);
 
 useEffect(() => {
   rowRef.current?.scrollIntoView({
@@ -134,6 +134,11 @@ const handleChange = async (
 const submitCustomers = async(e:React.MouseEvent)=>
 {
   e.preventDefault();
+  if(_customers.some((cus:Customer)=>cus.customer_name==""))
+  {
+    useToast({type:"warning",message:"Customer name is required"});
+    return;
+  }
   setLoadingSubmit(true);
   const data = 
   {
@@ -204,7 +209,7 @@ return(
             
             <div key={index} className={styles.customerRow}>
                 <div className={styles.customerNameCol}>
-                    <label className={styles.labelSpace}>Name</label>
+                    <label className={styles.labelSpace}>Name*</label>
                     <input
                     spellCheck={false}
                     className={styles.customerInput}

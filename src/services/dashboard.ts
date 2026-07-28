@@ -15,14 +15,16 @@ import {
 import {
     addCustomer,
     getCustomers,
-    addCustomers
+    addCustomers,
+    deleteCustomer
 } from "@/db/queries/customers";
 
 import {
     getOrders,
     getCustomersOrders,
     addOrder,
-    addOrders
+    addOrders,
+    deleteOrder
 } from "@/db/queries/orders";
 
 
@@ -294,5 +296,29 @@ export const addNewOrder = async (org_id: number, orders: any[]) => {
         return null;
     }
 };
+
+export const DeleteOrder = async (order_id: number) => {
+    try {
+        const conn = await createConnection();
+        const deleted = await deleteOrder(conn, order_id);
+        return { status: deleted?.status }
+    }
+    catch (e) {
+        console.error('[ERROR_SERVICE]', e)
+        return null;
+    }
+}
+
+export const DeleteCustomer = async (customer_id: number) => {
+    try {
+        const conn = await createConnection();
+        const deleted = await deleteCustomer(conn, customer_id);
+        return { status: deleted?.status }
+    }
+    catch (e) {
+        console.error("[ERROR_SERVICE]", e)
+        return null;
+    }
+}
 
 

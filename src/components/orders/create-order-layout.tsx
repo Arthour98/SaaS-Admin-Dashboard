@@ -115,12 +115,28 @@ export default function CreateOrderLayout({
 
   const submitOrders = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setLoadingSubmit(true);
 
+    if(orderRows.some((order:OrderInput)=>order.order_name==""))
+    {
+      useToast({type:"warning",message:"Order name cant be empty"})
+      return;
+    }
+    if(orderRows.some((order:OrderInput)=>order.customer_id==""))  
+    {
+      useToast({type:"warning",message:"Customer name cant be empty"})
+      return;
+    }
+    if(orderRows.some((order:OrderInput)=>order.price==""))
+    {
+      useToast({type:"warning",message:"Order price cant be empty"})
+      return;
+    }
+
+    setLoadingSubmit(true);
     const payload = {
       orders: orderRows.map((row) => ({
         name: row.order_name,
-        customer_id: row.customer_id,
+        customer_id: Number(row.customer_id),
         price: row.price,
         status: row.status,
         origin: row.origin,
@@ -159,7 +175,7 @@ export default function CreateOrderLayout({
         {orderRows.map((order, index) => (
           <div key={index} className={styles.orderRow}>
             <div className={styles.orderFieldCol}>
-              <label className={styles.labelSpace}>Order name</label>
+              <label className={styles.labelSpace}>Order name*</label>
               <input
                 spellCheck={false}
                 className={styles.orderInput}
@@ -170,14 +186,15 @@ export default function CreateOrderLayout({
               />
             </div>
             <div className={styles.orderFieldCol}>
-              <label className={styles.labelSpace}>Customer</label>
+              <label className={styles.labelSpace}>Customer*</label>
               <select
                 className={styles.orderInput}
                 value={order.customer_id}
                 onChange={(e) => handleOrderChange(index, "customer_id", e.target.value)}
               >
                 <option value="">Select customer</option>
-                {customers.map((customer) => (
+                {customers.filter(cus=>cus.name!==null&& cus.name!=="")
+                .map((customer) => (
                   <option key={customer.id} value={customer.id}>
                     {customer.name}
                   </option>
@@ -185,7 +202,7 @@ export default function CreateOrderLayout({
               </select>
             </div>
             <div className={styles.orderFieldCol}>
-              <label className={styles.labelSpace}>Price</label>
+              <label className={styles.labelSpace}>Price*</label>
               <input
                 spellCheck={false}
                 className={styles.orderInput}

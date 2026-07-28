@@ -5,19 +5,22 @@ import NavBar from "@/components/partials/navbar";
 import "@/app/globals.css";
 import IntegrationsClient from "./integrationsClient";
 import { getUserOrganization} from "@/services/dashboard";
+import { getStripeService } from "@/services/stripe";
 
 
-const getOrg = async()=>
+
+
+const getIntegrationsAndOrg = async()=>
 {
-    const org = await  getUserOrganization();
-    return {organization:org}
+    const org = await getUserOrganization();
+    const stripe = await getStripeService(org?.organization.id);
+    return {organization:org?.organization,stripe:stripe}
 }
-
 
 
 export default  async function Page({})
 {
-    const org = await getOrg();
+    const {org,stripe} = (await getIntegrationsAndOrg()) as any;
     
 
     return(<>
@@ -30,7 +33,7 @@ export default  async function Page({})
                         <NavBar/>
                     </div>
                     <div className="dashboard-content-wrapper">
-                        <IntegrationsClient org={org}/>
+                        <IntegrationsClient org={org} stripe={stripe}/>
                     </div>
                 </div>
             </Main>
