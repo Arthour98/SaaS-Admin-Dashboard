@@ -172,9 +172,15 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
         try
         {
             const res = await useQuery("organizations/refresh-token",{method:"post",body:data});
-            const new_token = res.data.token;
+            if(res.data.status="success"){
+             const new_token = res.data.token.token;
             setCurrentToken(new_token);
             useToast({type:"info",message:"Token refreshed"})
+            }
+            if(res.data.stauts=="failed")
+            {
+            useToast({type:"error",message:res.data.error})
+            }
         }
         catch(e)
         {

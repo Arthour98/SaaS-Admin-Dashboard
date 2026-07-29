@@ -27,7 +27,10 @@ const getOrgAndUser = async()=>
        name:_user?.user.name ,
        created_at:_user?.user.created_at
     }
-    org.organization_id = org.id
+    if(org)
+    {
+    org.organization_id = org?.id
+    }
     return {user:user,organization:org}
 }
 
@@ -35,7 +38,6 @@ export default async function Page({})
 {
     const {user,organization} = await getOrgAndUser();
     const customers = (await getCustomers())?.customers;
-    console.log("ORG_IDD",organization.organization_id)
     return(<>
         <Header/>
             <Main className="dashboardMain">

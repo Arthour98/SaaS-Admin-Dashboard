@@ -9,13 +9,13 @@ export async function POST(request: Request) {
         const new_token = await refreshOrganizationToken(token_id, user_id, false);
 
         if (new_token?.status == "success") {
-            return Response.json({ data: new_token })
+            return Response.json({ data: { token: new_token, status: "success" } })
         }
         else {
-            return Response.json({ data: { error: new_token?.error } })
+            return Response.json({ data: { stauts: "failed", error: new_token?.error } })
         }
     }
     catch (e) {
-        return Response.json({ data: { error: `[ERROR]:` + e } })
+        return Response.json({ data: { status: "failed", error: `[ERROR]:` + e } })
     }
 }

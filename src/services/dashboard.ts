@@ -26,6 +26,10 @@ import {
     addOrders,
     deleteOrder
 } from "@/db/queries/orders";
+import {
+    RolesProps,
+    assignRole,
+} from "@/db/queries/roles";
 
 
 
@@ -221,7 +225,7 @@ export const fetchCustomers = async () => {
         const user = await User();
         const user_id = user?.user.id as number;
         const organization = await getOrganization(conn, user_id);
-        const org_id = organization.id
+        const org_id = organization?.id
         const customers = await getCustomers(conn, org_id);
 
         return { customers: customers }
@@ -277,6 +281,7 @@ export const fetchOrders = async () => {
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e)
+        return null;
     }
 }
 
@@ -317,6 +322,20 @@ export const DeleteCustomer = async (customer_id: number) => {
     }
     catch (e) {
         console.error("[ERROR_SERVICE]", e)
+        return null;
+    }
+}
+
+export const assingRoleWithPermissions = async ({ user_id, organization_id, role, permissions }: RolesProps) => {
+    try {
+        const conn = await createConnection();
+        JSON.stringify(permissions);
+        const assign = await assignRole(conn, { user_id, organization_id, role, permissions });
+        return { status: assign?.status }
+
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
         return null;
     }
 }

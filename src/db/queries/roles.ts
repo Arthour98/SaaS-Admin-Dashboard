@@ -3,7 +3,7 @@ export interface RolesProps {
     user_id: number,
     organization_id: number,
     role: string,
-    permissions: JSON
+    permissions: string;
 }
 export async function getRole(connection: any, user_id: number, organization_id: number) {
     try {
@@ -30,13 +30,14 @@ export async function createRole(connection: any, { user_id, organization_id, ro
 export async function assignRole(connection: any, { user_id, organization_id, role, permissions }: RolesProps) {
     try {
         const [rows] = await connection.query(`UPDATE roles
-        SET role = ?
-        SET permissions = ?
+        SET position = ?,
+         permissions = ?
         WHERE organization_id = ? 
-        AND WHERE user_id = ?`, [role, permissions, organization_id, user_id]);
-        return rows;
+        AND  user_id = ?`, [role, permissions, organization_id, user_id]);
+        return { status: "success" }
     }
     catch (e) {
         console.error(e);
+        return null;
     }
 }

@@ -62,7 +62,7 @@ export default function CustomerCol(
             }
         </p>
      </div>
-     <div className={styles.deleteCol}>
+     <div className={styles.cusDeleteCol}>
       <FontAwesomeIcon
       icon={faCircleXmark}
       className={styles.deleteIcon}

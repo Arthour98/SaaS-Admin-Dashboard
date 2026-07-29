@@ -18,9 +18,10 @@ export type UsersLayoutProps =
     current_layout:boolean
     isOwner : boolean
     currUser: UserProps
+    openPerms:(user_id:number)=>void
 }
 
-export default function UsersLayout({users,current_layout,isOwner,currUser}:UsersLayoutProps)
+export default function UsersLayout({users,current_layout,isOwner,currUser,openPerms}:UsersLayoutProps)
 {
      if(!current_layout)
     {
@@ -32,25 +33,11 @@ export default function UsersLayout({users,current_layout,isOwner,currUser}:User
     const [openPermissionModal,setOpenPermissionModal] = useState(false);
     const [userPerms,setUserPerms] = useState(null);
 
-    const handleOpenPermiModal = useCallback((user_id:number)=>
+    const triggerOpen=(user_id:number)=>
     {
-        if(user_id)
-        {
-            const selected_user = userArr?.find((u:UserCellProps) => u?.id ===user_id)
-            if(selected_user)
-            {
-                setUserPerms(selected_user);
-                setOpenPermissionModal(true);
-            }
-            
-        }
-    },[userPerms,openPermissionModal]);
-
-
-    const handleClosePermModal = useCallback(()=>
-    {
-        setOpenPermissionModal(false);
-    },[openPermissionModal])
+        openPerms(user_id)
+    }
+    
     
     return(
         <div className={styles.usersLayout}>
@@ -85,14 +72,14 @@ export default function UsersLayout({users,current_layout,isOwner,currUser}:User
                         user={user}
                         isOwner={isOwner}
                         currUser={currUser}
-                        openPermiModal={handleOpenPermiModal}
+                        openPermiModal={triggerOpen}
                         />
                        )) 
                     }
                     </div>
                 )
             }
-        <PermModal user={userPerms} open={openPermissionModal} closeModal={handleClosePermModal}/>
+        
         </div>
     )
 }

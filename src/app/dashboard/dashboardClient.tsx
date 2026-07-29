@@ -9,6 +9,8 @@ import SearchBar from "@/components/elements/search-bar";
 import { UserProps } from "./page";
 import { OrgProps } from "./page";
 import { useRouter } from "next/navigation";
+import { UserCellProps } from "@/components/dashboard/users-layout";
+import PermModal from "@/components/modals/permission-modal";
 export default function DashBoardClient({user,org_data}:{user:UserProps,org_data:OrgProps})
 {
 const router = useRouter();
@@ -67,6 +69,30 @@ const triggerRefresh = useCallback((data:string)=>
     }
 },[])
 
+    const [openPermissionModal,setOpenPermissionModal] = useState(false);
+    const [userPerms,setUserPerms] = useState(null);
+    const userArr = users?.users?.map((u:object)=>u); //Org users mapping
+    const handleOpenPermiModal = useCallback((user_id:number)=>
+    {
+        if(user_id)
+        {
+            const selected_user = userArr?.find((u:UserCellProps) => u?.id ===user_id)
+            if(selected_user)
+            {
+                setUserPerms(selected_user);
+                setOpenPermissionModal(true);
+            }
+            
+        }
+    },[userPerms,openPermissionModal]);
+
+
+
+    const handleClosePermModal = useCallback(()=>
+    {
+        setOpenPermissionModal(false);
+    },[openPermissionModal])
+
 return(
     <div className={styles["dashboard-content"]}>
         <div className={styles.filterRow}>
@@ -82,10 +108,28 @@ return(
             </div>
         </div>
         <div className={styles["content-main"]}>
-            <InfoLayout current_layout={currTab === "Info"} info={info} />
-            <OrganizationLayout current_layout={currTab ==="Organization"} triggerRefresh={triggerRefresh} user={user} org_info={org_info}/>
-            <UsersLayout current_layout={currTab === "Users"} users={users} isOwner={org_info.owner_id ===user.id} currUser={user} />
+            <InfoLayout 
+            current_layout={currTab === "Info"}
+            info={info} />
+            <OrganizationLayout 
+            current_layout={currTab ==="Organization"} 
+            triggerRefresh={triggerRefresh} 
+            user={user} 
+            org_info={org_info}
+            />
+            <UsersLayout 
+            current_layout={currTab === "Users"} 
+            users={users} 
+            isOwner={org_info.owner_id ===user.id} 
+            currUser={user} 
+            openPerms={handleOpenPermiModal}
+            />
         </div>
+        <PermModal
+        org_id={org_info?.organization_id as number} 
+        user={userPerms} 
+        open={openPermissionModal} 
+        closeModal={handleClosePermModal}/>
     </div>
 )
 }
