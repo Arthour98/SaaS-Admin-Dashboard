@@ -46,7 +46,7 @@ useEffect(()=>
 
 const roles = ["team_member","team_leader"];
 type Role = "team_member" | "team_leader";
-const [selRole,setSelRole] = useState<null|Role>(user?.position as Role)
+const [selRole,setSelRole] = useState<null|Role>(user?.position  as Role ??"team_member")
 
 const handleChangePerms = (key:string,value:boolean)=>
 {
@@ -61,7 +61,10 @@ const handleChangePerms = (key:string,value:boolean)=>
 const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
     setSelRole(e?.target.value as Role);
 }
-
+useEffect(()=>
+{
+    console.log("ROLEEE:",selRole)
+},[selRole])
 useEffect(()=>
 {
     if(!selRole )return;
