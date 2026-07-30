@@ -578,6 +578,32 @@ button:disabled {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 1rem;
+    animation: modalPop;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+}
+
+@keyframes modalPop {
+    0% {
+        transform: scale(0) translate(-50%, -50%);
+    }
+
+    25% {
+        transform: scale(0.25) translate(-50%, -50%);
+    }
+
+    50% {
+        transform: scale(0.5) translate(-50%, -50%);
+    }
+
+    75% {
+        transform: scale(0.75) translate(-50%, -50%);
+    }
+
+    100% {
+        transform: scale(1) translate(-50%, -50%);
+    }
 }
 
 .perModalContent {

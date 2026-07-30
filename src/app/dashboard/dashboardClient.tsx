@@ -129,7 +129,9 @@ return(
         org_id={org_info?.organization_id as number} 
         user={userPerms} 
         open={openPermissionModal} 
-        closeModal={handleClosePermModal}/>
+        closeModal={handleClosePermModal}
+        triggerRefresh={triggerRefresh}
+        />
     </div>
 )
 }

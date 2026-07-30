@@ -14,12 +14,13 @@ type ModalProps =
     user: UserCellProps |null,
     org_id:number
     closeModal:()=>void
+    triggerRefresh:(data:string)=>void
 }
-export default function PermModal({open,user,org_id,closeModal}:ModalProps)
+export default function PermModal({open,user,org_id,closeModal,triggerRefresh}:ModalProps)
 {
     const allPermissions = permissions?.permissions;
     const  userPermissions = user?.permissions;
-    const [permissionsArr,setPermissionsArr] = useState<null | Map<string,boolean>>(null);
+    const [permissionsArr,setPermissionsArr] = useState({});
 
 useEffect(()=>
 {
@@ -27,47 +28,32 @@ useEffect(()=>
     {
         return;
     }
-    console.log("userPerms",userPermissions)
-    console.log("allPerm:",allPermissions)
-    const  unifiedPermissions = new Map();
+    const perms:any ={}
     for(let i = 0 ; i<allPermissions.length; i++)
     {
-        unifiedPermissions.set(allPermissions[i],true)
-    }
-    for(let i = 0 ; i<allPermissions.length; i++)
-    {
-        const currPer = userPermissions[i] as string;
-        const checked : boolean = allPermissions?.includes(currPer);
+        const checked = userPermissions.includes(allPermissions[i])
         if(checked)
         {
-            unifiedPermissions.set(allPermissions[i],true)
+        perms[allPermissions[i]]=true;
         }
         else
         {
-            unifiedPermissions.set(allPermissions[i],false)
+         perms[allPermissions[i]]=false;
         }
-        
     }
-    setPermissionsArr(unifiedPermissions);
-},[allPermissions,userPermissions,open])
-
-useEffect(()=>
-{
-console.log("permisions:",permissionsArr);
-},[permissionsArr])
+    setPermissionsArr(perms);
+},[allPermissions,userPermissions,open]) // initialization effect
 
 const roles = ["team_member","team_leader"];
 type Role = "team_member" | "team_leader";
-const [selRole,setSelRole] = useState<null|Role>(null)
+const [selRole,setSelRole] = useState<null|Role>(user?.position as Role)
 
 const handleChangePerms = (key:string,value:boolean)=>
 {
     setPermissionsArr(prev => {
     if (!prev) return null;
-
-    const newPerms = new Map(prev);
-    newPerms.set(key, !value);
-
+    const newPerms:any = {...prev};
+    newPerms[key]=!value;
     return newPerms;
 });
 }
@@ -76,33 +62,31 @@ const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
     setSelRole(e?.target.value as Role);
 }
 
-// useEffect(()=>
-// {
-//     if(!selRole )return;
-//     if(userPermissions == undefined)
-//     {
-//         return;
-//     }
-
-//     const standarPerms = new Map();
-//     const rolesPermissions  =  permissions[`${selRole}`];
-//     for(let i = 0 ; i<allPermissions.length; i++)
-//     {
-//         const checked : boolean = allPermissions?.includes(rolesPermissions[i]);
-//         if(checked)
-//         {
-//             standarPerms.set(allPermissions[i],true)
-//         }
-//         else
-//         {
-//             standarPerms.set(allPermissions[i],false)
-//         }
+useEffect(()=>
+{
+    if(!selRole )return;
+    if(userPermissions == undefined || allPermissions==undefined)
+    {
+        return;
+    }
+    const standarPerms :any = {};
+    const rolesPermissions :any  = permissions[`${selRole}`];
+    for(let i = 0 ; i<allPermissions.length; i++)
+    {
+        const checked = rolesPermissions.includes(allPermissions[i]) 
+        || userPermissions.includes(allPermissions[i]);
+        if(checked)
+        {
+        standarPerms[allPermissions[i]]=true;
+        }
+        else
+        {
+        standarPerms[allPermissions[i]]=false;
+        }
         
-//     }
-//     let filteredPermissions = permissionsArr?.entries()
-//     console.log("filtered:",filteredPermissions)
-//     setPermissionsArr(standarPerms);
-// },[selRole,open,userPermissions])
+    }
+    setPermissionsArr(standarPerms);
+},[selRole,open,userPermissions,allPermissions]) 
 
 const [isLoadingSubmit,setIsLoadingSubmit] = useState(false);
 
@@ -111,15 +95,9 @@ const submitPermissions = async()=>
     setIsLoadingSubmit(true);
     try
     {
-        let filteredPermissions:any = [];
-        permissionsArr?.forEach((value,key)=>
-        {
-            if(value===true)
-            {
-                filteredPermissions.push(key);
-            }
-        })
-        
+        let filteredPermissions:any = Array.from(Object.entries(permissionsArr))
+        .filter(([key,value])=>value===true).map(p=>p[0]);
+
         const data = 
         {
             user_id:user?.id,
@@ -131,6 +109,8 @@ const submitPermissions = async()=>
         if(res.data.status==="success")
         {
             setIsLoadingSubmit(false);
+            triggerRefresh(res?.data?.status);
+            closeModal();
             useToast({type:"success",message:"Role and permissions updated"})
         }
         else
@@ -152,15 +132,13 @@ if(!open)
     return null;
 }
 
-    
-
 return(
 <div className={styles.perModal}>
     <FontAwesomeIcon icon={faX} width={12} className={styles.closeIcon} onClick={()=>closeModal()}/>
     <div className={styles.perModalContent}>
         <div className={styles.roleRow}>
             <label className="font-semibold">Assign role</label>
-            <select className={styles.permSelect} onChange={(e)=>handleRoleChange(e)}>
+            <select className={styles.permSelect} value={selRole as Role} onChange={(e)=>handleRoleChange(e)}>
                 {
                     roles.map((role,index)=>
                     (
@@ -172,15 +150,15 @@ return(
         </div>
         <div className={styles.permissionRow}>
             {
-                Array.from(permissionsArr?.entries() ?? []).map(([key, value]) =>
+                Object.entries(permissionsArr).map(([key,value]) =>
             (
                 <div className={styles.permCol} key={key}>
                     <label className={styles.permLabel}>{key}:</label>
                     <input
                     type="checkbox"
-                    value={value.toString()}
-                    onChange={()=>handleChangePerms(key,value)}
-                    checked={value}
+                    value={key?.toString()}
+                    onChange={()=>handleChangePerms(key,value as boolean)}
+                    checked={value as boolean}
                     />
                 </div>
             ))
