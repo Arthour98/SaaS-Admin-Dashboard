@@ -103,10 +103,6 @@ const getStripeService = async (org_id: number) => {
 }
 
 
-
-
-
-
 export {
     stripeClient,
     getCustomers,

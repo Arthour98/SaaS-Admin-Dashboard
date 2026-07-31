@@ -21,8 +21,7 @@ import {
 
 import {
     getOrders,
-    getCustomersOrders,
-    addOrder,
+    getCustomerOrdersWithCustomerInfo,
     addOrders,
     deleteOrder
 } from "@/db/queries/orders";
@@ -30,8 +29,6 @@ import {
     RolesProps,
     assignRole,
 } from "@/db/queries/roles";
-
-
 
 import { createConnection } from "@/db/connection"
 import { User } from "./auth"
@@ -278,6 +275,22 @@ export const fetchOrders = async () => {
         const org_id = organization.id
         const orders = await getOrders(conn, org_id);
         return { orders: orders }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e)
+        return null;
+    }
+}
+
+export const fetchCustomerOrders = async () => {
+    try {
+        const conn = await createConnection();
+        const user = await User();
+        const user_id = user?.user.id as number;
+        const organization = await getOrganization(conn, user_id);
+        const org_id = organization.id;
+        const customerOrders = await getCustomerOrdersWithCustomerInfo(conn, org_id);
+        return { customerOrders: customerOrders }
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e)

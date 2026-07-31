@@ -4,7 +4,7 @@ import Main from "@/components/partials/main";
 import NavBar from "@/components/partials/navbar";
 import "@/app/globals.css";
 import OrdersClient from "./ordersClient";
-import { fetchOrders, fetchCustomers } from "@/services/dashboard";
+import { fetchOrders, fetchCustomers, fetchCustomerOrders } from "@/services/dashboard";
 import { getOrganization } from "@/db/queries/organizations";
 import { User } from "@/services/auth";
 import { createConnection } from "@/db/connection";
@@ -26,9 +26,14 @@ const getOrgAndUser = async () => {
 
 export default async function Page() {
   const { user, organization } = await getOrgAndUser();
-  const [ordersResponse, customersResponse] = await Promise.all([fetchOrders(), fetchCustomers()]);
+  const [ordersResponse, customersResponse, customerOrdersResponse] = await Promise.all([
+    fetchOrders(),
+    fetchCustomers(),
+    fetchCustomerOrders(),
+  ]);
   const orders = ordersResponse?.orders ?? [];
   const customers = customersResponse?.customers ?? [];
+  const customerOrders = customerOrdersResponse?.customerOrders ?? [];
 
   return (
     <>
@@ -40,7 +45,7 @@ export default async function Page() {
             <NavBar />
           </div>
           <div className="dashboard-content-wrapper">
-            <OrdersClient orders={orders} customers={customers} user={user} organization={organization} />
+            <OrdersClient orders={orders} customers={customers} customerOrders={customerOrders} user={user} organization={organization} />
           </div>
         </div>
       </Main>

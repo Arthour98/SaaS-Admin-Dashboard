@@ -20,6 +20,31 @@ export async function getCustomersOrders(connection: any, organization_id: numbe
     }
 }
 
+export async function getCustomerOrdersWithCustomerInfo(connection: any, organization_id: number) {
+    try {
+        const [rows] = await connection.query(`
+            SELECT 
+                o.id,
+                o.name AS product_name,
+                o.price,
+                o.status,
+                o.origin,
+                o.type,
+                o.created_at,
+                o.organization_id,
+                c.name AS customer_name
+            FROM orders o
+            LEFT JOIN customers c ON c.id = o.customer_id
+            WHERE o.organization_id = ?
+            ORDER BY o.created_at DESC
+        `, [organization_id]);
+        return rows;
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
 export const addOrder = async (connection: any, organization_id: number, order: any) => {
     try {
         const [rows] = await connection.query(`
