@@ -15,7 +15,8 @@ export default function SearchBar({value,setValue,className,currentTab}:SearchPr
         "Users",
         "Orders",
         "Customers",
-        "Customers orders"
+        "Customers orders",
+        "Tickets"
     ];
 
     if(!acceptTabs.some((t:string)=>t===currentTab))

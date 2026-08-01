@@ -18,11 +18,12 @@ export async function submitTicket(connection: any, organization_id: number, use
 
 export async function getTickets(connection: any, organization_id: number) {
     try {
-        const [rows] = await connection.query(`SELECT tickets.*,ticket_messages.COUNT(messages) as message_count
+        const [rows] = await connection.query(`SELECT tickets.*,COUNT(ticket_messages.message) as message_count
             FROM tickets
             LEFT JOIN ticket_messages
             ON tickets.id = ticket_messages.ticket_id
-            where organization_id = ?`, [organization_id]);
+            where organization_id = ?
+            GROUP BY id`, [organization_id]);
         return rows;
     }
     catch (e) {
@@ -41,9 +42,9 @@ export async function createTicketMessage(connection: any, user_id: number, tick
     }
 }
 
-export async function getTicketMessages(connection: any, ticket_id: number) {
+export async function getTicketMessages(connection: any, organization_id: number) {
     try {
-        const [rows] = await connection.query(`SELECT * FROM ticket_messages WHERE ticket_id = ?`, [ticket_id]);
+        const [rows] = await connection.query(`SELECT * FROM ticket_messages WHERE organization_id ?`, [organization_id]);
         return rows
     }
     catch (e) {

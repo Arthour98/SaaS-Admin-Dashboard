@@ -11,6 +11,7 @@ import {
     leaveOrg,
     deleteOrg,
     editOrg,
+    getOrgId
 } from "@/db/queries/organizations"
 import {
     addCustomer,
@@ -29,6 +30,12 @@ import {
     RolesProps,
     assignRole,
 } from "@/db/queries/roles";
+import {
+    submitTicket,
+    getTickets,
+    createTicketMessage,
+    getTicketMessages
+} from "@/db/queries/tickets";
 
 import { createConnection } from "@/db/connection"
 import { User } from "./auth"
@@ -73,6 +80,18 @@ export const getUserOrganization = async () => {
         console.error(e);
     }
 
+}
+
+export const getOrganizationId = async (user_id: number) => {
+    try {
+        const conn = await createConnection();
+        const org_id = (await getOrgId(conn, user_id)).organization_id;
+        return { org_id: org_id }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
 }
 
 export const createOrg = async (name: string, user_id: number) => {
@@ -352,5 +371,54 @@ export const assingRoleWithPermissions = async ({ user_id, organization_id, role
         return null;
     }
 }
+
+export const getOrgTickets = async (user_id: number, org_id: number) => {
+    try {
+        const conn = await createConnection();
+        const tickets = await getTickets(conn, org_id);
+        return { tickets: tickets }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
+export const createOrgTicket = async (org_id: number, user_id: number, title: string, content: string) => {
+    try {
+        const conn = await createConnection();
+        const create = await submitTicket(conn, org_id, user_id, { title, content });
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
+export const submitOrgTicketMessage = async (user_id: number, ticket_id: number, message: string) => {
+    try {
+        const conn = await createConnection();
+        const create_message = await createTicketMessage(conn, user_id, ticket_id, message);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
+export const getOrgTicketMessages = async (organization_id: number) => {
+    try {
+        const conn = await createConnection();
+        const messages = await getTicketMessages(conn, organization_id);
+        return { messages: messages }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
 
 

@@ -38,6 +38,17 @@ export async function getOrganization(connection: any, user_id: number) {
     }
 }
 
+export async function getOrgId(connection: any, user_id: number) {
+    try {
+        const [rows] = await connection.query(`SELECT organization_id FROM users_organizations WHERE user_id=?`, [user_id]);
+        return rows[0];
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 export async function getOrganizationMembers(connection: any, organization_id: number) {
     try {
         const [rows] = await connection.query(`SELECT users.id, users.name ,users_organizations.organization_id,

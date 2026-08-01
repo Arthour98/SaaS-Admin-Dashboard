@@ -258,7 +258,7 @@ return(
         className={styles.submitButton}
         onClick={(e)=>submitCustomers(e)}
         />
-    </div>
-    </div>
+  </div>
+</div>
     )
 }
