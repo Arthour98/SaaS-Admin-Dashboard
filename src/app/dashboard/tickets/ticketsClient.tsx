@@ -31,6 +31,11 @@ export default function TicketsClient(
     const ticketsTabs =["Tickets","Create tickets"];
     const [currTab,setCurrentTab]= useState("Tickets");
 
+    const filteredTickets = tickets.filter((ticket) => {
+        const searchValue = searchInput.toLowerCase();
+        return [ticket.title, ticket.user_name].some((value) => value?.toLowerCase().includes(searchValue));
+  });
+
     const changeTab = (tab:string)=>
     {
         setCurrentTab(tab);
@@ -48,7 +53,7 @@ export default function TicketsClient(
             router.push(`/dashboard/tickets/${ticket_id}`)
         }
     }
-    
+        
     return(
         <div className={styles["dashboard-content"]}>
             <div className={styles.filterRow}>
@@ -67,7 +72,7 @@ export default function TicketsClient(
             <div className={styles["content-main"]}>
                 <TicketsLayout 
                 user={user} 
-                tickets={tickets} 
+                tickets={filteredTickets} 
                 organization_id={organization_id}
                 currentLayout={currTab==="Tickets"}
                 openTicket={openTicket}

@@ -14,11 +14,10 @@ export default function Footer() {
                     <h4>Quick links</h4>
                     <ul className="footerLinks">
                         <li><Link href="/dashboard">Dashboard</Link></li>
-                        <li><Link href="/customers">Customers</Link></li>
-                        <li><Link href="/orders">Orders</Link></li>
-                        <li><Link href="/tickets">Tickets</Link></li>
-                        <li><Link href="/integrations">Integrations</Link></li>
-                        <li><Link href="/settings">Settings</Link></li>
+                        <li><Link href="/dashboard/customers">Customers</Link></li>
+                        <li><Link href="/dashboard/orders">Orders</Link></li>
+                        <li><Link href="/dashboard/tickets">Tickets</Link></li>
+                        <li><Link href="/dashboard/integrations">Integrations</Link></li>
                     </ul>
                 </nav>
 
@@ -34,7 +33,7 @@ export default function Footer() {
                         <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                     </div>
             <div className="footerBottom">
-                <small>© {new Date().getFullYear()} Your Company. All rights reserved.</small>
+                <small>© {new Date().getFullYear()} C-Board. All rights reserved.</small>
             </div>
                 </section>
             </div>

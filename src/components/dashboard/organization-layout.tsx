@@ -22,7 +22,8 @@ type OrgInfoProps =
     current_token : string | null ,
     token_id : number,
     organizations : organizationProps[] | null
-    position: string | null
+    position: string | null,
+    leader_name:string
 }
 
 
@@ -386,7 +387,11 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                             (
                                 <form onSubmit={editOrg} className={styles.editOrgForm} >
                                     <label>Organization:</label>
-                                    <input type="text" name="editOrg" className={styles.generalInput} />
+                                    <input type="text"
+                                    defaultValue={org_info.org_name as string}
+                                    name="editOrg"
+                                    className={styles.generalInput}
+                                    />
                                     <div className="flex gap-2">
                                         <CustomButton element="input"
                                         className={styles.submitButton}
@@ -412,6 +417,10 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                     <div className="flex gap-2">
                         <p className="font-semibold">Position : </p>
                         <p>{org_info.position}</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <p className="font-semibold">Leader: </p>
+                        <p>{org_info.leader_name}</p>
                     </div>
                 </div>
                 <div className={styles.orgValidationTokenCol}>

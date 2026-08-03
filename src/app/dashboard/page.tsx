@@ -28,6 +28,7 @@ export type OrgProps =
     token_id:number | any,
     organizations: any[] | null,
     position:string | null,
+    leader_name:string
 }
 
 export const getUser = async()=>
@@ -89,7 +90,8 @@ const org_data: OrgProps | any  =
               token_id : org?.token?.token_id,
               organizations: orgs.data.organizations,
               position:org.organization.position,
-              owner_id : org.organization.owner_id
+              owner_id : org.organization.owner_id,
+              leader_name:org.organization.leader_name
           }
         : {
             organizations:orgs.data.organizations,

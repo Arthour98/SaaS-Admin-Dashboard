@@ -17,6 +17,7 @@ export interface OrganizationProps {
 export async function getOrganization(connection: any, user_id: number) {
     try {
         const [rows] = await connection?.query(`SELECT 
+        users.name as leader_name,
         organizations.*,
         roles.position,roles.permissions
         FROM organizations
@@ -24,6 +25,8 @@ export async function getOrganization(connection: any, user_id: number) {
         ON organizations.id = users_organizations.organization_id
         LEFT JOIN roles
         ON users_organizations.user_id = roles.user_id
+        LEFT JOIN users
+        ON organizations.owner_id = users.id
         WHERE users_organizations.user_id = ?
         GROUP BY organizations.id;`, [user_id, user_id]);
         if (!rows || rows.length === 0) {

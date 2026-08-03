@@ -43,7 +43,8 @@ const org_info =
     token_id : org_data.token_id,
     organizations : org_data.organizations,
     position : org_data.position,
-    owner_id:org_data.owner_id
+    owner_id:org_data.owner_id,
+    leader_name:org_data?.leader_name
 }
 
 const users : any = 
