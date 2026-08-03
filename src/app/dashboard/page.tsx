@@ -46,14 +46,12 @@ export const getUser = async()=>
 export const getOrgData = async()=>
 {
     const organization = await getUserOrganization();
-    console.log("MY ORGGG:",organization)
     return{data:organization}
 }
 
 export const getOrgs = async()=>
 {
     const organizations = await getAllOrganizations();
-    console.log("ORGSSS:",organizations)
     return {data:organizations}
 }
 

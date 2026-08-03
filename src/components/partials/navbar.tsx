@@ -37,7 +37,7 @@ export default function NavBar({}){
         <NavLink src="/dashboard/customers" label="Customers" isActive={path ==="/dashboard/customers"}/>
         <NavLink src="/dashboard//orders" label="Orders" isActive={path ==="/dashboard/orders"}/>
         <NavLink src="/dashboard/integrations" label="Integrations" isActive={path ==="/dashboard/integrations"}/>
-        <NavLink src="/dashboard/tickets" label="Tickets" isActive={path ==="/dashboard/tickets"}/>
+        <NavLink src="/dashboard/tickets" label="Tickets" isActive={path.startsWith("/dashboard/tickets")}/>
         <div className="settingsWrapper">
         <NavLink src="/dashboard/settings" label="Settings" onClick={handleSettingClick} isActive={path?.startsWith("/dashboard/settings")}/>
             <div className="dropdown-settings">

@@ -1,13 +1,14 @@
-import { getOrgTickets } from "@/services/dashboard";
+import { getOrgTicketMessages } from "@/services/dashboard";
 
 export async function GET(req: Request) {
     try {
-        const payload = await req.json();
-        const user_id = payload.user_id;
-        const org_id = payload.organization_id;
-        const tickets = await getOrgTickets(user_id, org_id);
-        if (tickets?.tickets) {
-            return Response.json({ tickets: tickets })
+        const { searchParams } = new URL(req.url);
+        const user_id = Number(searchParams.get("user_id"));
+        const ticket_id = Number(searchParams.get("ticket_id"));
+
+        const messages = await getOrgTicketMessages(user_id, ticket_id);
+        if (messages?.status === "success") {
+            return Response.json({ data: { status: "success", messages: messages.messages } })
         }
     }
     catch (e) {

@@ -9,7 +9,8 @@
         "refresh_org_token",
         "run_integration",
         "create_ticket",
-        "view_logs"
+        "view_logs",
+        "view_tickets"
     ],
     "admin_permissions": [
         "delete_users",

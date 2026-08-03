@@ -5,6 +5,7 @@ import CustomButton from "../elements/customButton";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@/lib/use-query";
+
 export default function CreateTicketsLayout({tickets,user,organization_id,triggerRefresh,currentLayout}:
     {
         tickets:TicketsProps[],
@@ -18,6 +19,7 @@ export default function CreateTicketsLayout({tickets,user,organization_id,trigge
 const [ticketTitle,setTicketTitle] = useState("");
 const [ticketContent,setTicketContent] = useState("");
 const [loadingSubmit,setLoadingSubmit] = useState(false);
+
 
 const submitTicket = async(e:React.MouseEvent)=>
 {
@@ -59,8 +61,8 @@ return null;
 return (
 <div className={styles.createTicketsLayout}>
   <div className={styles.addTicketCol}>
-            <div className={styles.ticketRow}>
-                <div className={styles.ticketTitleCol}>
+            <div className={styles.createTicketRow}>
+                <div className={styles.ticketCreateTitleCol}>
                     <label className={styles.labelSpace}>Title*</label>
                     <input
                     spellCheck={false}
@@ -73,7 +75,7 @@ return (
                     }
                 />
                 </div>
-                <div className={styles.ticketContentCol}>
+                <div className={styles.ticketCreateContentCol}>
                     <label className={styles.labelSpace}>Content</label>
                     <textarea
                     spellCheck={false}

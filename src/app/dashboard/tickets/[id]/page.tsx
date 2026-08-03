@@ -3,25 +3,41 @@ import Header from "@/components/partials/header";
 import Main from "@/components/partials/main";
 import NavBar from "@/components/partials/navbar";
 import "@/app/globals.css";
-import TicketsClient from "./ticketsClient";
 import { User } from "@/services/auth";
-import { getOrgTickets, getOrganizationId } from "@/services/dashboard";
-
-
-
-const getTickets = async () => {
+import { getOrgTicket, getOrganizationId } from "@/services/dashboard";
+import TicketClient from "./ticketClient";
+const getTicket = async ({params}
+    :
+    {
+        params:Promise<{id:string}>
+    }
+) => {
     const user = await User();
-    const org_id = (await getOrganizationId(user.user.id)).org_id
-    const tickets = (await getOrgTickets(user?.user.id, org_id)).tickets;
+    const ticket_id = Number((await params).id);
+    const org_id = (await getOrganizationId(user?.user?.id))?.org_id
+    const tickets = (await getOrgTicket(user?.user.id, org_id,ticket_id))?.ticket;
 
-    return { user: user.user, tickets: tickets, org_id: org_id };
+    return { 
+        user: user?.user,
+        ticket: tickets,
+        org_id: org_id };
 }
 
 
 
-export default async function Page({ }) {
+export default async function Page({params}
+    :
+    {
+          params:Promise<{id:string}>
+    }
+) {
 
-    const { user, tickets, org_id } = await getTickets();
+    const { user, ticket, org_id } = await getTicket({params});
+
+    console.log("Userr:", user)
+    console.log("tickets:", ticket)
+    console.log("ORR|G_ID", org_id)
+
 
     return (<>
         <Header />
@@ -33,10 +49,10 @@ export default async function Page({ }) {
                     <NavBar />
                 </div>
                 <div className="dashboard-content-wrapper">
-                    <TicketsClient
+                    <TicketClient
                         user={user}
                         organization_id={org_id}
-                        tickets={tickets}
+                        ticket={ticket}
                     />
                 </div>
             </div>

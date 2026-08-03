@@ -35,4 +35,3 @@ export async function createJwtToken(payload: JwtPayload) {
         .sign(secret);
     return token;
 }
-

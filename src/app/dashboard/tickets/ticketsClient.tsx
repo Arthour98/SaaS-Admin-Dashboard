@@ -14,6 +14,9 @@ export interface TicketsProps
     organization_id:number,
     title?:string | null,
     content?:string | null
+    user_name?:string,
+    created_at:string
+    message_count:number
 }
 export default function TicketsClient(
     {tickets,user,organization_id}:
@@ -37,6 +40,14 @@ export default function TicketsClient(
     {
         router.refresh();
     }
+
+    const openTicket = (ticket_id:number)=>
+    {
+        if(ticket_id)
+        {
+            router.push(`/dashboard/tickets/${ticket_id}`)
+        }
+    }
     
     return(
         <div className={styles["dashboard-content"]}>
@@ -59,6 +70,7 @@ export default function TicketsClient(
                 tickets={tickets} 
                 organization_id={organization_id}
                 currentLayout={currTab==="Tickets"}
+                openTicket={openTicket}
                 />
                 <CreateTicketsLayout 
                 user={user} 

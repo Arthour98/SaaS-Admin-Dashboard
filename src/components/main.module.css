@@ -13,6 +13,7 @@ body {
     --lightOrange: rgb(243, 188, 8);
     --darkRed: rgb(146, 11, 11);
     --lightRed: rgb(240, 131, 131);
+    --selCyan: #22d3ee;
 
 }
 
@@ -1060,7 +1061,7 @@ button:disabled {
     padding-bottom: 1rem !important;
 }
 
-.ticketRow {
+.createTicketRow {
     display: flex;
     flex-direction: column;
     row-gap: 0.5rem;
@@ -1072,7 +1073,7 @@ button:disabled {
     position: relative;
 }
 
-.ticketTitleCol {
+.ticketCreateTitleCol {
     align-items: center;
     column-gap: 1rem;
     display: flex;
@@ -1088,7 +1089,7 @@ button:disabled {
     outline: none;
 }
 
-.ticketContentCol {
+.ticketCreateContentCol {
     column-gap: 1rem;
     display: flex;
     width: 100%;
@@ -1113,8 +1114,160 @@ button:disabled {
     display: flex;
     justify-content: end;
     row-gap: 1rem;
+    padding: 0 0.5rem;
     align-items: center;
-    flex: 0 0 30%;
+    flex: 0 0 20%;
+}
+
+.ticketsLayout {
+    width: 100%;
+    height: 22rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    animation: customersPop;
+    animation-timing-function: linear;
+    animation-duration: 0.6s;
+    animation-fill-mode: both;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.ticketRow {
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    column-gap: 0.5rem;
+    background-color: var(--light-gray);
+    cursor: pointer;
+    box-sizing: content-box;
+}
+
+.ticketTitle {
+    flex: 0 0 10%;
+    display: flex;
+    align-items: center;
+    text-wrap: nowrap;
+    column-gap: 0.5rem;
+}
+
+.ticketAuthor {
+    flex: 0 0 10%;
+    text-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+
+}
+
+.ticketCreation {
+    flex: 0 0 10%;
+    text-wrap: nowrap;
+    text-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+}
+
+.MessageCount {
+    flex: 0 0 10%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    text-wrap: nowrap;
+    column-gap: 0.5rem;
+}
+
+/* ticket page styles */
+.content-main-ticket {
+    padding: 0 1rem;
+    width: 100%;
+    height: 22rem;
+    overflow-y: hidden;
+}
+
+.ticketLayout {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    animation: customersPop;
+    animation-timing-function: linear;
+    animation-duration: 0.6s;
+    animation-fill-mode: both;
+}
+
+.ticketTitleCol {
+    background-color: var(--light-gray);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.ticketContentCol {
+    padding: 1rem;
+    height: auto;
+}
+
+.ticketContent {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.3rem;
+    background-color: var(--medium-gray);
+    padding: 1rem;
+    border-radius: 12px;
+    min-height: fit-content;
+    height: fit-content;
+    max-height: auto;
+}
+
+.ticketContentCol p {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.backArrowCol {
+    width: 100%;
+    padding: 1rem;
+}
+
+.backArrowIcon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.backArrowIcon:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.messagesRow {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    max-height: auto;
+}
+
+.messageSection {
+    display: flex;
+}
+
+.messageArea {
+    width: 80%;
+    min-height: 5rem;
+    height: 5rem;
+    max-height: 7rem;
+    resize: none;
+    padding: 0.5 0.7rem;
+    background-color: var(--light-gray);
+    border-radius: 8px;
 }
 
 /* Responsive media queries */
@@ -1379,6 +1532,9 @@ button:disabled {
         flex: 0 0 50% !important;
     }
 
+    .content-main-ticket {
+        height: 30rem;
+    }
 }
 
 @media screen and (max-width:800px) {
@@ -1594,6 +1750,16 @@ button:disabled {
         min-width: 40%;
         max-width: 40%;
     }
+
+    .ticketRow {
+        flex-direction: column;
+        column-gap: 0.5rem;
+        background-color: var(--light-gray);
+    }
+
+    .messageArea {
+        width: 100%;
+    }
 }
 
 @media screen and (max-width:600px) {
@@ -1783,5 +1949,13 @@ button:disabled {
         flex: 1 0 70% !important;
         min-width: 60%;
         max-width: 70%;
+    }
+
+    .content-main-ticket {
+        height: 100%;
+    }
+
+    .ticketsLayout {
+        height: 32rem;
     }
 }

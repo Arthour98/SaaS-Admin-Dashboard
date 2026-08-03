@@ -131,7 +131,7 @@ input[type="submit"] {
   display: flex;
   align-items: center;
   width: 75%;
-  justify-self: center;
+  margin-inline: auto;
   min-height: 10%;
   max-height: 10%;
   background-color: rgba(143, 243, 193, 0.3);
@@ -561,7 +561,6 @@ main.dashboardMain {
     padding: 0;
     width: 100% !important;
     min-width: 100% !important;
-    border: 3px solid red;
   }
 
   main.dashboardMain {

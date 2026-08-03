@@ -61,10 +61,7 @@ const handleChangePerms = (key:string,value:boolean)=>
 const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
     setSelRole(e?.target.value as Role);
 }
-useEffect(()=>
-{
-    console.log("ROLEEE:",selRole)
-},[selRole])
+
 useEffect(()=>
 {
     if(!selRole )return;

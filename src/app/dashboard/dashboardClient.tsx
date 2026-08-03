@@ -46,20 +46,10 @@ const org_info =
     owner_id:org_data.owner_id
 }
 
-useEffect(()=>
-{
-    console.log("ORG_INFOO:",org_info)
-},[])
-
 const users : any = 
 {
     users : org_data.members
 }
-
-useEffect(()=>
-{
-    console.log("users->",users)
-},[users]);
 
 const triggerRefresh = useCallback((data:string)=>
 {
