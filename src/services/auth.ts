@@ -5,6 +5,9 @@ import {
     createUserByOauth,
     getUser,
     getUserByEmail,
+    getUserByName,
+    editUser,
+    deleteUser,
     validateUser,
     createValidationToken
 } from "@/db/queries/users";
@@ -12,8 +15,9 @@ import { createConnection } from '@/db/connection';
 import { UserProps } from "@/db/queries/users";
 import { validate_username, validate_email, validate_password } from "@/lib/validation";
 import sendVerificationEmail from "@/lib/send-verification-email";
+import sendPasswordChangeEmail from "@/lib/send-password-change-email";
 import { cookies } from "next/headers";
-import { matchPass } from "@/lib/hash";
+import { hashPassword, matchPass } from "@/lib/hash";
 
 
 
@@ -70,17 +74,135 @@ export const verifyRegistration = async (user_id: number, token: string) => {
         const verified = await validateUser(conn, user_id, token);
 
         if (verified.token !== null) {
-            return { token: verified?.token, status: verified.status }
+            return { token: verified?.token, status: verified.status };
         }
         else {
-            return { token: verified?.token, status: verified.status, error: verified.error }
+            return { token: verified?.token, status: verified.status, error: verified.error };
         }
 
     }
     catch (e) {
         console.error(e);
-        return { error: "Something went wrong" }
+        return { error: "Something went wrong" };
     }
+}
+
+export async function updateUser(payload: {
+    user_name?: string;
+    current_password?: string;
+    new_password?: string;
+    confirm_new_password?: string;
+}) {
+    const cookie_store = await cookies();
+    const cookie_token = cookie_store.get("jwt-session")?.value;
+    if (!cookie_token) {
+        return { error: "Unauthorized" };
+    }
+
+    const verified = await verifyJwtToken(cookie_token);
+    if (!verified) {
+        return { error: "Unauthorized" };
+    }
+
+    const user_id = verified.payload.user_id as number;
+    const conn = await createConnection();
+    const user = await getUser(conn, user_id);
+
+    if (!user) {
+        return { error: "User not found" };
+    }
+
+    const updates: { name?: string; password?: string } = {};
+
+    if (payload.user_name && payload.user_name !== user.name) {
+        if (!validate_username(payload.user_name, 6)) {
+            return { error: "Username must be 6 or more characters" };
+        }
+        const existingUser = await getUserByName(conn, payload.user_name);
+        if (existingUser && existingUser.id !== user_id) {
+            return { error: "Username already taken" };
+        }
+        updates.name = payload.user_name;
+    }
+
+    if (payload.new_password || payload.current_password) {
+        if (!payload.current_password) {
+            return { error: "Current password is required" };
+        }
+        if (!payload.new_password) {
+            return { error: "New password is required" };
+        }
+        if (payload.new_password !== payload.confirm_new_password) {
+            return { error: "New passwords do not match" };
+        }
+        if (!validate_password(payload.new_password, 12)) {
+            return { error: "Password must be 12 or more characters" };
+        }
+
+        const passwordMatches = await matchPass(payload.current_password, user.password);
+        if (!passwordMatches) {
+            return { error: "Current password is incorrect" };
+        }
+
+        updates.password = await hashPassword(payload.new_password);
+    }
+
+    if (!updates.name && !updates.password) {
+        return { error: "No changes to save" };
+    }
+
+    const updated = await editUser(conn, user_id, updates);
+    if (!updated) {
+        return { error: "Unable to update account" };
+    }
+
+    if (updates.password) {
+        try {
+            await sendPasswordChangeEmail(user.email, user.name);
+        }
+        catch (e) {
+            console.error("Password change email failed", e);
+        }
+    }
+
+    return { success: true, message: "Account updated successfully" };
+}
+
+export async function deleteUserAccount(current_password?: string) {
+    const cookie_store = await cookies();
+    const cookie_token = cookie_store.get("jwt-session")?.value;
+    if (!cookie_token) {
+        return { error: "Unauthorized" };
+    }
+
+    const verified = await verifyJwtToken(cookie_token);
+    if (!verified) {
+        return { error: "Unauthorized" };
+    }
+
+    const user_id = verified.payload.user_id as number;
+    const conn = await createConnection();
+    const user = await getUser(conn, user_id);
+
+    if (!user) {
+        return { error: "User not found" };
+    }
+
+    if (!current_password) {
+        return { error: "Current password is required" };
+    }
+
+    const passwordMatches = await matchPass(current_password, user.password);
+    if (!passwordMatches) {
+        return { error: "Current password is incorrect" };
+    }
+
+    const deleted = await deleteUser(conn, user_id);
+    if (!deleted) {
+        return { error: "Unable to delete account" };
+    }
+
+    return { success: true };
 }
 
 export default async function login(email: string, password: string) { //wont add UserProps there because we need different inputs 

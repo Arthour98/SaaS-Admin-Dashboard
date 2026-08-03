@@ -109,6 +109,47 @@ export async function createUserByOauth(connection: any, { user_name, password, 
     }
 }
 
+export async function editUser(connection: any, user_id: number, updates: { name?: string; password?: string }) {
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    if (updates.name) {
+        fields.push("name = ?");
+        values.push(updates.name);
+    }
+
+    if (updates.password) {
+        fields.push("password = ?");
+        values.push(updates.password);
+    }
+
+    if (fields.length === 0) {
+        return null;
+    }
+
+    values.push(user_id);
+
+    try {
+        await connection.query(`UPDATE users SET ${fields.join(", ")} WHERE id = ?`, values);
+        return { success: true };
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export async function deleteUser(connection: any, user_id: number) {
+    try {
+        await connection.query(`DELETE FROM users WHERE id = ?`, [user_id]);
+        return { success: true };
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 export async function createValidationToken(connection: any, user_id: number) {
     const expiresAt = new Date();
     const token = createOrgToken();
