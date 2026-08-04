@@ -4,6 +4,8 @@ export interface RolesProps {
     organization_id: number,
     role: string,
     permissions: string;
+    user_name?: string,
+    member_name?: string
 }
 export async function getRole(connection: any, user_id: number) {
     try {

@@ -108,7 +108,7 @@ export async function editOrg(connection: any, org_id: number, name: string) {
     try {
         const [rows] = await connection.query(`UPDATE organizations 
         SET name = ? WHERE id = ?  `, [name, org_id]);
-        return { organization: rows[0] }
+        return { organization: rows[0], status: "success" }
     }
     catch (e) {
         console.error(e);
@@ -182,12 +182,12 @@ export async function joinOrganization(conn: any, creds: OrganizationProps) {
             values(?,?,?,?)`, [creds.user_id, creds.id, "team_member", JSON.stringify(member_permissions)]);
         await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [new_token, creds?.token_id]);
         await connection.commit();
-        return { success: true }
+        return { status: "success" }
     }
     catch (e) {
         console.error(e);
         await connection.rollback();
-        return { success: false }
+        return { status: "failed" }
     }
     finally {
         await connection.release();
@@ -211,7 +211,7 @@ export async function refreshOrgToken(connection: any, token_id: number) {
     try {
         const new_token = createOrgToken()
         await connection.query(`UPDATE org_validation_token SET token = ? WHERE id= ?`, [new_token, token_id]);
-        return { token: new_token, token_id: token_id }
+        return { token: new_token, token_id: token_id, status: "success" }
     }
     catch (e) {
         console.error(e);

@@ -1,4 +1,5 @@
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
+import { UserProps } from "@/app/dashboard/page";
 import styles from "@/components/main.module.css";
 import { useToast } from "@/hooks/use-toast";
 import { string_shortener } from "@/lib/string-shortener";
@@ -7,15 +8,22 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 export default function CustomerCol(
-{customer}:
-{customer:CustomerProps})
+{customer,user}:
+{
+   customer:CustomerProps,
+   user:UserProps
+})
 {
    const router = useRouter();
    const deleteCustomer = async(id:number)=>
    {
       const data = 
       {
-         customer_id:id
+         customer_id:id,
+         user_id:user.id,
+         user_name:user?.name,
+         organization_id:customer.organization_id,
+         customer_name:customer.name
       }
       try
       {

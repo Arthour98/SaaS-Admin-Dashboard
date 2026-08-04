@@ -46,7 +46,11 @@ customers.length==0 ?
         {
         customers?.map((cus:CustomerProps)=>
         {
-            return(<CustomerCol key={cus.id} customer={cus}/>)
+            return(<CustomerCol 
+                key={cus.id}
+                customer={cus}
+                user={user}
+                />)
         })
         }
     </div>

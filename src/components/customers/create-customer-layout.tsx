@@ -142,7 +142,9 @@ const submitCustomers = async(e:React.MouseEvent)=>
   const data = 
   {
     customers:_customers,
-    organization_id:organization.organization_id
+    organization_id:organization.organization_id,
+    user_id:user.id,
+    user_name:user.name
   }
   try
   {

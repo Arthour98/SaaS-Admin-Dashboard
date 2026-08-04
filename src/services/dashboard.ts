@@ -41,6 +41,7 @@ import {
 
 import { createConnection } from "@/db/connection"
 import { User } from "./auth"
+import { add_log, LogsProps } from "@/db/queries/logs";
 
 export const getAllOrganizations = async () => {
 
@@ -127,7 +128,13 @@ export const createOrg = async (name: string, user_id: number) => {
     }
 }
 
-export const joinOrg = async (id: number, user_id: number, token_id: number, token: string) => {
+export const joinOrg = async (
+    id: number,
+    user_id: number,
+    token_id: number,
+    token: string,
+    user_name: string
+) => {
     try {
         const conn = await createConnection();
         const org = await getOrgToken(conn, id);
@@ -143,8 +150,18 @@ export const joinOrg = async (id: number, user_id: number, token_id: number, tok
                 token_id: token_id
             }
             const join = await joinOrganization(conn, creds);
-            if (join.success) {
+            if (join.status == "success") {
                 // await refreshOrgToken(conn, token_id);
+                if (join?.status == "success") {
+                    const log_obj: LogsProps =
+                    {
+                        user_id: user_id,
+                        organization_id: id,
+                        action: `${user_name} joined the organization`,
+                        type: 'info'
+                    }
+                    await add_log(conn, log_obj)
+                }
                 return { status: "success" }
             }
             else {
@@ -152,7 +169,7 @@ export const joinOrg = async (id: number, user_id: number, token_id: number, tok
             }
         }
         else {
-            console.log("IDIII NAXYH")
+            console.log("<3")
         }
     }
     catch (e) {
@@ -161,15 +178,32 @@ export const joinOrg = async (id: number, user_id: number, token_id: number, tok
     }
 }
 
-export const refreshOrganizationToken = async (token_id: number, user_id: number, skipPermission: boolean) => {
+export const refreshOrganizationToken = async (
+    token_id: number,
+    user_id: number,
+    skipPermission: boolean,
+    permited: boolean,
+    user_name: string,
+    org_id: number
+) => {
     try {
         const conn = await createConnection();
         const organization = await getOrganization(conn, user_id);
 
         const isOwner = organization.owner_id === user_id;
 
-        if (isOwner || skipPermission) {
+        if (isOwner || skipPermission || permited) {
             const org_token = await refreshOrgToken(conn, token_id);
+            if (org_token?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} refreshed the  organization token`,
+                    type: 'info'
+                }
+                await add_log(conn, log_obj)
+            }
             return { status: "success", token: org_token?.token, token_id: org_token?.token_id }
         }
         else {
@@ -192,6 +226,16 @@ export const editOrganization = async (org_id: number, user_id: number, name: st
 
         if (isOwner) {
             const edit = await editOrg(conn, org_id, name);
+            if (edit?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `Admin renamed the organization`,
+                    type: 'update'
+                }
+                await add_log(conn, log_obj)
+            }
             return { status: "success", data: edit }
         }
         else {
@@ -225,10 +269,24 @@ export const deleteOrganization = async (org_id: number, user_id: number) => {
     }
 }
 
-export const leaveOrganization = async (org_id: number, user_id: number) => {
+export const leaveOrganization = async (
+    org_id: number,
+    user_id: number,
+    user_name: string
+) => {
     try {
         const conn = await createConnection();
-        await leaveOrg(conn, org_id, user_id);
+        const leave = await leaveOrg(conn, org_id, user_id);
+        if (leave?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: org_id,
+                action: `${user_name} left the organization`,
+                type: 'info'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: "success" }
     }
     catch (e) {
@@ -254,7 +312,13 @@ export const fetchCustomers = async () => {
     }
 }
 
-export const addNewCustomer = async (org_id: number, name: string, phone_number?: string) => {
+export const addNewCustomer = async (
+    org_id: number,
+    name: string,
+    user_id: number,
+    user_name: string,
+    phone_number?: string,
+) => {
     if (!name) {
         return { status: "failed", message: "Name is required" }
     }
@@ -264,6 +328,16 @@ export const addNewCustomer = async (org_id: number, name: string, phone_number?
             await addCustomer(conn, org_id, name, phone_number)
             :
             await addCustomer(conn, org_id, name)
+        if (newCustomer?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: org_id,
+                action: `${user_name} added new customer${name}`,
+                type: 'create'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: "success" }
     }
     catch (e) {
@@ -271,14 +345,28 @@ export const addNewCustomer = async (org_id: number, name: string, phone_number?
         return null;
     }
 }
-export const addNewCustomers = async (org_id: number, customers: any[]) => {
+export const addNewCustomers = async (
+    org_id: number,
+    customers: any[],
+    user_id: number,
+    user_name: string
+) => {
     const filteredCustomers = customers.filter(cus =>
         cus.customer_name !== ""
-
     )
     try {
         const conn = await createConnection();
         const newCustomer = await addCustomers(conn, org_id, filteredCustomers)
+        if (newCustomer?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: org_id,
+                action: `${user_name} added new customers[${filteredCustomers.join(",")}]`,
+                type: 'create'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: "success" }
     }
     catch (e) {
@@ -319,7 +407,13 @@ export const fetchCustomerOrders = async () => {
     }
 }
 
-export const addNewOrder = async (org_id: number, orders: any[]) => {
+export const addNewOrder = async (
+    org_id: number,
+    orders: any[],
+    user_id: number,
+    user_name: string,
+    organization_id: number
+) => {
 
     try {
         const conn = await createConnection();
@@ -327,8 +421,17 @@ export const addNewOrder = async (org_id: number, orders: any[]) => {
 
         const filteredOrders = orders.filter((order) =>
             order.name !== "" && customers.find((cus: any) => cus.id == order.customer_id));
-
         const created = await addOrders(conn, org_id, filteredOrders);
+        if (created?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: organization_id,
+                action: `${user_name} added new orders[${filteredOrders.join(",")}]`,
+                type: 'create'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: created?.status ?? "success" };
     } catch (e) {
         console.error("[SERVICE_ERROR]", e);
@@ -336,10 +439,26 @@ export const addNewOrder = async (org_id: number, orders: any[]) => {
     }
 };
 
-export const DeleteOrder = async (order_id: number) => {
+export const DeleteOrder = async (
+    order_id: number,
+    user_id: number,
+    user_name: string,
+    order_name: string,
+    organization_id: number
+) => {
     try {
         const conn = await createConnection();
         const deleted = await deleteOrder(conn, order_id);
+        if (deleted?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: organization_id,
+                action: `${user_name} deleted order [${order_name}]`,
+                type: 'delete'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: deleted?.status }
     }
     catch (e) {
@@ -348,10 +467,25 @@ export const DeleteOrder = async (order_id: number) => {
     }
 }
 
-export const DeleteCustomer = async (customer_id: number) => {
+export const DeleteCustomer = async (
+    user_id: number,
+    user_name: string,
+    organization_id: number,
+    customer_id: number,
+    customer_name: number) => {
     try {
         const conn = await createConnection();
         const deleted = await deleteCustomer(conn, customer_id);
+        if (deleted?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: organization_id,
+                action: `${user_name} deleted customer ${customer_name}`,
+                type: 'delete'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: deleted?.status }
     }
     catch (e) {
@@ -360,11 +494,21 @@ export const DeleteCustomer = async (customer_id: number) => {
     }
 }
 
-export const assingRoleWithPermissions = async ({ user_id, organization_id, role, permissions }: RolesProps) => {
+export const assingRoleWithPermissions = async ({ user_id, organization_id, role, permissions, user_name, member_name }: RolesProps) => {
     try {
         const conn = await createConnection();
         JSON.stringify(permissions);
         const assign = await assignRole(conn, { user_id, organization_id, role, permissions });
+        if (assign?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: organization_id,
+                action: `${user_name} changed permissions for ${member_name}`,
+                type: 'create'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: assign?.status }
 
     }
@@ -401,13 +545,23 @@ export const getOrgTicket = async (user_id: number, org_id: number, ticket_id: n
     }
 }
 
-export const createOrgTicket = async (org_id: number, user_id: number, title: string, content: string) => {
+export const createOrgTicket = async (org_id: number, user_id: number, user_name: string, title: string, content: string,) => {
     if (!org_id || !user_id || title === "" || content === "") {
         return { status: "failed" }
     }
     try {
         const conn = await createConnection();
         const create = await submitTicket(conn, org_id, user_id, { title, content });
+        if (create?.status == "success") {
+            const log_obj: LogsProps =
+            {
+                user_id: user_id,
+                organization_id: org_id,
+                action: `${user_name} created a ticket[${title}]`,
+                type: 'create'
+            }
+            await add_log(conn, log_obj)
+        }
         return { status: "success" }
     }
     catch (e) {
@@ -463,6 +617,8 @@ export const getRoleAndPermissions = async (user_id: number) => {
         return null;
     }
 }
+
+
 
 
 

@@ -1,19 +1,23 @@
 
-interface LogsProps {
+export interface LogsProps {
     user_id: number,
     organization_id: number,
     action: string,
+    type: LogType
 }
-export async function user_joined(
+type LogType = 'info' | 'create' | 'delete' | 'update' | 'warning'
+
+export async function add_log(
     connection: any,
     {
         user_id,
         organization_id,
-        action
+        action,
+        type,
     }: LogsProps) {
     try {
         const [rows] = await connection.query(`INSERT INTO logs(user_id,organization_id,type,action)
-        VALUES(?,?,?,?)`, [user_id, organization_id, "info", action]);
+        VALUES(?,?,?,?)`, [user_id, organization_id, type, action]);
         return rows;
     }
     catch (e) {
