@@ -7,7 +7,8 @@ export async function POST(req: Request) {
         const content = payload.content;
         const user_id = payload.user_id;
         const org_id = payload.organization_id;
-        const create = await createOrgTicket(org_id, user_id, title, content);
+        const user_name = payload.user_name;
+        const create = await createOrgTicket(org_id, user_id, user_name, title, content);
         if (create?.status == "success") {
             return Response.json({ data: { status: "success" } })
         }

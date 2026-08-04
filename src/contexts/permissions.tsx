@@ -3,8 +3,8 @@ import { createContext,useContext,useState,useEffect } from "react";
 
 type PermContextType = {
     usersPermissions?: Set<string>,
+    isPermited:(perm:string)=>boolean,
     role?: any,
-    isPermited?:(perm:string)=>boolean
 };
 
 const permContext = createContext<PermContextType | null>(null);
@@ -67,12 +67,11 @@ return(
 )
 
 }
-
-export const usePerms =()=>
-{
-    if(!permContext)
-    {
-        return;
+export const usePerms = () => {
+    const context = useContext(permContext);
+    if (context === null) {
+        throw new Error("Permissions are undefined");
     }
-    return useContext(permContext);
-}
+
+    return context;
+};

@@ -216,18 +216,19 @@ export default function CreateOrderLayout({
             </div>
             <div className={styles.orderFieldCol}>
               <label className={styles.labelSpace}>Status</label>
-              <input
-                spellCheck={false}
+              <select
                 className={styles.orderInput}
-                type="text"
-                placeholder="pending"
                 value={order.status}
                 onChange={(e) => handleOrderChange(index, "status", e.target.value)}
-              />
+              >
+                <option value="pending">pending</option>
+                <option value="succeded">succeded</option>
+              </select>
             </div>
             <div className={styles.orderFieldCol}>
               <label className={styles.labelSpace}>Origin</label>
               <input
+                readOnly
                 spellCheck={false}
                 className={styles.orderInput}
                 type="text"

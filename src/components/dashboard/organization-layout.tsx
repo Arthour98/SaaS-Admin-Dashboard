@@ -5,6 +5,8 @@ import { useQuery } from "@/lib/use-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRotateRight, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { useToast } from "@/hooks/use-toast";
+import { UserProps } from "@/app/dashboard/page";
+import { usePerms } from "@/contexts/permissions";
 
 type organizationProps =
 {
@@ -31,14 +33,14 @@ export type OrgLayoutProps =
 {
     current_layout : boolean ,
     org_info : OrgInfoProps,
-    user: any,
-    triggerRefresh : (data:string)=> void
+    user: UserProps,
+    triggerRefresh : (data:string)=> void,
 }
 
 
 export default function OrganizationLayout({current_layout,org_info,user,triggerRefresh}:OrgLayoutProps)
 {
-
+    const {isPermited}= usePerms();
     // loaders states for buttons
     const [isLoadingCreate,setIsLoadingCreate] = useState(false);
     const [isLoadingJoin,setIsLoadingJoin] = useState(false);
@@ -108,7 +110,8 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
         id:Number(organizationId),
         user_id:user.id,
         token_id:tokenId,
-        token:orgToken
+        token:orgToken,
+        user_name:user?.name
         }
         try
         {
@@ -165,10 +168,14 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
 
     const requestNewToken = async()=>
     {
+        
         const data = 
         {
            token_id : org_info.token_id ,
-           user_id : user.id
+           user_id : user.id,
+           permited: isPermited("refresh_token"),
+           organization_id:org_info.organization_id,
+           user_name:user.name
         }
         try
         {
@@ -200,7 +207,8 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
         const data =
         {
             organization_id:org_info?.organization_id,
-            user_id : user.id
+            user_id : user.id,
+            user_name : user.name
         }
         switch (action) {
     case "edit":

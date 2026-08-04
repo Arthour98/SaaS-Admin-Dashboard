@@ -32,7 +32,8 @@ const submitTicket = async(e:React.MouseEvent)=>
             title:ticketTitle,
             content:ticketContent,
             user_id:user?.id,
-            organization_id:organization_id
+            organization_id:organization_id,
+            user_name:user.name
         }
 
         const res = await useQuery("tickets/create",{method:"post",body:data});

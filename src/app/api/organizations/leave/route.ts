@@ -5,7 +5,8 @@ export async function DELETE(request: Request) {
     try {
         const org_id = payload.organization_id;
         const user_id = payload.user_id;
-        const deleted = await leaveOrganization(org_id, user_id);
+        const user_name = payload.user_name;
+        const deleted = await leaveOrganization(org_id, user_id, user_name);
         if (deleted?.status == "success") {
             return Response.json({ data: { status: deleted?.status } })
         }
