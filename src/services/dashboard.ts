@@ -29,6 +29,7 @@ import {
 import {
     RolesProps,
     assignRole,
+    getRole,
 } from "@/db/queries/roles";
 import {
     submitTicket,
@@ -444,6 +445,18 @@ export const getOrgTicketMessages = async (user_id: number, ticket_id: number) =
         const conn = await createConnection();
         const messages = await getTicketMessages(conn, ticket_id);
         return { status: "success", messages: messages?.messages }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
+export const getRoleAndPermissions = async (user_id: number) => {
+    try {
+        const conn = await createConnection();
+        const perms = await getRole(conn, user_id);
+        return { status: "success", role: perms?.data.position, permissions: perms?.data.permissions }
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e);

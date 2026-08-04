@@ -4,6 +4,7 @@ import "./globals.css"
 import { usePathname } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PermProvider from  "@/contexts/permissions";
 
 export default function BodyClassProvider({
   children,
@@ -16,6 +17,7 @@ export default function BodyClassProvider({
 
   return (
     <body className={isLanding ? "landingPageBody" : "generalBody"}>
+      <PermProvider>
       {children}
       <ToastContainer
       position="bottom-right"
@@ -27,6 +29,7 @@ export default function BodyClassProvider({
       draggable
       theme="colored"
       />
+      </PermProvider>
     </body>
   );
 }

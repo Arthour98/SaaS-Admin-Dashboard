@@ -5,11 +5,11 @@ export interface RolesProps {
     role: string,
     permissions: string;
 }
-export async function getRole(connection: any, user_id: number, organization_id: number) {
+export async function getRole(connection: any, user_id: number) {
     try {
-        const [rows] = await connection.query(`SELECT * FROM roles where user_id = ? 
-        AND organization_id = ?`, [user_id, organization_id]);
-        return rows;
+        const [rows] = await connection.query(`SELECT * FROM roles
+        where user_id = ?`, [user_id]);
+        return { data: rows[0] }
     }
     catch (e) {
         console.error(e);
