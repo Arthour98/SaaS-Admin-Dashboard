@@ -1,4 +1,4 @@
-import { assingRoleWithPermissions } from "@/services/dashboard";
+import { assignRoleWithPermissions } from "@/services/dashboard";
 
 export async function PUT(req: Request) {
     try {
@@ -7,10 +7,18 @@ export async function PUT(req: Request) {
         const organization_id = payload.organization_id;
         const permissions = JSON.stringify(payload.permissions);
         const role = payload.role;
-        const assign = await assingRoleWithPermissions({
+        const user_name = payload.user_name;
+        const member_name = payload.member_name;
+        const handler_id = payload.handler_id;
+
+        const assign = await assignRoleWithPermissions({
+            handler_id,
             user_id,
             organization_id,
-            role, permissions
+            role,
+            permissions,
+            user_name,
+            member_name
         });
         if (assign?.status === "success") {
             return Response.json({ data: { status: "success" } });

@@ -6,8 +6,18 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@/lib/use-query";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { UserProps } from "@/app/dashboard/page";
 
-export default function OrderCol({ order }: { order: OrderProps }) {
+export default function OrderCol(
+  {
+   order,
+   user,
+   }
+   :
+  { 
+    order: OrderProps,
+    user:UserProps 
+  }) {
 
   const router =  useRouter();
 
@@ -15,7 +25,11 @@ export default function OrderCol({ order }: { order: OrderProps }) {
   {
     const data = 
     {
-        order_id:id
+        order_id:id,
+        user_id:user.id,
+        user_name:user?.name,
+        order_name:order.name,
+        organization_id:order.organization_id
     }
     try
     {

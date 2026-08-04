@@ -121,7 +121,7 @@ export default function CreateOrderLayout({
       useToast({type:"warning",message:"Order name cant be empty"})
       return;
     }
-    if(orderRows.some((order:OrderInput)=>order.customer_id==""))  
+    if(orderRows.some((order:OrderInput)=>order.customer_id==""))
     {
       useToast({type:"warning",message:"Customer name cant be empty"})
       return;
@@ -143,6 +143,8 @@ export default function CreateOrderLayout({
         type: row.type,
       })),
       organization_id: organization.organization_id,
+      user_id:user.id,
+      user_name:user.name
     };
 
     try {

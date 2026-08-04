@@ -411,8 +411,7 @@ export const addNewOrder = async (
     org_id: number,
     orders: any[],
     user_id: number,
-    user_name: string,
-    organization_id: number
+    user_name: string
 ) => {
 
     try {
@@ -426,8 +425,8 @@ export const addNewOrder = async (
             const log_obj: LogsProps =
             {
                 user_id: user_id,
-                organization_id: organization_id,
-                action: `${user_name} added new orders[${filteredOrders.join(",")}]`,
+                organization_id: org_id,
+                action: `${user_name} added new orders[${filteredOrders.map(o => o.name).join(",")}]`,
                 type: 'create'
             }
             await add_log(conn, log_obj)
@@ -494,7 +493,14 @@ export const DeleteCustomer = async (
     }
 }
 
-export const assingRoleWithPermissions = async ({ user_id, organization_id, role, permissions, user_name, member_name }: RolesProps) => {
+export const assignRoleWithPermissions = async ({
+    handler_id,
+    user_id,
+    organization_id,
+    role,
+    permissions,
+    user_name,
+    member_name }: RolesProps) => {
     try {
         const conn = await createConnection();
         JSON.stringify(permissions);
@@ -502,7 +508,7 @@ export const assingRoleWithPermissions = async ({ user_id, organization_id, role
         if (assign?.status == "success") {
             const log_obj: LogsProps =
             {
-                user_id: user_id,
+                user_id: handler_id as number,
                 organization_id: organization_id,
                 action: `${user_name} changed permissions for ${member_name}`,
                 type: 'create'

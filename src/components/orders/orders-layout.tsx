@@ -1,13 +1,16 @@
 import styles from "@/components/main.module.css";
 import OrderCol from "./order-col";
 import { OrderProps } from "@/app/dashboard/orders/ordersClient";
+import { UserProps } from "@/app/dashboard/page";
 
 export default function OrdersLayout({
   current_layout,
   orders,
+  user
 }: {
-  current_layout: boolean;
-  orders: OrderProps[];
+  current_layout: boolean,
+  orders: OrderProps[],
+  user:UserProps
 }) {
   if (!current_layout) return null;
 
@@ -24,7 +27,11 @@ export default function OrdersLayout({
       </div>
       <div className={styles.ordersContent}>
         {orders.map((order) => (
-          <OrderCol key={order.id} order={order} />
+          <OrderCol 
+          key={order.id} 
+          order={order}
+          user={user}
+           />
         ))}
       </div>
     </div>

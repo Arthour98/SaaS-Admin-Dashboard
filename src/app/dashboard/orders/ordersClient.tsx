@@ -87,9 +87,21 @@ export default function OrdersClient({
         </div>
       </div>
       <div className={styles["content-main"]}>
-        <OrdersLayout current_layout={currTab === "Orders"} orders={filteredOrders} />
-        <CustomerOrdersLayout current_layout={currTab === "Customers orders"} customerOrders={filteredCustomerOrders} />
-        <CreateOrderLayout current_layout={currTab === "Add order"} orders={orders} customers={customers} user={user} organization={organization} />
+        <OrdersLayout 
+        current_layout={currTab === "Orders"} 
+        orders={filteredOrders} 
+        user={user} 
+        />
+        <CustomerOrdersLayout 
+        current_layout={currTab === "Customers orders"} 
+        customerOrders={filteredCustomerOrders} 
+        />
+        <CreateOrderLayout 
+        current_layout={currTab === "Add order"} 
+        orders={orders} customers={customers} 
+        user={user} 
+        organization={organization} 
+        />
       </div>
     </div>
   );

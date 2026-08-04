@@ -117,6 +117,7 @@ return(
             />
         </div>
         <PermModal
+        handler_user={user}
         org_id={org_info?.organization_id as number} 
         user={userPerms} 
         open={openPermissionModal} 

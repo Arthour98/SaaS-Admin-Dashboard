@@ -7,16 +7,25 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { UserCellProps } from "../dashboard/users-layout";
 import { useQuery } from "@/lib/use-query";
 import { useToast } from "@/hooks/use-toast";
+import { UserProps } from "@/app/dashboard/page";
 
 type ModalProps = 
 {
+    handler_user:UserProps
     open:boolean,
     user: UserCellProps |null,
     org_id:number
     closeModal:()=>void
     triggerRefresh:(data:string)=>void
 }
-export default function PermModal({open,user,org_id,closeModal,triggerRefresh}:ModalProps)
+export default function PermModal({
+    open,
+    user,
+    org_id,
+    closeModal,
+    triggerRefresh,
+    handler_user
+    }:ModalProps)
 {
     const allPermissions = permissions?.permissions;
     const  userPermissions = user?.permissions;
@@ -103,7 +112,10 @@ const submitPermissions = async()=>
             user_id:user?.id,
             permissions:filteredPermissions,
             role:selRole,
-            organization_id:org_id
+            organization_id:org_id,
+            user_name:handler_user.name,
+            handler_id:handler_user.id,
+            member_name:user?.name
         }
         const res = await useQuery("dashboard/permissions",{method:"put",body:data});
         if(res.data.status==="success")
