@@ -24,7 +24,7 @@ export default async function Page({ }) {
     const { user, tickets, org_id } = await getTickets();
 
     return (<>
-        <Header />
+        <Header showMenu/>
         <Main className="dashboardMain">
             <div className="dashboard-container">
                 <div className="dashboard-nav">

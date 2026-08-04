@@ -24,7 +24,7 @@ export default  async function Page({})
     
 
     return(<>
-        <Header/>
+        <Header showMenu/>
             <Main className="dashboardMain">
                 <div className="dashboard-container">
                     <div className="dashboard-nav">

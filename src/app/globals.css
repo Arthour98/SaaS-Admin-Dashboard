@@ -139,7 +139,7 @@ input[type="submit"] {
 }
 
 /* NAV takes places only after auth and / routes */
-nav {
+.headerRow {
   display: flex;
   align-items: center;
   width: 100%;
@@ -150,6 +150,10 @@ nav {
   color: white;
   font-weight: 600;
   font-size: 18px;
+}
+
+.navCol {
+  display: none;
 }
 
 .landingMain,
@@ -338,6 +342,10 @@ nav {
   border-top: 1px solid rgba(0, 0, 0, 0.04);
   text-align: center;
   color: white;
+}
+
+.mobileNavWrapper {
+  display: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -544,6 +552,54 @@ main.dashboardMain {
   .dashboard-content-wrapper {
     flex: 1;
     display: flex;
+  }
+
+  .mobileNavWrapper {
+    display: flex;
+  }
+
+  .navCol {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .navIcon {
+    color: white;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobileNavContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: black;
+    z-index: 1000;
+  }
+
+  .mobileNav {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    row-gap: 1.5rem;
+    padding: 1rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .closeNavIcon {
+    color: white;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
   }
 }
 

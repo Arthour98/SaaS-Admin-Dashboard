@@ -98,7 +98,7 @@ const org_data: OrgProps | any  =
         };
 
     return(<>
-        <Header/>
+        <Header showMenu/>
             <Main className="dashboardMain">
                 <div className="dashboard-container">
                     <div className="dashboard-nav">

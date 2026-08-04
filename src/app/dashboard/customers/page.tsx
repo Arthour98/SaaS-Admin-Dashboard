@@ -39,7 +39,7 @@ export default async function Page({})
     const {user,organization} = await getOrgAndUser();
     const customers = (await getCustomers())?.customers;
     return(<>
-        <Header/>
+        <Header showMenu/>
             <Main className="dashboardMain">
                 <div className="dashboard-container">
                     <div className="dashboard-nav">
