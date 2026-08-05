@@ -138,6 +138,11 @@ const submitCustomers = async(e:React.MouseEvent)=>
     useToast({type:"warning",message:"Customer name is required"});
     return;
   }
+    if(_customers.some((cus:Customer)=>cus.phone_number.length>20))
+  {
+    useToast({type:"warning",message:"Customer phone cannot exceed 20 characters"});
+    return;
+  }
   setLoadingSubmit(true);
   const data = 
   {
@@ -175,12 +180,20 @@ const submitCustomers = async(e:React.MouseEvent)=>
     else if(res.data.status="failed")
     {
       setLoadingSubmit(false);
+        useToast({
+        type:"error",
+        message:"Error creating customer"
+      })
     }
   }
   catch(e)
   {
     console.error("[ClIENT_ERROR]",e)
     setLoadingSubmit(false)
+     useToast({
+        type:"error",
+        message:"Error creating customer, "+e
+      })
   }
 }
     

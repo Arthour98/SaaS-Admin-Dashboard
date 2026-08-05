@@ -1,13 +1,13 @@
 'use client'
-import {useEffect,useState} from "react";
+import {useState} from "react";
 import styles from "@/components/main.module.css";
-import { useRouter } from "next/navigation";
 import DashBoardTabs from "@/components/dashboard/dashboard-tabs";
 import SearchBar from "@/components/elements/search-bar";
 import CustomerLayout from "@/components/customers/customers-layout";
 import AddCustomerLayout from "@/components/customers/create-customer-layout";
 import { UserProps } from "../page";
 import { OrgProps } from "../page";
+
 export interface CustomerProps
 {
 id:number,
@@ -26,10 +26,8 @@ user:UserProps,
 organization:OrgProps}
 )
 {
-    const router = useRouter();
     const dashBoardTabs = ["Customers","Add customer"]  // tabs array
     const [currTab,setCurrentTab] = useState("Customers") // selected tab
-    
     
     const [searchInput,setSearchInput]= useState("")
     const filteredCustomers = customers.filter((cus) => {

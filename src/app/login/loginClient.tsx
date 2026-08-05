@@ -8,6 +8,7 @@ import SignIn from "@/components/elements/oauth-signin";
 import { useState } from "react";
 import CustomButton from "@/components/elements/customButton";
 import { useQuery } from "@/lib/use-query";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginClient({})
 {
@@ -33,8 +34,7 @@ export default function LoginClient({})
         try
         {
             const res = await useQuery("auth/login",{method:"post",body:payload});
-
-            if(res)
+            if(res.user)
             {
                 setIsLoading(false);
             }
@@ -45,12 +45,14 @@ export default function LoginClient({})
             else
             {
                 router.push('/dashboard');
+                useToast({type:"success",message:"Login successfull!"})
             }
         }
         catch(e)
         {
             console.error(e);
             setIsLoading(false);
+            useToast({type:"error",message:"Wrong credentials"})
         }
     }
 

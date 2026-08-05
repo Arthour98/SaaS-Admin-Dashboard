@@ -4,8 +4,8 @@ import login from "@/services/auth";
 export async function POST(request: Request) {
     try {
         const payload = await request.json();
-        const register = await login(payload.email, payload.password);
-        return Response.json(register);
+        const loginn = await login(payload.email, payload.password);
+        return Response.json(loginn);
     }
     catch (e) {
         return Response.json(

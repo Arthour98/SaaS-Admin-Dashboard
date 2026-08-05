@@ -1,9 +1,10 @@
 'use client'
-import {useCallback, useEffect,useState} from "react";
+import {useCallback, useEffect,useMemo,useState} from "react";
 import styles from "@/components/main.module.css";
 import InfoLayout from "@/components/dashboard/info-layout";
 import OrganizationLayout from "@/components/dashboard/organization-layout";
 import UsersLayout from "@/components/dashboard/users-layout";
+import LogsLayout from "@/components/dashboard/logs-layout";
 import DashBoardTabs from "@/components/dashboard/dashboard-tabs";
 import SearchBar from "@/components/elements/search-bar";
 import { UserProps } from "./page";
@@ -14,11 +15,12 @@ import PermModal from "@/components/modals/permission-modal";
 export default function DashBoardClient({user,org_data}:{user:UserProps,org_data:OrgProps})
 {
 const router = useRouter();
-const dashBoardTabs = ["Info","Organization","Users"]  // tabs array
+const dashBoardTabs = ["Info","Organization","Users","Logs"]  // tabs array
 const [currTab,setCurrentTab] = useState("Info") // selected tab
 
 
 const [searchInput,setSearchInput]= useState("")
+
 
 const changeTab =(tab:string) =>
 {
@@ -60,29 +62,43 @@ const triggerRefresh = useCallback((data:string)=>
     }
 },[])
 
-    const [openPermissionModal,setOpenPermissionModal] = useState(false);
-    const [userPerms,setUserPerms] = useState(null);
-    const userArr = users?.users?.map((u:object)=>u); //Org users mapping
-    const handleOpenPermiModal = useCallback((user_id:number)=>
+const filteredUsers = useMemo(()=>
+{   
+    const input = searchInput.toLowerCase();
+    return users.users?.filter((user:any)=>{
+        return [user.name].some((val)=>val.toLowerCase().includes(input))
+    })
+},[searchInput,users])
+
+useEffect(()=>
+{
+    console.log("users",users)
+     console.log("filterusers",filteredUsers)
+},[users,filteredUsers])
+
+const [openPermissionModal,setOpenPermissionModal] = useState(false);
+const [userPerms,setUserPerms] = useState(null);
+const userArr = users?.users?.map((u:object)=>u); //Org users mapping
+const handleOpenPermiModal = useCallback((user_id:number)=>
+{
+    if(user_id)
     {
-        if(user_id)
+        const selected_user = userArr?.find((u:UserCellProps) => u?.id ===user_id)
+        if(selected_user)
         {
-            const selected_user = userArr?.find((u:UserCellProps) => u?.id ===user_id)
-            if(selected_user)
-            {
-                setUserPerms(selected_user);
-                setOpenPermissionModal(true);
-            }
-            
+            setUserPerms(selected_user);
+            setOpenPermissionModal(true);
         }
-    },[userPerms,openPermissionModal]);
+        
+    }
+},[userPerms,openPermissionModal]);
 
 
 
-    const handleClosePermModal = useCallback(()=>
-    {
-        setOpenPermissionModal(false);
-    },[openPermissionModal])
+const handleClosePermModal = useCallback(()=>
+{
+    setOpenPermissionModal(false);
+},[openPermissionModal])
 
 return(
     <div className={styles["dashboard-content"]}>
@@ -110,10 +126,15 @@ return(
             />
             <UsersLayout 
             current_layout={currTab === "Users"} 
-            users={users} 
+            users={filteredUsers} 
             isOwner={org_info.owner_id ===user.id} 
             currUser={user} 
             openPerms={handleOpenPermiModal}
+            />
+            <LogsLayout
+            current_layout={currTab === "Logs"}
+            organization_id={org_info.organization_id as number}
+            searchValue={searchInput}
             />
         </div>
         <PermModal

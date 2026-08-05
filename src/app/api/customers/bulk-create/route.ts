@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
         if (customers && org_id) {
             const new_cus = await addNewCustomers(org_id, customers, user_id, user_name)
-            if (new_cus?.status == "success") {
+            if (new_cus?.status === "success") {
                 return Response.json({ data: { status: new_cus.status } })
             }
             else {

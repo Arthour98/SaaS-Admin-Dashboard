@@ -25,3 +25,19 @@ export async function add_log(
     }
 }
 
+export async function getLogs(connection: any, organization_id: number) {
+    try {
+        const [rows] = await connection.query(`SELECT logs.id, logs.user_id, users.name AS user_name, logs.action, logs.type, logs.created_at
+            FROM logs
+            LEFT JOIN users
+            ON logs.user_id = users.id
+            WHERE logs.organization_id = ?
+            ORDER BY logs.created_at DESC`, [organization_id]);
+
+        return { logs: rows }
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+

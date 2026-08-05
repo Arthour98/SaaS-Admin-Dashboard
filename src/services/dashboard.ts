@@ -41,7 +41,11 @@ import {
 
 import { createConnection } from "@/db/connection"
 import { User } from "./auth"
-import { add_log, LogsProps } from "@/db/queries/logs";
+import {
+    add_log,
+    getLogs,
+    LogsProps
+} from "@/db/queries/logs";
 
 export const getAllOrganizations = async () => {
 
@@ -83,6 +87,21 @@ export const getUserOrganization = async () => {
         console.error(e);
     }
 
+}
+
+export const getOrganizationLogs = async (organization_id: number) => {
+    try {
+        const conn = await createConnection();
+        const logsResult = await getLogs(conn, organization_id);
+        if (logsResult) {
+            return { logs: logsResult.logs }
+        }
+        return { logs: [] }
+    }
+    catch (e) {
+        console.error(e);
+        return { logs: [] };
+    }
 }
 
 export const getOrganizationId = async (user_id: number) => {
@@ -161,8 +180,8 @@ export const joinOrg = async (
                         type: 'info'
                     }
                     await add_log(conn, log_obj)
+                    return { status: "success" }
                 }
-                return { status: "success" }
             }
             else {
                 return { status: "failed" }
@@ -203,9 +222,10 @@ export const refreshOrganizationToken = async (
                     type: 'info'
                 }
                 await add_log(conn, log_obj)
+                return { status: "success", token: org_token?.token, token_id: org_token?.token_id }
             }
-            return { status: "success", token: org_token?.token, token_id: org_token?.token_id }
         }
+
         else {
             return { status: "failed", error: "You dont have the rights to refresh the token" }
         }
@@ -235,8 +255,8 @@ export const editOrganization = async (org_id: number, user_id: number, name: st
                     type: 'update'
                 }
                 await add_log(conn, log_obj)
+                return { status: "success", data: edit }
             }
-            return { status: "success", data: edit }
         }
         else {
             return { status: "failed", error: "You are not authorized to edit the organization" }
@@ -252,9 +272,7 @@ export const deleteOrganization = async (org_id: number, user_id: number) => {
     try {
         const conn = await createConnection();
         const organization = await getOrganization(conn, user_id);
-
         const isOwner = organization.owner_id === user_id;
-
         if (isOwner) {
             const deletedOrg = await deleteOrg(conn, org_id);
             return { status: "success" }
@@ -286,8 +304,8 @@ export const leaveOrganization = async (
                 type: 'info'
             }
             await add_log(conn, log_obj)
+            return { status: "success" }
         }
-        return { status: "success" }
     }
     catch (e) {
         console.error(e);
@@ -333,12 +351,13 @@ export const addNewCustomer = async (
             {
                 user_id: user_id,
                 organization_id: org_id,
-                action: `${user_name} added new customer${name}`,
+                action: `${user_name} added new customer [${name}]`,
                 type: 'create'
             }
             await add_log(conn, log_obj)
+            return { status: "success" }
         }
-        return { status: "success" }
+
     }
     catch (e) {
         console.error('[SERVICE_ERROR', e)
@@ -362,12 +381,12 @@ export const addNewCustomers = async (
             {
                 user_id: user_id,
                 organization_id: org_id,
-                action: `${user_name} added new customers[${filteredCustomers.join(",")}]`,
+                action: `${user_name} added new customers [${filteredCustomers.map(cus => cus.customer_name).join(",")}]`,
                 type: 'create'
             }
             await add_log(conn, log_obj)
+            return { status: "success" }
         }
-        return { status: "success" }
     }
     catch (e) {
         console.error('[SERVICE_ERROR', e)
@@ -426,12 +445,12 @@ export const addNewOrder = async (
             {
                 user_id: user_id,
                 organization_id: org_id,
-                action: `${user_name} added new orders[${filteredOrders.map(o => o.name).join(",")}]`,
+                action: `${user_name} added new orders [${filteredOrders.map(o => o.name).join(",")}]`,
                 type: 'create'
             }
             await add_log(conn, log_obj)
+            return { status: created?.status ?? "success" };
         }
-        return { status: created?.status ?? "success" };
     } catch (e) {
         console.error("[SERVICE_ERROR]", e);
         return null;
@@ -457,8 +476,8 @@ export const DeleteOrder = async (
                 type: 'delete'
             }
             await add_log(conn, log_obj)
+            return { status: deleted?.status }
         }
-        return { status: deleted?.status }
     }
     catch (e) {
         console.error('[ERROR_SERVICE]', e)
@@ -480,12 +499,12 @@ export const DeleteCustomer = async (
             {
                 user_id: user_id,
                 organization_id: organization_id,
-                action: `${user_name} deleted customer ${customer_name}`,
+                action: `${user_name} deleted customer [${customer_name}]`,
                 type: 'delete'
             }
             await add_log(conn, log_obj)
+            return { status: deleted?.status }
         }
-        return { status: deleted?.status }
     }
     catch (e) {
         console.error("[ERROR_SERVICE]", e)
@@ -510,12 +529,12 @@ export const assignRoleWithPermissions = async ({
             {
                 user_id: handler_id as number,
                 organization_id: organization_id,
-                action: `${user_name} changed permissions for ${member_name}`,
+                action: `${user_name} changed permissions for [${member_name}]`,
                 type: 'create'
             }
             await add_log(conn, log_obj)
+            return { status: assign?.status }
         }
-        return { status: assign?.status }
 
     }
     catch (e) {
@@ -563,12 +582,12 @@ export const createOrgTicket = async (org_id: number, user_id: number, user_name
             {
                 user_id: user_id,
                 organization_id: org_id,
-                action: `${user_name} created a ticket[${title}]`,
+                action: `${user_name} created a ticket [${title}]`,
                 type: 'create'
             }
             await add_log(conn, log_obj)
+            return { status: "success" }
         }
-        return { status: "success" }
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e);
