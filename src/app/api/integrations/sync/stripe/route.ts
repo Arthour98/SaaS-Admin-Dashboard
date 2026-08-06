@@ -4,7 +4,7 @@ import {
   createStripeOrganization,
   stripeClient
 } from "@/services/stripe";
-import { error } from "console";
+import Stripe from 'stripe';
 
 export async function GET(req: Request) {
 
@@ -24,15 +24,13 @@ export async function GET(req: Request) {
       code,
     });
 
-
-
-    // Save this in your database
     const connectedAccountId = stripeResponse?.stripe_user_id;
+    const accessToken = stripeResponse.access_token;
+    const connectedClient = new Stripe(accessToken as string);
     if (connectedAccountId) {
       const create_stripe = await createStripeOrganization(connectedAccountId, Number(org_id))
-      // Now run your sync logic
       // await syncStripeData(connectedAccountId);
-      await SyncronizeData(Number(org_id));
+      await SyncronizeData(connectedClient, Number(org_id));
 
       return NextResponse.redirect(
         `${process.env.APP_URL}/dashboard/integrations?stripe=connected`

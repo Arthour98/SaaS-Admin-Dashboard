@@ -6,6 +6,8 @@ import "@/app/globals.css";
 import IntegrationsClient from "./integrationsClient";
 import { getUserOrganization} from "@/services/dashboard";
 import { getStripeService } from "@/services/stripe";
+import { redirect } from "next/navigation";
+
 
 
 
@@ -13,6 +15,10 @@ import { getStripeService } from "@/services/stripe";
 const getIntegrationsAndOrg = async()=>
 {
     const org = await getUserOrganization();
+    if(!org?.organization.id)
+    {
+        redirect("/dashboard")
+    }
     const stripe = await getStripeService(org?.organization.id);
     return {organization:org?.organization,stripe:stripe}
 }

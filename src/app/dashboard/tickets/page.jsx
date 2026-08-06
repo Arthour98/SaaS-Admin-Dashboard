@@ -6,6 +6,7 @@ import "@/app/globals.css";
 import TicketsClient from "./ticketsClient";
 import { User } from "@/services/auth";
 import { getOrgTickets, getOrganizationId } from "@/services/dashboard";
+import { redirect } from "next/navigation";
 
 
 
@@ -13,7 +14,9 @@ const getTickets = async () => {
     const user = await User();
     const org_id = (await getOrganizationId(user.user.id)).org_id
     const tickets = (await getOrgTickets(user?.user.id, org_id)).tickets;
-
+    if (!org_id) {
+        redirect("/dashboard");
+    }
     return { user: user.user, tickets: tickets, org_id: org_id };
 }
 
@@ -24,7 +27,7 @@ export default async function Page({ }) {
     const { user, tickets, org_id } = await getTickets();
 
     return (<>
-        <Header showMenu/>
+        <Header showMenu />
         <Main className="dashboardMain">
             <div className="dashboard-container">
                 <div className="dashboard-nav">

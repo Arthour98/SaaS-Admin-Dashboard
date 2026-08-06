@@ -109,7 +109,7 @@ export const getOrganizationLogs = async (organization_id: number) => {
 export const getOrganizationId = async (user_id: number) => {
     try {
         const conn = await createConnection();
-        const org_id = (await getOrgId(conn, user_id)).organization_id;
+        const org_id = (await getOrgId(conn, user_id))?.organization_id;
         return { org_id: org_id }
     }
     catch (e) {

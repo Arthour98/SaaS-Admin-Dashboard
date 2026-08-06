@@ -9,6 +9,7 @@ import { getOrganization } from "@/db/queries/organizations";
 import { User } from "@/services/auth";
 import { createConnection } from "@/db/connection";
 import { UserProps } from "../page";
+import { redirect } from "next/navigation";
 
 const getCustomers = async()=>
 {
@@ -30,6 +31,10 @@ const getOrgAndUser = async()=>
     if(org)
     {
     org.organization_id = org?.id
+    }
+    if(!org?.organization_id)
+    {
+        redirect("/dashboard");
     }
     return {user:user,organization:org}
 }

@@ -6,6 +6,7 @@ import "@/app/globals.css";
 import { User } from "@/services/auth";
 import { getOrgTicket, getOrganizationId } from "@/services/dashboard";
 import TicketClient from "./ticketClient";
+import { redirect } from "next/navigation";
 const getTicket = async ({params}
     :
     {
@@ -16,7 +17,10 @@ const getTicket = async ({params}
     const ticket_id = Number((await params).id);
     const org_id = (await getOrganizationId(user?.user?.id))?.org_id
     const tickets = (await getOrgTicket(user?.user.id, org_id,ticket_id))?.ticket;
-
+    if(!org_id)
+    {
+        redirect("/dashboard")
+    }
     return { 
         user: user?.user,
         ticket: tickets,

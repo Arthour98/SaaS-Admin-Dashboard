@@ -9,6 +9,7 @@ import { getOrganization } from "@/db/queries/organizations";
 import { User } from "@/services/auth";
 import { createConnection } from "@/db/connection";
 import { UserProps } from "../page";
+import { redirect } from "next/navigation";
 
 const getOrgAndUser = async () => {
   const conn = await createConnection();
@@ -20,7 +21,14 @@ const getOrgAndUser = async () => {
     name: _user?.user.name,
     created_at: _user?.user.created_at,
   };
-  org.organization_id = org.id;
+  if(org)
+  {
+  org.organization_id = org?.id;
+  }
+  if(!org?.organization_id)
+  {
+    redirect("/dashboard");
+  }
   return { user, organization: org };
 };
 
