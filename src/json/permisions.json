@@ -1,35 +1,41 @@
 {
     "permissions": [
         "delete_users",
+        "edit_organization",
         "delete_organization",
         "assign_permissions",
-        "assign_role",
-        "edit_organization",
-        "edit_role",
+        "add_customer",
+        "add_order",
+        "delete_order",
+        "delete_order",
         "refresh_org_token",
         "run_integration",
-        "create_ticket",
-        "view_logs",
-        "view_tickets"
+        "create_ticket"
     ],
     "admin_permissions": [
         "delete_users",
+        "edit_organization",
         "delete_organization",
         "assign_permissions",
-        "assign_role",
-        "edit_organization",
-        "edit_role",
+        "add_customer",
+        "add_order",
+        "delete_order",
+        "delete_order",
         "refresh_org_token",
         "run_integration",
-        "create_ticket",
-        "view_logs"
+        "create_ticket"
     ],
     "team_leader": [
         "delete_users",
-        "run_integration",
         "assign_permissions",
-        "view_logs",
-        "create_ticket"
+        "create_ticket",
+        "add_customer",
+        "add_order",
+        "delete_order",
+        "delete_order"
     ],
-    "team_member": []
+    "team_member": [
+        "add_customer",
+        "add_order"
+    ]
 }

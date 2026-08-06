@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@/lib/use-query";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 import { UserProps } from "@/app/dashboard/page";
 
 export default function OrderCol(

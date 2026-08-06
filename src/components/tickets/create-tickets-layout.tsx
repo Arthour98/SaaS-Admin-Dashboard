@@ -3,7 +3,7 @@ import { TicketsProps } from "@/app/dashboard/tickets/ticketsClient"
 import { UserProps } from "@/app/dashboard/page";
 import CustomButton from "../elements/customButton";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 import { useQuery } from "@/lib/use-query";
 
 export default function CreateTicketsLayout({tickets,user,organization_id,triggerRefresh,currentLayout}:

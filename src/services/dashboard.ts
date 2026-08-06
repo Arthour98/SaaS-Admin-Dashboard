@@ -11,7 +11,8 @@ import {
     leaveOrg,
     deleteOrg,
     editOrg,
-    getOrgId
+    getOrgId,
+    kickUser
 } from "@/db/queries/organizations"
 import {
     addCustomer,
@@ -208,8 +209,10 @@ export const refreshOrganizationToken = async (
     try {
         const conn = await createConnection();
         const organization = await getOrganization(conn, user_id);
-
+        const perms = await getRole(conn, user_id)
         const isOwner = organization.owner_id === user_id;
+        const permissions = perms?.data.permissions
+        const permited = permissions.includes("refresh_org_token")
 
         if (isOwner || skipPermission || permited) {
             const org_token = await refreshOrgToken(conn, token_id);
@@ -241,10 +244,13 @@ export const editOrganization = async (org_id: number, user_id: number, name: st
     try {
         const conn = await createConnection();
         const organization = await getOrganization(conn, user_id);
+        const perms = await getRole(conn, user_id);
 
         const isOwner = organization.owner_id === user_id;
+        const permissions = perms?.data.permissions
+        const permited = permissions.includes('edit_organization');
 
-        if (isOwner) {
+        if (isOwner || permited) {
             const edit = await editOrg(conn, org_id, name);
             if (edit?.status == "success") {
                 const log_obj: LogsProps =
@@ -342,20 +348,28 @@ export const addNewCustomer = async (
     }
     try {
         const conn = await createConnection();
-        const newCustomer = phone_number ?
-            await addCustomer(conn, org_id, name, phone_number)
-            :
-            await addCustomer(conn, org_id, name)
-        if (newCustomer?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: user_id,
-                organization_id: org_id,
-                action: `${user_name} added new customer [${name}]`,
-                type: 'create'
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions
+        const permited = permissions.includes("add_customer");
+        if (permited) {
+            const newCustomer = phone_number ?
+                await addCustomer(conn, org_id, name, phone_number)
+                :
+                await addCustomer(conn, org_id, name)
+            if (newCustomer?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} added new customer [${name}]`,
+                    type: 'create'
+                }
+                await add_log(conn, log_obj)
+                return { status: "success" }
             }
-            await add_log(conn, log_obj)
-            return { status: "success" }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
         }
 
     }
@@ -375,17 +389,25 @@ export const addNewCustomers = async (
     )
     try {
         const conn = await createConnection();
-        const newCustomer = await addCustomers(conn, org_id, filteredCustomers)
-        if (newCustomer?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: user_id,
-                organization_id: org_id,
-                action: `${user_name} added new customers [${filteredCustomers.map(cus => cus.customer_name).join(",")}]`,
-                type: 'create'
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions;
+        const permited = permissions.includes("add_customer");
+        if (permited) {
+            const newCustomer = await addCustomers(conn, org_id, filteredCustomers)
+            if (newCustomer?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} added new customers [${filteredCustomers.map(cus => cus.customer_name).join(",")}]`,
+                    type: 'create'
+                }
+                await add_log(conn, log_obj)
+                return { status: "success" }
             }
-            await add_log(conn, log_obj)
-            return { status: "success" }
+        }
+        else {
+            return { status: 'failed', message: "Unauthorized" }
         }
     }
     catch (e) {
@@ -435,21 +457,28 @@ export const addNewOrder = async (
 
     try {
         const conn = await createConnection();
-        const customers = (await getCustomers(conn, org_id));
-
-        const filteredOrders = orders.filter((order) =>
-            order.name !== "" && customers.find((cus: any) => cus.id == order.customer_id));
-        const created = await addOrders(conn, org_id, filteredOrders);
-        if (created?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: user_id,
-                organization_id: org_id,
-                action: `${user_name} added new orders [${filteredOrders.map(o => o.name).join(",")}]`,
-                type: 'create'
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions;
+        const permited = permissions.includes("add_order");
+        if (permited) {
+            const customers = (await getCustomers(conn, org_id));
+            const filteredOrders = orders.filter((order) =>
+                order.name !== "" && customers.find((cus: any) => cus.id == order.customer_id));
+            const created = await addOrders(conn, org_id, filteredOrders);
+            if (created?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} added new orders [${filteredOrders.map(o => o.name).join(",")}]`,
+                    type: 'create'
+                }
+                await add_log(conn, log_obj)
+                return { status: created?.status ?? "success" };
             }
-            await add_log(conn, log_obj)
-            return { status: created?.status ?? "success" };
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
         }
     } catch (e) {
         console.error("[SERVICE_ERROR]", e);
@@ -466,17 +495,25 @@ export const DeleteOrder = async (
 ) => {
     try {
         const conn = await createConnection();
-        const deleted = await deleteOrder(conn, order_id);
-        if (deleted?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: user_id,
-                organization_id: organization_id,
-                action: `${user_name} deleted order [${order_name}]`,
-                type: 'delete'
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions
+        const permited = permissions.includes("delete_order");
+        if (permited) {
+            const deleted = await deleteOrder(conn, order_id);
+            if (deleted?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: organization_id,
+                    action: `${user_name} deleted order [${order_name}]`,
+                    type: 'delete'
+                }
+                await add_log(conn, log_obj)
+                return { status: deleted?.status }
             }
-            await add_log(conn, log_obj)
-            return { status: deleted?.status }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
         }
     }
     catch (e) {
@@ -493,17 +530,25 @@ export const DeleteCustomer = async (
     customer_name: number) => {
     try {
         const conn = await createConnection();
-        const deleted = await deleteCustomer(conn, customer_id);
-        if (deleted?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: user_id,
-                organization_id: organization_id,
-                action: `${user_name} deleted customer [${customer_name}]`,
-                type: 'delete'
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions;
+        const permited = permissions.includes("delete_customer");
+        if (permited) {
+            const deleted = await deleteCustomer(conn, customer_id);
+            if (deleted?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: organization_id,
+                    action: `${user_name} deleted customer [${customer_name}]`,
+                    type: 'delete'
+                }
+                await add_log(conn, log_obj)
+                return { status: deleted?.status }
             }
-            await add_log(conn, log_obj)
-            return { status: deleted?.status }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
         }
     }
     catch (e) {
@@ -522,18 +567,26 @@ export const assignRoleWithPermissions = async ({
     member_name }: RolesProps) => {
     try {
         const conn = await createConnection();
-        JSON.stringify(permissions);
-        const assign = await assignRole(conn, { user_id, organization_id, role, permissions });
-        if (assign?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: handler_id as number,
-                organization_id: organization_id,
-                action: `${user_name} changed permissions for [${member_name}]`,
-                type: 'create'
+        const perms = await getRole(conn, handler_id as number);
+        const _permissions = perms?.data.permissions
+        const permited = _permissions.includes("assign_permissions");
+        if (permited) {
+            JSON.stringify(permissions);
+            const assign = await assignRole(conn, { handler_id, user_id, organization_id, role, permissions });
+            if (assign?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: handler_id as number,
+                    organization_id: organization_id,
+                    action: `${user_name} changed permissions for [${member_name}]`,
+                    type: 'create'
+                }
+                await add_log(conn, log_obj)
+                return { status: assign?.status }
             }
-            await add_log(conn, log_obj)
-            return { status: assign?.status }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
         }
 
     }
@@ -576,17 +629,26 @@ export const createOrgTicket = async (org_id: number, user_id: number, user_name
     }
     try {
         const conn = await createConnection();
-        const create = await submitTicket(conn, org_id, user_id, { title, content });
-        if (create?.status == "success") {
-            const log_obj: LogsProps =
-            {
-                user_id: user_id,
-                organization_id: org_id,
-                action: `${user_name} created a ticket [${title}]`,
-                type: 'create'
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions;
+        const permited = permissions.includes("create_ticket");
+
+        if (permited) {
+            const create = await submitTicket(conn, org_id, user_id, { title, content });
+            if (create?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} created a ticket [${title}]`,
+                    type: 'create'
+                }
+                await add_log(conn, log_obj)
+                return { status: "success" }
             }
-            await add_log(conn, log_obj)
-            return { status: "success" }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
         }
     }
     catch (e) {
@@ -639,6 +701,46 @@ export const getRoleAndPermissions = async (user_id: number) => {
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e);
+        return null;
+    }
+}
+
+export const kickOrganizationMember = async (
+    delete_user_id: number,
+    delete_user_name: string,
+    user_id: number,
+    user_name: string,
+    org_id: number
+) => {
+    try {
+        const conn = await createConnection();
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions;
+        const permited = permissions.includes('delete_users');
+        if (permited) {
+            const deleted = await kickUser(
+                conn,
+                delete_user_id,
+                org_id
+            );
+            if (deleted?.status === "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} deleted member [${delete_user_name}]`,
+                    type: 'delete'
+                }
+                await add_log(conn, log_obj)
+                return { status: "success" }
+            }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
+        }
+    }
+    catch (e) {
+        console.error(e);
         return null;
     }
 }

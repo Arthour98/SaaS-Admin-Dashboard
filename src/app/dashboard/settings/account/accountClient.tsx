@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import styles from "@/components/main.module.css";
 import CustomButton from "@/components/elements/customButton";
 import { useQuery } from "@/lib/use-query";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 
 export default function AccountClient() {
 const [userName, setUserName] = useState("");

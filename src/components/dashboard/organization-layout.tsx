@@ -4,7 +4,7 @@ import CustomButton from "../elements/customButton";
 import { useQuery } from "@/lib/use-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRotateRight, faCopy } from "@fortawesome/free-solid-svg-icons";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 import { UserProps } from "@/app/dashboard/page";
 import { usePerms } from "@/contexts/permissions";
 
@@ -168,6 +168,11 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
 
     const requestNewToken = async()=>
     {
+        if(!isPermited("refresh_org_token"))
+        {
+            useToast({type:'warning',message:"You are not authorized to refresh to token"})
+            return;
+        }
         
         const data = 
         {
@@ -200,7 +205,7 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
     const handleAction = async (e:React.FormEvent<HTMLFormElement>)=>
     {
         e.preventDefault();
-           const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement;
+        const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement;
  
         const action = submitter.name;
 
@@ -267,6 +272,11 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
 
     const editOrg = async(e:React.FormEvent<HTMLFormElement>)=>
     {
+        if(!isPermited("edit_organization"))
+        {
+            useToast({type:'warning',message:"You are not authorized to edit organization!"});
+            return;
+        }
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const name = formData.get("editOrg");
@@ -454,14 +464,19 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                     </form>
                 </div>
                 <form className={styles.orgActionsCol} onSubmit={(e)=>handleAction(e)}>
-                    {
-                        isOwner ? 
-                        (
-                        <div className={styles.ownerActionsCol}>
+                    <div className={styles.ownerActionsCol}>
+                        {
+                            isPermited("edit_organization") ? 
+                            (
                             <CustomButton element="input"
                             className={styles.editButton}
                             content="Rename"
                             name="edit"/>
+                            ):
+                            null}
+                        {
+                            isPermited("delete_organization") && isOwner ?
+                            (
                             <CustomButton
                             element="input"
                             className={styles.deleteButton}
@@ -469,10 +484,12 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                             isLoading={isLoadingDelete}
                             name="delete"
                             />
-                        </div>
-                        ) 
-                        :
-                        (
+                            ):
+                            null
+                        }       
+                        {
+                            !isOwner ?
+                            (
                             <CustomButton
                             element="input"
                             className={styles.deleteButton}
@@ -480,8 +497,11 @@ const handleChangeOrg = (e:React.ChangeEvent<HTMLSelectElement>) =>
                             isLoading={isLoadingDelete}
                             name="leave"
                             />
-                        )
-                    }
+                            ):
+                            null
+                        }
+                        
+                    </div>
                 </form>
             </div>
         )

@@ -219,3 +219,15 @@ export async function refreshOrgToken(connection: any, token_id: number) {
     }
 }
 
+export async function kickUser(connection: any, delete_user_id: number, org_id: number) {
+    try {
+        const deleted = await connection.query(`DELETE from users_organizations
+        where organization_id=? and user_id =?`, [org_id, delete_user_id]);
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+

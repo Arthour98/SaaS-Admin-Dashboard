@@ -1,7 +1,7 @@
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
 import { UserProps } from "@/app/dashboard/page";
 import styles from "@/components/main.module.css";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 import { string_shortener } from "@/lib/string-shortener";
 import { useQuery } from "@/lib/use-query";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";

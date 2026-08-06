@@ -1,8 +1,7 @@
-import {useState,useEffect,useCallback} from "react"
+
 import styles from "@/components/main.module.css";
 import UserCell from "./user-cell";
-import { UserProps } from "@/app/dashboard/page";
-import PermModal from "../modals/permission-modal";
+import { OrgProps, UserProps } from "@/app/dashboard/page";
 
 export type UserCellProps=
 {
@@ -16,12 +15,22 @@ export type UsersLayoutProps =
 {
     users:  any | null,
     current_layout:boolean
-    isOwner : boolean
+    owner_id : number
     currUser: UserProps
-    openPerms:(user_id:number)=>void
+    openPerms:(user_id:number)=>void,
+    triggerRefresh:(data:string)=>void,
+    org:OrgProps
 }
 
-export default function UsersLayout({users,current_layout,isOwner,currUser,openPerms}:UsersLayoutProps)
+export default function UsersLayout({
+    users,
+    current_layout,
+    owner_id,
+    currUser,
+    openPerms,
+    triggerRefresh,
+    org
+    }:UsersLayoutProps)
 {
      if(!current_layout)
     {
@@ -29,9 +38,6 @@ export default function UsersLayout({users,current_layout,isOwner,currUser,openP
     }
     
     const userArr = users?.map((u:object)=>u); //Org users mapping
-
-    const [openPermissionModal,setOpenPermissionModal] = useState(false);
-    const [userPerms,setUserPerms] = useState(null);
 
     const triggerOpen=(user_id:number)=>
     {
@@ -70,9 +76,11 @@ export default function UsersLayout({users,current_layout,isOwner,currUser,openP
                         <UserCell 
                         key={user.id}
                         user={user}
-                        isOwner={isOwner}
+                        triggerRefresh={triggerRefresh}
+                        owner_id={owner_id}
                         currUser={currUser}
                         openPermiModal={triggerOpen}
+                        org={org}
                         />
                        )) 
                     }

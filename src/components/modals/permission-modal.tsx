@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { UserCellProps } from "../dashboard/users-layout";
 import { useQuery } from "@/lib/use-query";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 import { UserProps } from "@/app/dashboard/page";
 
 type ModalProps = 

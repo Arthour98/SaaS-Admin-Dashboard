@@ -56,9 +56,10 @@ const users : any =
 
 const triggerRefresh = useCallback((data:string)=>
 {
-    if(data="success")
+    if(data=="success")
     {
         router.refresh();
+        console.log("refreshed")
     }
 },[])
 
@@ -73,7 +74,7 @@ const filteredUsers = useMemo(()=>
 useEffect(()=>
 {
     console.log("users",users)
-     console.log("filterusers",filteredUsers)
+    console.log("filterusers",filteredUsers)
 },[users,filteredUsers])
 
 const [openPermissionModal,setOpenPermissionModal] = useState(false);
@@ -91,14 +92,15 @@ const handleOpenPermiModal = useCallback((user_id:number)=>
         }
         
     }
-},[userPerms,openPermissionModal]);
+},[userPerms,openPermissionModal,triggerRefresh]);
 
 
 
 const handleClosePermModal = useCallback(()=>
 {
     setOpenPermissionModal(false);
-},[openPermissionModal])
+    setUserPerms(null);
+},[setOpenPermissionModal])
 
 return(
     <div className={styles["dashboard-content"]}>
@@ -127,9 +129,11 @@ return(
             <UsersLayout 
             current_layout={currTab === "Users"} 
             users={filteredUsers} 
-            isOwner={org_info.owner_id ===user.id} 
+            owner_id={org_info.owner_id} 
             currUser={user} 
             openPerms={handleOpenPermiModal}
+            triggerRefresh={triggerRefresh}
+            org={org_data}
             />
             <LogsLayout
             current_layout={currTab === "Logs"}

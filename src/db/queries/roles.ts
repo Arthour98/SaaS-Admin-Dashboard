@@ -1,6 +1,6 @@
 
 export interface RolesProps {
-    handler_id?: number
+    handler_id: number
     user_id: number,
     organization_id: number,
     role: string,
@@ -30,11 +30,11 @@ export async function createRole(connection: any, { user_id, organization_id, ro
     }
 }
 
-export async function assignRole(connection: any, { user_id, organization_id, role, permissions }: RolesProps) {
+export async function assignRole(connection: any, {handler_id,user_id, organization_id, role, permissions }: RolesProps) {
     try {
         const [rows] = await connection.query(`UPDATE roles
         SET position = ?,
-         permissions = ?
+        permissions = ?
         WHERE organization_id = ? 
         AND  user_id = ?`, [role, permissions, organization_id, user_id]);
         return { status: "success" }

@@ -8,7 +8,7 @@ import { useQuery } from "@/lib/use-query";
 import { useRouter } from "next/navigation";
 import { OrgProps, UserProps } from "@/app/dashboard/page";
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 
 export default function AddCustomerLayout(
 {current_layout,customers,user,organization}:

@@ -8,7 +8,7 @@ import SignIn from "@/components/elements/oauth-signin";
 import { useState } from "react";
 import CustomButton from "@/components/elements/customButton";
 import { useQuery } from "@/lib/use-query";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/db/hooks/use-toast";
 
 export default function LoginClient({})
 {
