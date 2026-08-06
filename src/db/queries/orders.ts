@@ -91,3 +91,15 @@ export const deleteOrder = async (connection: any, order_id: number) => {
     }
 }
 
+export const updateOrder = async (connection: any, order_id: number, status: string) => {
+    try {
+        await connection.query(`UPDATE orders
+            set status=?
+            WHERE id =?`, [status, order_id])
+        return { status: "success" }
+    }
+    catch (e) {
+        console.error(e)
+        return null;
+    }
+}

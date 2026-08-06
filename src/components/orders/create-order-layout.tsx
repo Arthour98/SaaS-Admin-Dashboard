@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { OrgProps, UserProps } from "@/app/dashboard/page";
 import { OrderProps } from "@/app/dashboard/orders/ordersClient";
 import { useToast } from "@/db/hooks/use-toast";
+import { usePerms } from "@/contexts/permissions";
 
 export default function CreateOrderLayout({
   current_layout,
@@ -27,6 +28,7 @@ export default function CreateOrderLayout({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const router = useRouter();
+  const {isPermited}=usePerms();
 
   type OrderInput = {
     order_name: string;
@@ -116,6 +118,11 @@ export default function CreateOrderLayout({
   const submitOrders = async (e: React.MouseEvent) => {
     e.preventDefault();
 
+    if(!isPermited("create_order"))
+    {
+      useToast({type:"warning",message:"You dont have the permission to create orders"})
+      return;
+    }
     if(orderRows.some((order:OrderInput)=>order.order_name==""))
     {
       useToast({type:"warning",message:"Order name cant be empty"})

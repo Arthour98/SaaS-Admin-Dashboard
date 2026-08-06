@@ -25,7 +25,8 @@ import {
     getOrders,
     getCustomerOrdersWithCustomerInfo,
     addOrders,
-    deleteOrder
+    deleteOrder,
+    updateOrder
 } from "@/db/queries/orders";
 import {
     RolesProps,
@@ -741,6 +742,43 @@ export const kickOrganizationMember = async (
     }
     catch (e) {
         console.error(e);
+        return null;
+    }
+}
+
+export const updateOrderStatus = async (
+    order_id: number,
+    user_id: number,
+    user_name: string,
+    org_id: number,
+    status: string,
+    product_name: string
+) => {
+    try {
+        const conn = await createConnection();
+        const perms = await getRole(conn, user_id);
+        const permissions = perms?.data.permissions;
+        const permited = permissions.includes("add_order");
+        if (permited) {
+            const update = await updateOrder(conn, order_id, status);
+            if (update?.status == "success") {
+                const log_obj: LogsProps =
+                {
+                    user_id: user_id,
+                    organization_id: org_id,
+                    action: `${user_name} changed the status of product [${product_name}]`,
+                    type: 'update'
+                }
+                await add_log(conn, log_obj)
+                return { status: "success" }
+            }
+        }
+        else {
+            return { status: "failed", message: "Unauthorized" }
+        }
+    }
+    catch (e) {
+        console.error("[SERVICE_ERROR]", e)
         return null;
     }
 }

@@ -7,7 +7,7 @@
         "add_customer",
         "add_order",
         "delete_order",
-        "delete_order",
+        "delete_customer",
         "refresh_org_token",
         "run_integration",
         "create_ticket"

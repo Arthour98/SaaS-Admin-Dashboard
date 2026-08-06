@@ -22,6 +22,9 @@ export default function TicketsLayout({tickets,user,organization_id,currentLayou
     return (
         <div className={styles.ticketsLayout}>
             {
+            tickets.length ==0 ?(
+                <p>No tickets found !</p>
+            ):
             tickets?.map(ticket=>
             (
                 <TicketRow 

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { OrgProps, UserProps } from "@/app/dashboard/page";
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
 import { useToast } from "@/db/hooks/use-toast";
+import { usePerms } from "@/contexts/permissions";
 
 export default function AddCustomerLayout(
 {current_layout,customers,user,organization}:
@@ -23,6 +24,7 @@ const rowRef = useRef<HTMLButtonElement | null>(null);
 const fileInputRef = useRef<HTMLInputElement | null>(null);
 const [loadingSubmit,setLoadingSubmit] = useState(false);
 const router = useRouter();
+const {isPermited} = usePerms();
 
 type Customer = {
 customer_name: string;
@@ -133,6 +135,13 @@ const handleChange = async (
 const submitCustomers = async(e:React.MouseEvent)=>
 {
   e.preventDefault();
+  if(!isPermited("create_customer"))
+  {
+    useToast({type:"warning",
+    message:"You dont have the permission to create customers!"
+    });
+    return;
+  }
   if(_customers.some((cus:Customer)=>cus.customer_name==""))
   {
     useToast({type:"warning",message:"Customer name is required"});

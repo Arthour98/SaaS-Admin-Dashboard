@@ -1,6 +1,7 @@
 import { CustomerProps } from "@/app/dashboard/customers/customersClient";
 import { UserProps } from "@/app/dashboard/page";
 import styles from "@/components/main.module.css";
+import { usePerms } from "@/contexts/permissions";
 import { useToast } from "@/db/hooks/use-toast";
 import { string_shortener } from "@/lib/string-shortener";
 import { useQuery } from "@/lib/use-query";
@@ -15,8 +16,16 @@ export default function CustomerCol(
 })
 {
    const router = useRouter();
+   const {isPermited} = usePerms();
+
    const deleteCustomer = async(id:number)=>
    {
+      if(!isPermited("delete_customer"))
+      {
+         useToast({type:"warning",message:"You dont have the permissions to delete customers!"});
+         return;
+      }
+
       const data = 
       {
          customer_id:id,

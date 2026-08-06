@@ -1086,7 +1086,7 @@ button:disabled {
 }
 
 .orderCol2 {
-    flex: 0 0 18%;
+    flex: 0 0 19%;
 }
 
 .ordersContent {
@@ -1119,6 +1119,7 @@ button:disabled {
 .orderTypeCol {
     flex: 0 0 18%;
     text-wrap: nowrap;
+    overflow-x: hidden;
 }
 
 .deleteCol {
@@ -1674,6 +1675,19 @@ button:disabled {
     .accountLayout {
         height: 35rem;
     }
+
+    .orderNameCol,
+    .orderPriceCol,
+    .orderStatusCol,
+    .orderOriginCol,
+    .orderTypeCol {
+        flex: 0 0 18%;
+    }
+
+    .deleteCol {
+        flex: 0 0 15%;
+        justify-content: start;
+    }
 }
 
 @media screen and (max-width:800px) {
@@ -1909,6 +1923,11 @@ button:disabled {
     .accountLayout {
         height: 100%;
     }
+
+    .deleteCol {
+        flex: 0 0 15%;
+        justify-content: start;
+    }
 }
 
 
@@ -2089,6 +2108,7 @@ button:disabled {
     .orderOriginCol,
     .orderTypeCol {
         flex: 1;
+        overflow-x: visible;
     }
 
     .ordersHeader {
@@ -2134,5 +2154,9 @@ button:disabled {
 
     .actionText {
         text-wrap: wrap;
+    }
+
+    .deleteCol {
+        justify-content: end;
     }
 }

@@ -5,6 +5,7 @@ import CustomButton from "../elements/customButton";
 import { useState } from "react";
 import { useToast } from "@/db/hooks/use-toast";
 import { useQuery } from "@/lib/use-query";
+import { usePerms } from "@/contexts/permissions";
 
 export default function CreateTicketsLayout({tickets,user,organization_id,triggerRefresh,currentLayout}:
     {
@@ -19,11 +20,16 @@ export default function CreateTicketsLayout({tickets,user,organization_id,trigge
 const [ticketTitle,setTicketTitle] = useState("");
 const [ticketContent,setTicketContent] = useState("");
 const [loadingSubmit,setLoadingSubmit] = useState(false);
-
+const {isPermited} = usePerms();
 
 const submitTicket = async(e:React.MouseEvent)=>
 {
     e.preventDefault();
+    if(!isPermited("create_ticket"))
+    {
+        useToast({type:"warning",message:"You dont have the permission to create tickets!"});
+        return;
+    }
     try
     {
         setLoadingSubmit(true);

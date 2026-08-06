@@ -7,6 +7,8 @@ import { useQuery } from "@/lib/use-query";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/db/hooks/use-toast";
 import { UserProps } from "@/app/dashboard/page";
+import { useState,useEffect } from "react";
+import { usePerms } from "@/contexts/permissions";
 
 export default function OrderCol(
   {
@@ -19,10 +21,62 @@ export default function OrderCol(
     user:UserProps 
   }) {
 
+  const {isPermited} = usePerms();
   const router =  useRouter();
+  const [selectedStatus,setSelectedStatus] = useState(order.status)
+  const [statusHasChanged,setStatusHasChanged]= useState(false);
+  const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>)=>
+  {
+    setSelectedStatus(e.target.value)
+    setStatusHasChanged(true);
+  }
 
+  const updateOrder = async()=>
+  {
+    if(!isPermited("add_order"))
+    {
+      useToast({type:"warning",message:"You dont have the permissions to change status!"});
+      return;
+    }
+    try
+    {
+      const data=
+      {
+        order_id:order.id,
+        user_id:user.id,
+        user_name:user.name,
+        organization_id:order.organization_id,
+        status:selectedStatus,
+        product_name:order.name
+      }
+      const res = await useQuery("orders/update",{method:"put",body:data});
+      if(res.data.status==="success")
+      {
+        useToast({type:"success",message:"Order updated successfully!"})
+      }
+    }
+    catch(e)
+    {
+      console.error(e);
+      useToast({type:"error",message:e as string})
+    }
+  }
+
+  useEffect(()=>
+  {
+    if(!statusHasChanged)
+    {
+      return;
+    }
+    updateOrder();
+  },[statusHasChanged]);
   const deleteOrder = async(id:number)=>
   {
+    if(!isPermited("delete_order"))
+    {
+      useToast({type:"warning",message:"You dont have the permissions to delete orders!"});
+      return;
+    }
     const data = 
     {
         order_id:id,
@@ -55,7 +109,18 @@ export default function OrderCol(
         <p>{order.price ? `$${order.price}` : "-"}</p>
       </div>
       <div className={styles.orderStatusCol}>
+      {
+        selectedStatus==="pending" ?
+        (
+          <select className={styles.selectStatus} onChange={handleChangeStatus}>
+            <option value={order.status} >{order.status}</option>
+            <option value={"succeded"} >succeded</option>
+          </select>
+        ) :
+        (
         <p>{order.status || "pending"}</p>
+        )
+      }
       </div>
       <div className={styles.orderOriginCol}>
         <p>{order.origin}</p>
