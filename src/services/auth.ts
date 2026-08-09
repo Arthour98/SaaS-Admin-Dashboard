@@ -51,9 +51,6 @@ export const signup = async (user: UserProps) => {
             }
         );      // create the jwt token and set it to cookies so we can get the user later
 
-
-
-
         let validation_token = await createValidationToken(conn, new_user.id)
         if (validation_token?.token) {
             await sendVerificationEmail(new_user.email, new_user.user_name, validation_token?.token);

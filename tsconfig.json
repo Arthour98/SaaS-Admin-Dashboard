@@ -41,7 +41,7 @@
     "**/*.mts",
     "src/db/migrate.js",
     "src/db/connection.js"
-  ],
+, "src/scripts/syncStripe.js", "src/services/stripe.ts"  ],
   "exclude": [
     "node_modules"
   ]

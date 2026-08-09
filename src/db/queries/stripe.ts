@@ -55,7 +55,7 @@ export const syncData = async (connection: any, customers: any[], invoices: any[
     try {
         await conn.beginTransaction();
         await conn.query(`INSERT INTO customers(origin,stripe_customer_id,name,phone_number,organization_id)
-             VALUES?`, [customers_payload]);
+             VALUES ?`, [customers_payload]);
         await conn.query(`INSERT INTO orders(name,price,customer_stripe_id,type,status,origin,stripe_product_id,organization_id)
         VALUES ?`, [merged_subs_invs]);
         await conn.commit();

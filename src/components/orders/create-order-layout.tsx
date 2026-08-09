@@ -118,7 +118,7 @@ export default function CreateOrderLayout({
   const submitOrders = async (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if(!isPermited("create_order"))
+    if(!isPermited("add_order"))
     {
       useToast({type:"warning",message:"You dont have the permission to create orders"})
       return;

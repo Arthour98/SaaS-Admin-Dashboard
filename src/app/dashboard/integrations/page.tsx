@@ -20,14 +20,20 @@ const getIntegrationsAndOrg = async()=>
         redirect("/dashboard")
     }
     const stripe = await getStripeService(org?.organization.id);
+    if(org.organization.id && !stripe.status)
+    {
+        return {organization:org.organization,stripe:{}}
+    }
+    
     return {organization:org?.organization,stripe:stripe}
 }
 
 
 export default  async function Page({})
 {
-    const {org,stripe} = (await getIntegrationsAndOrg()) as any;
-    
+    const organization = (await getIntegrationsAndOrg()).organization as any;
+    const stripe =  (await getIntegrationsAndOrg()).stripe as any;
+
 
     return(<>
         <Header showMenu/>
@@ -39,7 +45,7 @@ export default  async function Page({})
                         <NavBar/>
                     </div>
                     <div className="dashboard-content-wrapper">
-                        <IntegrationsClient org={org} stripe={stripe}/>
+                        <IntegrationsClient org={organization} stripe={stripe}/>
                     </div>
                 </div>
             </Main>

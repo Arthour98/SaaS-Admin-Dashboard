@@ -187,7 +187,7 @@ export async function joinOrganization(conn: any, creds: OrganizationProps) {
     catch (e) {
         console.error(e);
         await connection.rollback();
-        return { status: "failed" }
+        return null;
     }
     finally {
         await connection.release();
@@ -219,15 +219,24 @@ export async function refreshOrgToken(connection: any, token_id: number) {
     }
 }
 
-export async function kickUser(connection: any, delete_user_id: number, org_id: number) {
+export async function kickUser(conn: any, delete_user_id: number, org_id: number) {
+    const connection = await conn.getConnection();
     try {
+        await connection.beginTransaction();
         const deleted = await connection.query(`DELETE from users_organizations
         where organization_id=? and user_id =?`, [org_id, delete_user_id]);
+        const deleted_role = await connection.query("DELETE FROM roles where user_id=?",
+            [delete_user_id]);
+        await connection.commit();
         return { status: "success" }
     }
     catch (e) {
+        await connection.rollback()
         console.error(e);
         return null;
+    }
+    finally {
+        connection.release();
     }
 }
 

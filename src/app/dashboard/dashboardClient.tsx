@@ -12,6 +12,7 @@ import { OrgProps } from "./page";
 import { useRouter } from "next/navigation";
 import { UserCellProps } from "@/components/dashboard/users-layout";
 import PermModal from "@/components/modals/permission-modal";
+import { useToast } from "@/db/hooks/use-toast";
 export default function DashBoardClient({user,org_data}:{user:UserProps,org_data:OrgProps})
 {
 const router = useRouter();
@@ -19,13 +20,7 @@ const dashBoardTabs = ["Info","Organization","Users","Logs"]  // tabs array
 const [currTab,setCurrentTab] = useState("Info") // selected tab
 
 
-const [searchInput,setSearchInput]= useState("")
-
-
-const changeTab =(tab:string) =>
-{
-    setCurrentTab(tab);
-}
+const [searchInput,setSearchInput]= useState("");
 
 const info =
 {
@@ -52,6 +47,33 @@ const org_info =
 const users : any = 
 {
     users : org_data.members
+}
+const [hasOrganization,setHasOrganization]=useState(org_info?.organization_id==null?false:true);
+
+useEffect(()=>
+{
+    if(!org_info)
+    {
+        return;
+    }
+    if(!hasOrganization)
+    {
+        setCurrentTab("Organization")
+        console.log("render")
+        useToast({type:"info",message:"You need to create or join organization to procced!"})
+    }
+},[]);
+
+const changeTab =(tab:string) =>
+{   
+    if(hasOrganization)
+    {
+    setCurrentTab(tab);
+    }
+    else
+    {
+    useToast({type:"info",message:"You need to create or join organization to procced!"})
+    }
 }
 
 const triggerRefresh = useCallback((data:string)=>

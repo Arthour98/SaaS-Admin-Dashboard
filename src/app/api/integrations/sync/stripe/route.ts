@@ -30,8 +30,7 @@ export async function GET(req: Request) {
     if (connectedAccountId) {
       const create_stripe = await createStripeOrganization(connectedAccountId, Number(org_id))
       // await syncStripeData(connectedAccountId);
-      await SyncronizeData(connectedClient, Number(org_id));
-
+      await SyncronizeData(connectedAccountId, Number(org_id));
       return NextResponse.redirect(
         `${process.env.APP_URL}/dashboard/integrations?stripe=connected`
       );

@@ -171,7 +171,7 @@ export const joinOrg = async (
                 token_id: token_id
             }
             const join = await joinOrganization(conn, creds);
-            if (join.status == "success") {
+            if (join?.status == "success") {
                 // await refreshOrgToken(conn, token_id);
                 if (join?.status == "success") {
                     const log_obj: LogsProps =

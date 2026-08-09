@@ -17,7 +17,7 @@ stripe:any
 
 const [selectedService,setSelectedService] = useState<null | string>(null)
 const [hasIntegratedStripe,setHasIntegratedStripe]=useState(false);
-const org_id = org?.organization.organization.id;
+const [org_id,setOrg_id] = useState(org?.id);
 
 const syncWithService = async (
   e: React.MouseEvent,
@@ -39,11 +39,11 @@ const selectService = ()=>
 
 useEffect(()=>
 {
- if(org_id === stripe.organization_id)
+ if(org_id === stripe?.organization_id)
  {
     setHasIntegratedStripe(true);
  }
-},[]);
+},[org_id]);
 
     return(
         <div className={styles["dashboard-content"]}>

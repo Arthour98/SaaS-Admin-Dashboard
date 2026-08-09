@@ -12,23 +12,31 @@ if (!SECRET_KEY) {
 
 const stripeClient = new Stripe(SECRET_KEY as string);
 
-
-const getCustomers = async (client: Stripe) => {
-    const customers = await client.customers.list();
+const getCustomers = async (stripeAccountId: string) => {
+    const customers = await stripeClient.customers.list({},
+        {
+            stripeAccount: stripeAccountId
+        });
     return customers;
 }
 
-const getInvoices = async (client: Stripe) => {
-    const invoices = await client.invoiceItems.list();
+const getInvoices = async (stripeAccountId: string) => {
+    const invoices = await stripeClient.invoiceItems.list({},
+        {
+            stripeAccount: stripeAccountId
+        });
     return invoices;
 }
 
-const getSubscriptions = async (client: Stripe) => {
-    const subs = await client.subscriptions.list({
+const getSubscriptions = async (stripeAccountId: string) => {
+    const subs = await stripeClient.subscriptions.list({
         expand: [
             "data.items.data.price"
         ]
-    });
+    },
+        {
+            stripeAccount: stripeAccountId
+        });
 
     const productIds = [
         ...new Set(
@@ -39,7 +47,15 @@ const getSubscriptions = async (client: Stripe) => {
     ];
 
     const products = await Promise.all(
-        productIds.map(id => stripeClient.products.retrieve(id))
+        productIds.map(id =>
+            stripeClient.products.retrieve(
+                id,
+                undefined,
+                {
+                    stripeAccount: stripeAccountId
+                }
+            )
+        )
     );
 
     const productNames = new Map(
@@ -68,14 +84,19 @@ const createStripeOrganization = async (stripe_account_id: string, org_id: numbe
     }
 }
 
-const SyncronizeData = async (client: Stripe, org_id: number) => {
+const SyncronizeData = async (stripeAccountId: string, org_id: number) => {
     try {
         const conn = await createConnection()
-        const customers = (await getCustomers(client)).data;
-        const invoices = (await getInvoices(client)).data;
-        const subscriptions = (await getSubscriptions(client)).data;
+        const account = await stripeClient.accounts.retrieve(
+            stripeAccountId
+        );
+        const customers = (await getCustomers(stripeAccountId)).data;
+        const invoices = (await getInvoices(stripeAccountId)).data;
+        const subscriptions = (await getSubscriptions(stripeAccountId)).data;
         const sync = await syncData(conn, customers, invoices, subscriptions, org_id);
-
+        console.log(customers)
+        console.log(invoices)
+        console.log(subscriptions)
         if (sync?.status === "success") {
             return { status: sync.status }
         }

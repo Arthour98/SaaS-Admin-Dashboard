@@ -135,7 +135,7 @@ const handleChange = async (
 const submitCustomers = async(e:React.MouseEvent)=>
 {
   e.preventDefault();
-  if(!isPermited("create_customer"))
+  if(!isPermited("add_customer"))
   {
     useToast({type:"warning",
     message:"You dont have the permission to create customers!"

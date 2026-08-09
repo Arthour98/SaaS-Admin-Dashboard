@@ -35,6 +35,7 @@ export async function getCustomerOrdersWithCustomerInfo(connection: any, organiz
                 c.name AS customer_name
             FROM orders o
             LEFT JOIN customers c ON c.id = o.customer_id
+            OR c.stripe_customer_id = o.customer_stripe_id
             WHERE o.organization_id = ?
             ORDER BY o.created_at DESC
         `, [organization_id]);
