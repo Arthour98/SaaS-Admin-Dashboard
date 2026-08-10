@@ -1,5 +1,6 @@
 import { useQuery } from "@/lib/use-query";
-import { createContext,useContext,useState,useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { createContext,useContext,useState,useEffect, useMemo } from "react";
 
 type PermContextType = {
     usersPermissions?: Set<string>,
@@ -9,6 +10,7 @@ type PermContextType = {
 
 const permContext = createContext<PermContextType | null>(null);
 
+
 export default function PermProvider(
     {children}
     :
@@ -16,6 +18,13 @@ export default function PermProvider(
         children:React.ReactNode
     })
 {
+const path = usePathname();
+
+const session_routes = useMemo(()=>
+{
+return path.startsWith('/dashboard');
+},[path]); 
+
 const [usersPermissions,setUserPermissions] =  useState<Set<string>>(new Set());
 const [role,setRole] = useState(null);
 const getUserPermissions = async()=>
@@ -39,8 +48,12 @@ const getUserPermissions = async()=>
 }
 useEffect(()=>
 {
+if(!session_routes)
+{
+    return;
+}
  getUserPermissions();
-},[])
+},[session_routes])
 
 const isPermited = (perm:string) =>
 {

@@ -22,7 +22,7 @@ export default function LoginClient({})
     const [email,setEmail]= useState("");
     const [password,setPassword]= useState("");
 
-    const submitLogin = async(e:React.FormEvent<HTMLFormElement>)=>
+    const submitLogin = async(e:React.SubmitEvent)=>
     {
         e.preventDefault();
         setIsLoading(true);
@@ -48,12 +48,14 @@ export default function LoginClient({})
                 useToast({type:"success",message:"Login successfull!"})
             }
         }
+    
         catch(e)
         {
             console.error(e);
             setIsLoading(false);
             useToast({type:"error",message:"Wrong credentials"})
         }
+        
     }
 
 
@@ -80,7 +82,7 @@ export default function LoginClient({})
                     <div className="flex w-[100%] justify-center lg:w-[30%] items-center gap-3">
                         <SignIn/>
                         <p className="text-white mx-1">OR</p>
-                        <CustomButton isLoading={isLoading} element="input" content="Sign in" />
+                        <CustomButton name="app_auth" isLoading={isLoading} element="input" content="Sign in" />
                     </div>
                 </div>
             </form>

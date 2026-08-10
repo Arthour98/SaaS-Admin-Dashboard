@@ -102,6 +102,15 @@ const handleChange = async (
   const text = await file.text();
   const array_csv = text.split(/,|\n/);
   const properties = array_csv.splice(0,2); 
+
+  if(
+    !properties.includes("customer_name")&&
+    !properties.includes("customer_phone")
+    )
+  {
+    useToast({type:'warning',message:"Wrong csv format!"});
+    return;
+  }
   
   const mappedObj: any[] =[];
   let external_counter = 0;

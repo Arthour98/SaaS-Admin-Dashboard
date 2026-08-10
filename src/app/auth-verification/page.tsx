@@ -4,7 +4,7 @@ import Footer from "@/components/partials/footer";
 import Main from "@/components/partials/main";
 import { redirect } from "next/navigation";
 import CustomButton from "@/components/elements/customButton";
-import { verifyRegistration } from "@/services/auth";
+import { User, verifyRegistration } from "@/services/auth";
 import { verifyJwtToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 
@@ -36,6 +36,14 @@ if (result.status === "success") {
 }
 
 export default async function VerificationPage() {
+
+  const user = (await User())?.user;
+  if(user?.verified_at!==null)
+  {
+    redirect("/dashboard")
+  }
+
+
   return (
     <>
       <header className="landingHeader">

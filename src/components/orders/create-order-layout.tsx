@@ -91,6 +91,18 @@ export default function CreateOrderLayout({
     const headers = rows[0];
     const dataRows = rows.slice(1);
 
+    if(
+      !headers.includes("name")&&
+      !headers.includes("customer_id")&&
+      !headers.includes("price")&&
+      !headers.includes("status")&&
+      !headers.includes("type")
+      )
+    {
+      useToast({type:"warning",message:"Wrong csv format!"});
+      return;
+    }
+
     const mappedRows = dataRows.map((row) => {
       const rowData: Record<string, string> = {};
 
@@ -108,7 +120,7 @@ export default function CreateOrderLayout({
           customer_id: row.customer_id || "",
           price: row.price || "",
           status: row.status || "pending",
-          origin: row.origin || "manual",
+          origin: "manual",
           type: row.type || "product",
         }))
       );
@@ -175,7 +187,7 @@ export default function CreateOrderLayout({
   return (
     <div className={styles.createOrdersLayout}>
       <div className={styles.csvCol}>
-        <InfoItem content="Import CSV with headers: name, customer_id, price, status, origin, type" />
+        <InfoItem content="Import CSV with headers: name, customer_id, price, status, type" />
         <FontAwesomeIcon className={styles.csvIcon} icon={faFileCsv} onClick={triggerFileInput} />
         <input ref={fileInputRef} type="file" className={styles.fileInput} onChange={handleCsvImport} />
       </div>

@@ -28,12 +28,36 @@ export async function GET(req: Request) {
     const accessToken = stripeResponse.access_token;
     const connectedClient = new Stripe(accessToken as string);
     if (connectedAccountId) {
-      const create_stripe = await createStripeOrganization(connectedAccountId, Number(org_id))
-      // await syncStripeData(connectedAccountId);
+      await createStripeOrganization(connectedAccountId, Number(org_id));
       await SyncronizeData(connectedAccountId, Number(org_id));
-      return NextResponse.redirect(
-        `${process.env.APP_URL}/dashboard/integrations?stripe=connected`
-      );
+
+      const successHtml = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Stripe Sync Completed</title>
+  </head>
+  <body>
+    <script>
+      const redirectUrl = '${process.env.APP_URL}/dashboard/integrations?stripe=connected';
+      if (window.opener) {
+        try {
+          window.opener.location.href = redirectUrl;
+        } catch (error) {
+          console.warn('Unable to redirect opener:', error);
+        }
+        window.close();
+      } else {
+        window.location.href = redirectUrl;
+      }
+    </script>
+    <p>Sync completed. You may close this window.</p>
+  </body>
+</html>`;
+
+      return new Response(successHtml, {
+        headers: { "Content-Type": "text/html" },
+      });
     }
     else {
       throw new Error("missing stripe authetication");
@@ -41,6 +65,19 @@ export async function GET(req: Request) {
   }
   catch (e) {
     console.error("[ROUTE_ERROR]", e);
-    return NextResponse.json({ error: e });
+    const errorHtml = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Stripe Sync Error</title>
+  </head>
+  <body>
+    <p>An error occurred during Stripe sync.</p>
+    <pre>${String(e)}</pre>
+  </body>
+</html>`;
+    return new Response(errorHtml, {
+      headers: { "Content-Type": "text/html" },
+    });
   }
 }

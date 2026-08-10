@@ -443,13 +443,16 @@ button:disabled {
 .accountLayout {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
+    flex-direction: column;
     height: 28rem;
+    scrollbar-width: none;
+    padding: 1rem;
     overflow-y: scroll;
     scrollbar-width: none;
 }
 
 .accountPanel {
+    margin-top: 1rem;
     flex: 1 1 45%;
     min-width: 30rem;
     background-color: white;

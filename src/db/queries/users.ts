@@ -6,7 +6,7 @@ export interface UserProps {
     user_name: string,
     email: string,
     password: string,
-    source: string
+    source: string,
 }
 
 export async function getUser(connection: any, id: number) {
@@ -85,29 +85,26 @@ export async function createUser(
     }
 }
 
-export async function createUserByOauth(connection: any, { user_name, password, email, source }: UserProps) {
-    const username = await getUserByName(connection, user_name);
-    const useremail = await getUserByEmail(connection, email);
-    const existing_name = username !== null;
-    const existing_email = useremail !== null;
+export async function createUserOauth(connection: any, { user_name, password, email, source }: UserProps) {
 
-
-    if (!existing_name && !existing_email) {
-        try {
-            await connection.query(`INSERT into users(name,email,source)
+    try {
+        const [result] = await connection.query(`INSERT into users(name,email,source)
              values(?,?,?)`, [user_name, email, source]);
-        }
-        catch (e) {
-            console.error(e);
-        }
+        return {
+            status: "success",
+            id: result.insertId,
+            user_name,
+            email,
+            source
+        };
     }
-    else if (existing_name) {
-        return { error: "username" }
-    }
-    else if (existing_email) {
-        return { error: "useremail" }
+
+    catch (e) {
+        console.error(e);
+        return null;
     }
 }
+
 
 export async function editUser(connection: any, user_id: number, updates: { name?: string; password?: string }) {
     const fields: string[] = [];

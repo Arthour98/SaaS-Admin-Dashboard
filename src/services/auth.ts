@@ -2,7 +2,7 @@
 import { verifyJwtToken, createJwtToken } from "@/lib/jwt";
 import {
     createUser,
-    createUserByOauth,
+    createUserOauth,
     getUser,
     getUserByEmail,
     getUserByName,
@@ -18,6 +18,7 @@ import sendVerificationEmail from "@/lib/send-verification-email";
 import sendPasswordChangeEmail from "@/lib/send-password-change-email";
 import { cookies } from "next/headers";
 import { hashPassword, matchPass } from "@/lib/hash";
+import { redirect } from "next/navigation";
 
 
 
@@ -250,6 +251,52 @@ export const User = async () => {
             delete user.password; // dont expose password to the client :)
             return { user: user }
         }
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export async function createUserByOauth({ user_name, password, email, source }: UserProps) {
+    try {
+        const conn = await createConnection();
+        const useremail = await getUserByEmail(conn, email);
+        const existing_email = useremail !== null;
+        if (!existing_email) {
+            const new_user = await createUserOauth(conn, { user_name, password, email, source } as UserProps)
+            if (new_user) {
+                let validation_token = await createValidationToken(conn, new_user.id)
+                if (validation_token?.token) {
+                    await sendVerificationEmail(new_user.email, new_user.user_name, validation_token?.token);
+                }
+                let token = await createJwtToken({ user_id: new_user.id, user_name: new_user.user_name });
+                const cookie_store = await cookies();
+                cookie_store.set("jwt-session",
+                    token,
+                    {
+                        httpOnly: true,
+                        expires: 1,
+                        maxAge: 64000,
+                        path: "/",
+                    })
+            }
+        }
+        else {
+            let token = await createJwtToken({ user_id: useremail.id, user_name: useremail.name });
+            const cookie_store = await cookies();
+            cookie_store.set("jwt-session",
+                token,
+                {
+                    httpOnly: true,
+                    expires: 1,
+                    maxAge: 64000,
+                    path: "/",
+                })
+        }
+
+
+
     }
     catch (e) {
         console.error(e);

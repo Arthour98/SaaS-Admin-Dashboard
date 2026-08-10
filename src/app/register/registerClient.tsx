@@ -8,6 +8,7 @@ import SignIn from "@/components/elements/oauth-signin";
 import { useState } from "react";
 import CustomButton from "@/components/elements/customButton";
 import { useQuery } from "@/lib/use-query";
+import { useToast } from "@/db/hooks/use-toast";
 
 export default function RegisterClient({})
 {    
@@ -23,9 +24,12 @@ export default function RegisterClient({})
     const [email,setEmail] = useState("");
 
 
-    const submitRegister = async (e: React.FormEvent<HTMLFormElement>)=>
+const submitRegister = async (e: React.SubmitEvent)=>
+{
+    e.preventDefault();
+    try
     {
-        e.preventDefault();
+        setIsLoading(true);
         const data  = 
         {
             user_name:username,
@@ -36,9 +40,28 @@ export default function RegisterClient({})
         const res = await useQuery("auth/register",{method:"post",body:data});
         if(res.new_user)
         {
+            setIsLoading(false);
             router.push('/auth-verification');
         }
+        else
+        {
+            setIsLoading(false)
+            if(username.length<6)
+            {
+                useToast({type:"warning",message:"Username must be 6 or more characters!"})
+            }
+            if(password.length<12)
+            {
+                useToast({type:"warning",message:"Password must be 12 or more characters!"})
+            }
+        }
     }
+    catch(e)
+    {
+        setIsLoading(false);
+        useToast({type:"error",message:"Error in registration"});
+    }
+}
 
     return(
     <Main className="registerMain">
