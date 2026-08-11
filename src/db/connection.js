@@ -23,7 +23,7 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 const host = process.env.DB_HOST;
 const username = process.env.DB_USERNAME;
