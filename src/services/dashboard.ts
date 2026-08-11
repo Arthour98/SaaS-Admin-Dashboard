@@ -698,7 +698,7 @@ export const getRoleAndPermissions = async (user_id: number) => {
     try {
         const conn = await createConnection();
         const perms = await getRole(conn, user_id);
-        return { status: "success", role: perms?.data.position, permissions: perms?.data.permissions }
+        return { status: "success", role: perms?.data.position, permissions: JSON.parse(perms?.data.permissions) }
     }
     catch (e) {
         console.error("[SERVICE_ERROR]", e);
