@@ -19,7 +19,7 @@
         "assign_permissions",
         "add_customer",
         "add_order",
-        "delete_order",
+        "delete_customer",
         "delete_order",
         "refresh_org_token",
         "run_integration",

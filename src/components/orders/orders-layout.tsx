@@ -14,10 +14,14 @@ export default function OrdersLayout({
 }) {
   if (!current_layout) return null;
 
-  return orders.length === 0 ? (
-    <p>There are no orders listed!</p>
-  ) : (
+  return (
     <div className={styles.ordersLayout}>
+      {
+        orders.length === 0 &&
+        (
+          <p>There are no orders listed!</p>
+        )
+      }
       <div className={styles.ordersHeader}>
         <div className={styles.orderCol2}><p>Name</p></div>
         <div className={styles.orderCol2}><p>Price</p></div>
