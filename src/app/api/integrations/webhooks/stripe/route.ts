@@ -3,7 +3,7 @@ const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 import { createStripeEvent } from "@/db/queries/events";
 import { createConnection } from "@/db/connection";
 
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
 
     const body = await req.text();
     const signarute = req.headers.get("stripe-signature");
