@@ -4,38 +4,36 @@ import "./globals.css";
 import BodyClassProvider from "./bodyClassProvider";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Administration Dashboard",
-  description: "Smart dashboard to  control your business",
+    title: "Administration Dashboard",
+    description: "Smart dashboard to control your business",
+    icons: {
+        icon: "/images/dashboard_image.png",
+    },
 };
 
 export default function RootLayout({
-  children,
-  
+    children,
 }: Readonly<{
-  children: React.ReactNode;
-}>,) {
-
-    
-  return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}  h-full antialiased`}
-    >
-      
-      <BodyClassProvider>
-        {children}
-        </BodyClassProvider>
-        
-    </html>
-  );
+    children: React.ReactNode;
+}>) {
+    return (
+        <html
+            lang="en"
+            className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+        >
+            <BodyClassProvider>
+                {children}
+            </BodyClassProvider>
+        </html>
+    );
 }

@@ -40,7 +40,7 @@ export type OrgLayoutProps =
 
 export default function OrganizationLayout({current_layout,org_info,user,triggerRefresh}:OrgLayoutProps)
 {
-    const {isPermited}= usePerms();
+    const {isPermited,useCustomTrigger}= usePerms();
     // loaders states for buttons
     const [isLoadingCreate,setIsLoadingCreate] = useState(false);
     const [isLoadingJoin,setIsLoadingJoin] = useState(false);
@@ -83,7 +83,8 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 useToast({
                 type:"success",
                 message:"Organization created successfully"
-            })
+            });
+            useCustomTrigger();
             }
             else
             {
@@ -125,7 +126,8 @@ export default function OrganizationLayout({current_layout,org_info,user,trigger
                 useToast({
                 type:"success",
                 message:"Successfully joined organization"
-            })
+            });
+            useCustomTrigger();
             }
         }
         catch(e)

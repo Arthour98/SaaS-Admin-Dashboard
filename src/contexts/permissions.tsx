@@ -6,6 +6,7 @@ type PermContextType = {
     usersPermissions?: Set<string>,
     isPermited:(perm:string)=>boolean,
     role?: any,
+    useCustomTrigger : ()=>void
 };
 
 const permContext = createContext<PermContextType | null>(null);
@@ -25,8 +26,18 @@ const session_routes = useMemo(()=>
 return path.startsWith('/dashboard');
 },[path]); 
 
+
+
 const [usersPermissions,setUserPermissions] =  useState<Set<string>>(new Set());
 const [role,setRole] = useState(null);
+const [customTrigger,setCustomTrigger]=useState(false);
+
+const useCustomTrigger = ()=>
+{
+    setCustomTrigger(true);
+} // function to trigger the dependancy that will trigger rerender on org creation.
+//so user can make actions instant and not refresh the page to trigger fetch permmissions.
+
 const getUserPermissions = async()=>
 {
     try{
@@ -53,7 +64,7 @@ if(!session_routes)
     return;
 }
  getUserPermissions();
-},[session_routes])
+},[session_routes,customTrigger])
 
 const isPermited = (perm:string) =>
 {
@@ -73,7 +84,8 @@ return(
     {{
         usersPermissions,
         role,
-        isPermited
+        isPermited,
+        useCustomTrigger
     }}>
         {children}
     </permContext.Provider>
