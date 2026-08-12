@@ -12,16 +12,19 @@ export default function OrdersLayout({
   orders: OrderProps[],
   user:UserProps
 }) {
-  if (!current_layout) return null;
 
+if(!current_layout) return null;
+
+if(orders?.length === 0)
+{
+  return (
+  <div className={styles.ordersLayout}>
+    <p>There are no orders listed!</p>
+  </div>
+)
+}
   return (
     <div className={styles.ordersLayout}>
-      {
-        orders.length === 0 &&
-        (
-          <p>There are no orders listed!</p>
-        )
-      }
       <div className={styles.ordersHeader}>
         <div className={styles.orderCol2}><p>Name</p></div>
         <div className={styles.orderCol2}><p>Price</p></div>

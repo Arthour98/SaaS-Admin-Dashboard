@@ -18,7 +18,6 @@ import sendVerificationEmail from "@/lib/send-verification-email";
 import sendPasswordChangeEmail from "@/lib/send-password-change-email";
 import { cookies } from "next/headers";
 import { hashPassword, matchPass } from "@/lib/hash";
-import { redirect } from "next/navigation";
 
 
 
@@ -46,9 +45,9 @@ export const signup = async (user: UserProps) => {
             token,
             {
                 httpOnly: true,
-                expires: 1,
-                maxAge: 64000,
+                maxAge: 86400,
                 path: "/",
+                sameSite: "lax",
             }
         );      // create the jwt token and set it to cookies so we can get the user later
 
@@ -217,9 +216,9 @@ export default async function login(email: string, password: string) { //wont ad
         token,
         {
             httpOnly: true,
-            expires: 1,
-            maxAge: 64000,
+            maxAge: 86400,
             path: "/",
+            sameSite: "lax",
         }
     );
 

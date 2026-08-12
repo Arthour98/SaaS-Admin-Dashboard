@@ -37,11 +37,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
 
         async redirect({ url, baseUrl }) {
-            console.log("AUTH REDIRECT:", {
-                url,
-                baseUrl,
-            });
-
             return `${baseUrl}/auth-verification`;
         },
     },

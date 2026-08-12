@@ -35,9 +35,16 @@ export default function CustomerOrdersLayout({
 }) {
   if (!current_layout) return null;
 
-  return customerOrders.length === 0 ? (
+if(customerOrders.length === 0)
+{
+    return (
+  <div className={styles.ordersLayout}>
     <p>There are no customer orders listed!</p>
-  ) : (
+  </div>
+  ) 
+}
+
+return(
     <div className={styles.ordersLayout}>
       <div className={styles.ordersHeader}>
         <div className={styles.orderCol2}><p>Customer</p></div>

@@ -94,9 +94,7 @@ const SyncronizeData = async (stripeAccountId: string, org_id: number) => {
         const invoices = (await getInvoices(stripeAccountId)).data;
         const subscriptions = (await getSubscriptions(stripeAccountId)).data;
         const sync = await syncData(conn, customers, invoices, subscriptions, org_id);
-        console.log(customers)
-        console.log(invoices)
-        console.log(subscriptions)
+
         if (sync?.status === "success") {
             return { status: sync.status }
         }

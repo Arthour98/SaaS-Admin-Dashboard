@@ -76,7 +76,6 @@ export default function TicketClient(
             const res = await useQuery("tickets/send-message",{method:"post",body:data})
             if(res.data.status==="success")
             {
-                console.log("messages in res:",res.data.messages)
                 useToast({type:'success',message:"Message sent successfully !"});
                 setIsSubmitLoading(false);
                 setMessages(res.data.messages);

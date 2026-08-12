@@ -38,11 +38,6 @@ export default async function Page({params}
 
     const { user, ticket, org_id } = await getTicket({params});
 
-    console.log("Userr:", user)
-    console.log("tickets:", ticket)
-    console.log("ORR|G_ID", org_id)
-
-
     return (<>
         <Header showMenu />
         <Main className="dashboardMain">

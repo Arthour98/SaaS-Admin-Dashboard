@@ -59,7 +59,6 @@ useEffect(()=>
     if(!hasOrganization)
     {
         setCurrentTab("Organization")
-        console.log("render")
         useToast({type:"info",message:"You need to create or join organization to procced!"})
     }
 },[]);
@@ -81,7 +80,6 @@ const triggerRefresh = useCallback((data:string)=>
     if(data=="success")
     {
         router.refresh();
-        console.log("refreshed")
     }
 },[])
 
@@ -92,12 +90,6 @@ const filteredUsers = useMemo(()=>
         return [user.name].some((val)=>val.toLowerCase().includes(input))
     })
 },[searchInput,users])
-
-useEffect(()=>
-{
-    console.log("users",users)
-    console.log("filterusers",filteredUsers)
-},[users,filteredUsers])
 
 const [openPermissionModal,setOpenPermissionModal] = useState(false);
 const [userPerms,setUserPerms] = useState(null);

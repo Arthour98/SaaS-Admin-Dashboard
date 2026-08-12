@@ -7,10 +7,11 @@ export interface NavLinkProps
 src:string,
 label:string,
 isActive?:boolean,
+prefetch ?:  boolean
 onClick?: (e:MouseEvent)=>void,
 }
 
-export const NavLink=({src,label,isActive,onClick}:NavLinkProps)=>
+export const NavLink=({src,label,isActive,onClick,prefetch}:NavLinkProps)=>
 {
 const [isHovering,setIsHovering]= useState(false);
 
@@ -19,7 +20,7 @@ const [isHovering,setIsHovering]= useState(false);
         isActive ? "text-cyan-400" : "text-gray-400"
     }
         onClick={(e)=>onClick?.(e)}
-        prefetch
+        prefetch={prefetch ? true : false}
         transitionTypes={["slide-in"]}
         onMouseOver={()=>setIsHovering(true)}
         onMouseLeave={()=>setIsHovering(false)}

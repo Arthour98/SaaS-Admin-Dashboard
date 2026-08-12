@@ -3,7 +3,9 @@ import { logout } from "@/services/auth";
 export async function GET(request: Request) {
     try {
         await logout();
-        return NextResponse.redirect(new URL("/", request.url));
+        const baseUrl = process.env.APP_URL;
+
+        return NextResponse.redirect(new URL("/", baseUrl));
     }
     catch (e) {
         console.error(e);
