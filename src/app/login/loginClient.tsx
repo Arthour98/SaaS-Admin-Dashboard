@@ -80,13 +80,14 @@ export default function LoginClient({})
                 <div className="flex flex-col w-[100%] justify-center items-center lg:flex-row gap-3">
                     <Link href={"/register"} className="text-white underline">Not registered yet?</Link>
                     <div className="flex w-[100%] justify-center lg:w-[30%] items-center gap-3">
-                        <SignIn/>
-                        <p className="text-white mx-1">OR</p>
                         <CustomButton name="app_auth" isLoading={isLoading} element="input" content="Sign in" />
                     </div>
                 </div>
             </form>
-             
+            <div className="flex justify-center  py-3 gap-3">
+                <p className="text-white mx-1">Connect with Google</p>  
+                <SignIn/>
+            </div>
         </div>
         </Main>
     )

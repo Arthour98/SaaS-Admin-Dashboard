@@ -88,13 +88,15 @@ const submitRegister = async (e: React.SubmitEvent)=>
                 <div className="flex flex-col w-[100%] justify-center items-center lg:flex-row gap-3">
                     <Link className="underline text-white" href="/login">Already registered?</Link>
                     <div className="flex w-[100%] justify-center lg:w-[30%] items-center gap-3">
-                        <SignIn/>
-                        <p className="text-white mx-1">OR</p>
+                        
                         <CustomButton  isLoading={isLoading} element="input" content="Sign up" />
                     </div>
                 </div>
             </form>
-            
+            <div className="flex justify-center  py-3 gap-3">
+            <p className="text-white mx-1">Connect with Google</p>  
+            <SignIn/>
+            </div>
         </div>
     </Main>
     )
