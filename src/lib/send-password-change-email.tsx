@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_KEY);
 
 export default async function sendPasswordChangeEmail(email: string, userName: string) {
     const { data, error } = await resend.emails.send({
-        from: "C-BOARD <onboarding@resend.dev>",
+        from: "C-BOARD <no-reply@c-board.uk>",
         to: [email],
         subject: "Your password was changed",
         html: `
